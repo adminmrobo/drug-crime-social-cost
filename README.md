@@ -122,4 +122,4 @@ python pipeline/run.py
 
 ## 판 기록
 
-`locked/CHANGELOG.md` 참조. 현재 판: **구조-v1** (2026-10-21, 제3장 구조 시트 6개 추가).
+`locked/CHANGELOG.md` 참조. 현재 판: **구조-v1.1** (2026-10-21, 제3장 구조 시트 6개 추가 후 여백 조정).

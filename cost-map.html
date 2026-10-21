@@ -22,7 +22,7 @@
   --A:#5fcfa4; --Abg:#173329; --B:#8cb4ef; --Bbg:#1a2a42; --C:#efb55a; --Cbg:#3a2c12; --R:#f08a82; --Rbg:#3d1d1b; --N:#bb9cf0; --Nbg:#2b2140; --X:#a3abb7; --Xbg:#232b37; color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:14.5px;line-height:1.6}
-.wrap{max-width:1240px;margin:0 auto;padding-block:28px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1280px;margin:0 auto;padding-block:28px 64px;padding-left:max(clamp(20px,5vw,56px),env(safe-area-inset-left,0px));padding-right:max(clamp(20px,5vw,56px),env(safe-area-inset-right,0px))}
 h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;color:var(--ink)}
 h1{font-size:28px;line-height:1.3}
 h2{font-size:21px;margin-top:44px;padding-top:18px;border-top:2px solid var(--ink)}
@@ -219,8 +219,6 @@ img{max-width:100%}
 
   <div class="legend" id="legend"></div>
 
-  </div>
-
   <!-- ============ 단계별 그림 ============ -->
   <h2>1. 단계별 그림</h2>
   <p class="lead">1단계와 2-1은 같은 나무 형식으로 그려 칸끼리 바로 비교할 수 있게 했다. 1단계 칸 아래 파란 글씨는 2단계에서 옮겨 간 자리이고, 2-1 칸 아래 표지는 1단계 대비 변화이다. 2-2는 2-1의 칸마다 어떤 자료가 들어가는지와 그 자료의 회신 상태를 한 표에 모아, 지금 자료로 구현 모델의 어디까지 계산되는지 보여 준다. 3단계는 비용편익 흐름에 실제 회신값을 채운 것이다.</p>
@@ -378,7 +376,7 @@ img{max-width:100%}
     <p class="lead" id="mxsum"></p>
     <div class="bars" id="bars"></div>
     <div class="slegend" id="slegend"></div>
-    <div class="scroll"><table class="mx" id="mx"></table></div>
+    <div class="scroll" style="padding:12px 14px"><table class="mx" id="mx"></table></div>
     <p class="small" style="margin-top:8px">● 직접 투입(없으면 그 칸을 계산할 수 없음) · ○ 보조·검증 · 맨 오른쪽 표지는 그 칸의 현재 분류(3장 분류별 정리와 같음)</p>
     <div class="note">요청서(서식 1~12, 별도요청)가 닿는 칸은 비용편익 쪽과 제3절 3에 몰려 있다. 제3장 제1·2절, 제3절 1·2, 제4·5절은 "공개통계·예산서"나 "설문" 열에만 점이 찍혀 있다. 요청서를 다시 보내도 이 칸들은 채워지지 않고, 연구진이 공개 자료를 모으거나 설문을 해야 채워진다.</div>
     <h3>지금 계산된 값 (잠정)</h3>
@@ -712,7 +710,9 @@ lg.addEventListener('click',e=>{const b=e.target.closest('.lg');if(!b)return;con
 // 탭
 const tabs=[...document.querySelectorAll('[role=tab]')];
 function show(id){tabs.forEach(t=>{const on=t.id===id;t.setAttribute('aria-selected',on);document.getElementById(t.getAttribute('aria-controls')).hidden=!on;});try{localStorage.setItem('costmap-tab',id)}catch(e){}}
-tabs.forEach(t=>t.addEventListener('click',()=>show(t.id)));
+function centerTrees(){document.querySelectorAll('[role=tabpanel]:not([hidden]) .scroll').forEach(s=>{if(s.querySelector('.tree')&&s.scrollWidth>s.clientWidth){s.scrollLeft=(s.scrollWidth-s.clientWidth)/2;}});}
+tabs.forEach(t=>t.addEventListener('click',()=>{show(t.id);centerTrees();}));
+window.addEventListener('load',centerTrees);
 try{const s=localStorage.getItem('costmap-tab');if(s&&document.getElementById(s))show(s)}catch(e){}
 </script>
 </body>

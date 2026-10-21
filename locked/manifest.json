@@ -1,0 +1,17 @@
+{
+ "form_version": "구조-v1",
+ "updated": "2026-10-21",
+ "files": {
+  "locked/index.template.html": "4caedfc8f42f05029387c3b6b15f18a54eb13cc994391086801f4f5e0d81d686",
+  "locked/guide.html": "1b785f0d3b2b84a322e332834b37e440b21942252619ff8d858c323db037cffb",
+  "locked/form_lock.json": "be3a9d5a00f33029583a1ec1d2bca1f84f56a624639cdf2ffde5ffefea3904ea",
+  "config/values_map.json": "078ce29ed33c4e0a98660e78ba174d1d291f4672fb694054b494a295ca82f283",
+  "pipeline/common.py": "318da71c608f0ada632e599f0200874e0468798969c867892882ed35c736a6e8",
+  "pipeline/lock.py": "b38861497694bf41baeb5699e362295ea4acbc491c3c910eb87c05aae43054ca",
+  "pipeline/checks.py": "9fd4504d514687fd020ed9e0637844b11df899c47d5ae2e4e7514a5adcda6baf",
+  "pipeline/render.py": "840fd4433be958a0ad1e33e7d17ef2b34ad2b89b4c634e8d7c257f9572341bd4",
+  "pipeline/run.py": "ba2ec8478401c738298d1ac9ba22ead89170a5932c498a82aab83a4ac66efb2a",
+  "pipeline/relock.py": "3e490713807a63e7e8f2758d724863881f09a1b5e9fc9a1b1f48b85ae406c4f0",
+  ".github/workflows/pipeline.yml": "b0f38ea564150f2215734af3b8361e58eccf21056a9948035c3f7a31b7aaa6a4"
+ }
+}

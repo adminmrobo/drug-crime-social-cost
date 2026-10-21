@@ -1,0 +1,437 @@
+<title>교정 중독재활 비용편익 진행판</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: 보고서 부록처럼 위에서 아래로 — 요약 띠 → 비용 구성 흐름도(원가중심점별 행) → 산식 → 진행표 → 민감도 → 자료 검토 */
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#1b2333; --muted:#5d6678; --line:#d9dee7; --navy:#1f3864;
+  --in:#8a6a3f;  --in-bg:#f3ebe1;   /* 투옥 */
+  --pg:#2f5d95;  --pg-bg:#e6eef8;   /* 투입 */
+  --tx:#3c7a5a;  --tx-bg:#e4f0e9;   /* 치료 */
+  --cu:#7a5a95;  --cu-bg:#efe8f5;   /* 감호 */
+  --oc:#a8741f;  --oc-bg:#f8eedc;   /* 성과 */
+  --mt:#6b7280;  --mt-bg:#eceef1;   /* 정합성 */
+  --ok:#1f7a4a; --ok-bg:#dff1e6; --part:#9a6200; --part-bg:#fdf0d5; --no:#b3261e; --no-bg:#fbe3e1; --alt:#2f5d95; --alt-bg:#e2ecf8;
+  --key:#fbe7d9; --new:#b8571a;
+  --f-sans:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12161e; --panel:#1a202b; --ink:#e6e9ef; --muted:#9aa3b5; --line:#2e3646; --navy:#9db8e6;
+  --in:#d2b28a; --in-bg:#2c251c; --pg:#8fb6e8; --pg-bg:#1b2738; --tx:#8fcfac; --tx-bg:#1a2b23; --cu:#c3a6de; --cu-bg:#261e30;
+  --oc:#e2b469; --oc-bg:#2e2617; --mt:#a7adb8; --mt-bg:#232933;
+  --ok:#7fd3a3; --ok-bg:#183326; --part:#f0c26a; --part-bg:#33290f; --no:#f19a92; --no-bg:#3a1c1a; --alt:#8fb6e8; --alt-bg:#1b2738; --key:#3a2a1e; --new:#f0a067;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12161e; --panel:#1a202b; --ink:#e6e9ef; --muted:#9aa3b5; --line:#2e3646; --navy:#9db8e6;
+  --in:#d2b28a; --in-bg:#2c251c; --pg:#8fb6e8; --pg-bg:#1b2738; --tx:#8fcfac; --tx-bg:#1a2b23; --cu:#c3a6de; --cu-bg:#261e30;
+  --oc:#e2b469; --oc-bg:#2e2617; --mt:#a7adb8; --mt-bg:#232933;
+  --ok:#7fd3a3; --ok-bg:#183326; --part:#f0c26a; --part-bg:#33290f; --no:#f19a92; --no-bg:#3a1c1a; --alt:#8fb6e8; --alt-bg:#1b2738; --key:#3a2a1e; --new:#f0a067;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-sans);font-size:14px;line-height:1.6}
+.wrap{max-width:1180px;margin:0 auto;padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:28px}
+h1{font-size:1.6rem;line-height:1.3;margin:0;text-wrap:balance;font-weight:700}
+h2{font-size:1.1rem;margin:0 0 4px;text-wrap:balance}
+.eyebrow{font-size:.72rem;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;font-family:var(--f-mono)}
+.sub{color:var(--muted);margin:4px 0 0;max-width:72ch}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+section{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:20px;display:grid;gap:14px;min-width:0}
+.sechead{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 16px;align-items:baseline}
+.sechead p{margin:0;color:var(--muted);font-size:.85rem}
+
+/* 요약 띠 */
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.stat{border:1px solid var(--line);background:var(--panel);border-radius:6px;padding:12px 14px;display:grid;gap:2px}
+.stat b{font-family:var(--f-mono);font-size:1.35rem;font-variant-numeric:tabular-nums}
+.stat span{font-size:.78rem;color:var(--muted)}
+.stat.key{background:var(--key)}
+.bar{display:flex;height:10px;border-radius:3px;overflow:hidden;border:1px solid var(--line)}
+.bar i{display:block}
+
+/* 상태 표지 */
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:.72rem;font-weight:600;padding:1px 8px;border-radius:999px;white-space:nowrap;border:1px solid transparent}
+.pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.s-ok{color:var(--ok);background:var(--ok-bg)} .s-part{color:var(--part);background:var(--part-bg)}
+.s-no{color:var(--no);background:var(--no-bg)} .s-alt{color:var(--alt);background:var(--alt-bg)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:.78rem;color:var(--muted);align-items:center}
+
+/* 흐름도 */
+.flow-scroll{overflow-x:auto}
+.flow{display:grid;grid-template-columns:minmax(190px,1.1fr) 26px minmax(170px,.9fr) 26px minmax(260px,1.6fr) 26px minmax(150px,.8fr);gap:10px 0;min-width:900px}
+.colh{font-size:.72rem;color:var(--muted);letter-spacing:.04em;border-bottom:2px solid var(--ink);padding-bottom:6px;margin-bottom:4px;font-weight:600}
+.arrow{display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:1rem}
+.reqs{display:grid;gap:4px;align-content:center}
+.req{font-size:.78rem;border:1px solid var(--line);border-radius:4px;padding:3px 8px;display:flex;justify-content:space-between;gap:6px;align-items:center;background:var(--panel)}
+.req.core{font-weight:700}
+.cc{border-radius:6px;padding:10px 12px;display:grid;align-content:center;gap:2px;border:1.5px solid}
+.cc strong{font-size:.9rem}
+.cc small{font-family:var(--f-mono);font-size:.72rem;color:var(--muted)}
+.c-in{background:var(--in-bg);border-color:var(--in)} .c-pg{background:var(--pg-bg);border-color:var(--pg)}
+.c-tx{background:var(--tx-bg);border-color:var(--tx)} .c-cu{background:var(--cu-bg);border-color:var(--cu);border-style:dashed}
+.c-oc{background:var(--oc-bg);border-color:var(--oc)} .c-mt{background:var(--mt-bg);border-color:var(--mt)}
+.ucs{display:grid;gap:6px;align-content:center}
+.uc{border:1px solid var(--line);border-radius:5px;padding:7px 10px;background:var(--panel);display:grid;gap:2px}
+.uc .top{display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap}
+.uc .id{font-family:var(--f-mono);font-size:.74rem;font-weight:600}
+.uc .v{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-weight:600}
+.uc .d{font-size:.74rem;color:var(--muted)}
+.uc.miss{border-style:dashed;border-color:var(--no)}
+.term{border-radius:6px;padding:10px;display:grid;align-content:center;gap:4px;border:1px solid var(--line);background:var(--bg);font-size:.8rem}
+.term b{font-family:var(--f-mono)}
+.rowgap{grid-column:1/-1;height:4px}
+
+/* 산식 */
+.eq{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.eqbox{border:1px solid var(--line);border-radius:6px;padding:14px;display:grid;gap:6px;min-width:0}
+.eqbox.final{background:var(--navy);border-color:var(--navy);color:var(--bg)}
+.eqbox.final .muted{color:var(--bg);opacity:.8}
+.eqbox h3{margin:0;font-size:.95rem}
+.eqline{font-family:var(--f-mono);font-size:.82rem;overflow-wrap:anywhere}
+.terms{display:grid;gap:3px;font-size:.8rem}
+.terms div{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dotted var(--line);padding-bottom:2px}
+.terms span:last-child{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.muted{color:var(--muted)}
+.big{font-family:var(--f-mono);font-size:1.9rem;font-weight:600;line-height:1.1}
+
+/* 표 */
+.tscroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:860px;font-size:.82rem}
+th,td{border-bottom:1px solid var(--line);padding:8px 8px;text-align:left;vertical-align:top}
+th{font-size:.74rem;color:var(--muted);font-weight:600;letter-spacing:.03em;background:var(--bg);position:sticky;top:0}
+td.n{font-family:var(--f-mono);white-space:nowrap}
+td .doing{display:block;margin-top:4px;color:var(--part);font-weight:600}
+td .doing::before{content:"진행 중 · ";font-weight:700}
+tr.core td:nth-child(2){font-weight:700}
+
+/* 민감도 */
+.sens{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:760px){.sens{grid-template-columns:1fr}}
+svg text{fill:var(--ink);font-family:var(--f-mono);font-size:11px}
+svg .mut{fill:var(--muted)}
+.notes{margin:0;padding-left:1.1em;display:grid;gap:6px;font-size:.85rem}
+.notes li{max-width:70ch}
+
+.docs{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.doc{border:1px solid var(--line);border-radius:6px;padding:12px 14px;display:grid;gap:6px;align-content:start;min-width:0}
+.doc h3{margin:0;font-size:.9rem}
+.doc p{margin:0;font-size:.8rem;color:var(--muted)}
+.doc ul{margin:0;padding-left:1.1em;font-size:.8rem;display:grid;gap:3px}
+footer{font-size:.75rem;color:var(--muted)}
+</style>
+<style>
+/* v2 추가: 13건 상세, 점검 패널, 로딩/오류 */
+.detail{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.scol{border:1px solid var(--line);border-radius:6px;display:grid;align-content:start;min-width:0}
+.scol header{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line)}
+.scol header b{font-family:var(--f-mono);font-size:1.5rem;line-height:1}
+.scol.k-ok header{background:var(--ok-bg);color:var(--ok)} .scol.k-part header{background:var(--part-bg);color:var(--part)}
+.scol.k-no header{background:var(--no-bg);color:var(--no)} .scol.k-alt header{background:var(--alt-bg);color:var(--alt)}
+.scol ol{list-style:none;margin:0;padding:6px 12px 10px;display:grid;gap:8px}
+.scol li{display:grid;gap:1px;font-size:.8rem}
+.scol li .t{display:flex;gap:6px;align-items:baseline;justify-content:space-between}
+.scol li .t span:first-child{font-weight:600}
+.scol li .m{color:var(--muted);font-size:.74rem}
+.scol .empty{color:var(--muted);font-size:.8rem;padding:10px 12px}
+.fill{display:grid;gap:5px}
+.frow{display:grid;grid-template-columns:minmax(150px,220px) 1fr 64px;gap:10px;align-items:center;font-size:.78rem}
+.frow .track{height:9px;background:var(--bg);border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.frow .track i{display:block;height:100%}
+.frow .n{font-family:var(--f-mono);text-align:right;font-variant-numeric:tabular-nums}
+@media (max-width:560px){.frow{grid-template-columns:1fr 56px}.frow .track{grid-column:1/-1;order:3}}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.fact{border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-size:.8rem;display:grid;gap:4px;min-width:0;align-content:start}
+.fact h3{margin:0;font-size:.82rem}
+.fact ul{margin:0;padding-left:1.1em;display:grid;gap:2px}
+.checks{display:grid;gap:4px;font-size:.8rem}
+.ck{display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:8px;align-items:baseline;border-bottom:1px dotted var(--line);padding:3px 0}
+.ck .mark{font-weight:700}
+.ck.pass .mark{color:var(--ok)} .ck.fail .mark{color:var(--no)} .ck.fail{background:var(--no-bg)}
+.ck .x{font-family:var(--f-mono);font-size:.72rem;color:var(--muted);text-align:right}
+.loading,.err{padding:24px;border:1px dashed var(--line);border-radius:6px;color:var(--muted)}
+.err{color:var(--no);border-color:var(--no);background:var(--no-bg)}
+.hist{margin:0;padding-left:1.1em}
+/* v3: 사회적 비용 나무 */
+.tree-scroll{overflow-x:auto;padding-bottom:6px}
+.tree{width:max-content;min-width:100%}
+.tree ul{list-style:none;margin:0;padding:0 0 0 24px;position:relative;display:flex;flex-direction:column;justify-content:center}
+.tree ul::before{content:"";position:absolute;left:0;top:50%;width:12px;border-top:1.5px solid var(--line)}
+.tree li{display:flex;align-items:center;position:relative;padding:4px 0 4px 12px}
+.tree li::before{content:"";position:absolute;left:0;top:0;bottom:0;border-left:1.5px solid var(--line)}
+.tree li::after{content:"";position:absolute;left:0;top:50%;width:12px;border-top:1.5px solid var(--line)}
+.tree li:first-child::before{top:50%}
+.tree li:last-child::before{bottom:50%}
+.tree li:only-child::before{display:none}
+.tree>ul{padding-left:0}
+.tree>ul::before{display:none}
+.tree>ul>li{padding-left:0}
+.tree>ul>li::before,.tree>ul>li::after{display:none}
+.nd{border:1.5px solid var(--line);border-radius:6px;padding:7px 10px;background:var(--panel);display:grid;gap:3px;justify-items:start;text-align:left;width:178px;font-size:.76rem;line-height:1.35;flex:none}
+.nd b{font-size:.8rem}
+.nd .s{color:var(--muted);font-size:.7rem}
+.nd .vv{font-family:var(--f-mono);font-size:.72rem;font-weight:600}
+.nd.l0{background:var(--navy);border-color:var(--navy);color:var(--bg);width:196px}
+.nd.l0 .s{color:var(--bg);opacity:.85}
+.nd.l1{background:var(--pg);border-color:var(--pg);color:var(--panel)}
+.nd.l1 .s{color:var(--panel);opacity:.85}
+.nd.l2{background:var(--pg-bg);border-color:var(--pg)}
+.nd.new{border-color:var(--new);border-width:2px;color:var(--new)}
+.nd.new .s{color:var(--new)}
+.nd .newtag{font-size:.64rem;font-weight:700;color:var(--new);letter-spacing:.04em}
+.nd.miss{border-style:dashed}
+.nd.l3{width:160px}
+.tree li li li li .nd{width:196px}
+.treefoot{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.78rem;color:var(--muted);align-items:center}
+a{color:var(--navy)}
+.stat b{font-size:clamp(1.02rem,3.6vw,1.35rem);overflow-wrap:anywhere}
+@media (max-width:560px){.summary{grid-template-columns:1fr 1fr}.summary .stat:first-child{grid-column:1/-1}}
+</style>
+
+<div class="wrap" id="app">
+  <div class="loading">진행판을 불러오는 중입니다.</div>
+</div>
+
+<script>
+(function(){
+'use strict';
+/* ────────────────────────────────────────────────────────────────
+   화면 파일(렌더러). 내용은 모두 data.json에서 읽습니다.
+   이 파일은 수치·문구를 담지 않으므로 갱신할 때 고치지 않습니다.
+   ──────────────────────────────────────────────────────────────── */
+const STATUS = { // 허용 상태값 → 표지 색과 화면 표기
+  '완료':['s-ok','완료'], '부분':['s-part','부분'], '미회신':['s-no','미회신'], '문헌대체':['s-alt','문헌 대체'], '추가':['s-ok','추가 반영'],
+  '반영':['s-ok','반영'], '가정':['s-part','가정'], '미반영':['s-no','미반영']
+};
+const COUNT_ORDER = ['완료','부분','미회신','문헌대체'];
+const KIND = {'완료':'k-ok','부분':'k-part','미회신':'k-no','문헌대체':'k-alt'};
+const BAR = {'완료':'var(--ok)','부분':'var(--part)','미회신':'var(--no)','문헌대체':'var(--alt)'};
+const CC = {IN:'c-in',PG:'c-pg',TX:'c-tx',CU:'c-cu',OC:'c-oc',MT:'c-mt'};
+const app = document.getElementById('app');
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const unresolved = new Set();
+let V = {};
+
+function fmt(x, t){
+  if (x === null || x === undefined || Number.isNaN(x)) return '—';
+  const c = (n,d=0) => Number(n).toLocaleString('ko-KR',{minimumFractionDigits:d,maximumFractionDigits:d}).replace('-','−');
+  switch(t){
+    case 'man': return c(Math.round(x/1e4))+'만';
+    case 'man1': return c(x/1e4,1)+'만';
+    case 'won': return c(Math.round(x))+'원';
+    case 'won0': return c(Math.round(x))+'원';
+    case 'int': return c(Math.round(x));
+    case 'pct': return c(x*100,1)+'%';
+    case 'pct0': return c(x*100,0)+'%';
+    case 'x2': return c(x,2);
+    case 'x3': return c(x,3);
+    case 'eok': { const e = x/1e8; return c(e, e>=100?1:2)+'억'; }
+    case 'sign': return (x<0?'−':'')+c(Math.abs(Math.round(x)))+'원';
+    default: return String(x);
+  }
+}
+const val = k => { if(!(k in V)){unresolved.add(k); return NaN;} return V[k]; };
+const T = s => esc(s).replace(/\{(\w+)\|(\w+)\}/g, (m,k,t) => { if(!(k in V)){unresolved.add(k); return '⟨'+k+'?⟩';} return fmt(V[k], t); });
+const pill = (st, text) => { const s = STATUS[st] || ['s-no', st+'?']; return `<span class="pill ${s[0]}">${esc(text || s[1])}</span>`; };
+const F = (k,t) => fmt(val(k), t);
+
+function render(d){
+  V = {}; for (const [k,o] of Object.entries(d.values)) V[k] = o.value;
+  const M = d.meta, R = d.requests, counted = R.filter(r => r.counted);
+  const byId = Object.fromEntries(R.map(r => [r.id, r]));
+  const cnt = Object.fromEntries(COUNT_ORDER.map(s => [s, counted.filter(r => r.status === s).length]));
+  const core = counted.filter(r => r.core);
+  const doing = R.filter(r => r.doing);
+  const asked = counted.reduce((a,r)=>a+(r.asked||0),0), got = counted.reduce((a,r)=>a+(r.got||0),0);
+  const owners = {};
+  counted.forEach(r => { const o = owners[r.owner] ||= {n:0, open:0}; o.n++; if (r.status !== '완료') o.open++; });
+
+  let h = '';
+  // 머리
+  h += `<header style="display:grid;gap:6px"><div class="eyebrow">${esc(M.eyebrow)} · ${esc(M.asof)} 취합 기준 · ${esc(M.version)}</div>
+    <h1>${esc(M.title)}</h1><p class="sub">${esc(M.intro)}</p></header>`;
+
+  // 요약 띠
+  h += `<div class="summary">
+    <div class="stat"><span>자료요청 ${counted.length}건</span><b class="num">${COUNT_ORDER.map(s=>cnt[s]).join(' · ')}</b><span>완료 · 부분 · 미회신 · 문헌 대체 (<a href="#detail">상세</a>)</span>
+      <div class="bar" aria-label="${COUNT_ORDER.map(s=>STATUS[s][1]+' '+cnt[s]).join(', ')}">${COUNT_ORDER.map(s=>`<i style="flex:${cnt[s]};background:${BAR[s]}"></i>`).join('')}</div></div>
+    <div class="stat"><span>ΔC 이수자 1인당 증분비용</span><b>${F('dc','man')} 원</b><span>치료개입·사후관리 0 처리 → 하한</span></div>
+    <div class="stat"><span>r0 → r1 (재복역률)</span><b>${F('r0','pct')} → ${F('r1','pct')}</b><span>Δr ${F('dr','pct')} · 문헌 대체값</span></div>
+    <div class="stat"><span>SCᵣ 재범 1건당 (형사사법분만)</span><b>${F('scr','man')} 원</b><span>의료·생산성·사회혼란 미반영</span></div>
+    <div class="stat key"><span>부분 B/C · 손익분기 Δr*</span><b>${F('bc','x2')} · ${F('drstar','pct')}</b><span>SCᵣ이 ${F('scrstar','man')} 원을 넘으면 B/C ≥ 1</span></div>
+  </div>`;
+
+  // 13건 상세
+  h += `<section id="detail" aria-labelledby="dh"><div class="sechead"><div><h2 id="dh">자료요청 ${counted.length}건 상세</h2>
+    <p>상태별 항목, 요청 항목 대비 회신 항목, 핵심 3건과 부서별 미결을 함께 봅니다. 추가로 받은 자료(${R.length-counted.length}건)는 집계에서 뺐습니다.</p></div></div>
+    <div class="detail">${COUNT_ORDER.map(s => {
+      const items = counted.filter(r => r.status === s);
+      return `<div class="scol ${KIND[s]}"><header><span>${esc(STATUS[s][1])}</span><b>${items.length}</b></header>${items.length ? `<ol>${items.map(r =>
+        `<li><div class="t"><span>${esc(r.id)}. ${esc(r.name)}${r.core?' ◆':''}</span>${pill(r.status, r.pill)}</div>
+         <div class="m">${esc(r.status==='완료' ? r.received : (r.missing ? '빠진 것: '+r.missing : r.received))}</div></li>`).join('')}</ol>` : '<div class="empty">해당 없음</div>'}</div>`;
+    }).join('')}</div>
+    <div class="facts">
+      <div class="fact"><h3>핵심 ${core.length}건 (없으면 분석 불성립)</h3><ul>${core.map(r=>`<li>${esc(r.id)}. ${esc(r.name)} ${pill(r.status, r.pill)}</li>`).join('')}</ul></div>
+      <div class="fact"><h3>부서별 미결 / 요청</h3><ul>${Object.entries(owners).map(([o,x])=>`<li>${esc(o)}: <span class="num">${x.open}/${x.n}</span></li>`).join('')}</ul></div>
+      <div class="fact"><h3>진행 중 ${doing.length}건</h3><ul>${doing.slice(0,5).map(r=>`<li>${esc(r.id)}. ${esc(r.doing)}</li>`).join('')}${doing.length>5?`<li class="muted">외 ${doing.length-5}건은 아래 표 비고</li>`:''}</ul></div>
+    </div>
+    <div><div class="sechead" style="margin-bottom:6px"><p>요청 항목 대비 회신 항목 · 전체 <span class="num">${got}/${asked}</span> (${fmt(asked?got/asked:0,'pct0')})</p></div>
+    <div class="fill">${counted.filter(r=>r.asked>0).map(r=>{const p=r.got/r.asked;return `<div class="frow"><span>${esc(r.id)}. ${esc(r.name)}${r.core?' ◆':''}</span><div class="track"><i style="width:${(p*100).toFixed(1)}%;background:${BAR[r.status]||'var(--muted)'}"></i></div><span class="n">${r.got}/${r.asked}</span></div>`;}).join('')}</div></div>
+  </section>`;
+
+  // 사회적 비용 나무 (v3)
+  if (d.sc_tree) {
+    const st = d.sc_tree, leaves = [];
+    const roll = n => { if (!n.children || !n.children.length) { leaves.push(n); return n.status; }
+      const ss = n.children.map(roll); n._status = ss.every(x=>x==='반영') ? '반영' : (ss.some(x=>x==='반영'||x==='부분'||x==='가정'||x==='문헌대체') ? '부분' : '미반영'); return n._status; };
+    roll(st.root);
+    const lc = {}; leaves.forEach(n => lc[n.status] = (lc[n.status]||0)+1);
+    const node = (n, lv) => { const stt = n.status || n._status; const isLeaf = !n.children || !n.children.length;
+      return `<li><div class="nd l${Math.min(lv,3)}${n.new?' new':''}${isLeaf&&stt==='미반영'?' miss':''}">${n.new?'<span class="newtag">신설</span>':''}<b>${esc(n.label)}</b>${n.sub?`<span class="s">${T(n.sub)}</span>`:''}${n.value?`<span class="vv">${T(n.value)}</span>`:''}${lv>0?pill(stt, n.pill):''}</div>${isLeaf?'':`<ul>${n.children.map(c=>node(c,lv+1)).join('')}</ul>`}</li>`; };
+    h += `<section aria-labelledby="sch"><div class="sechead"><div><h2 id="sch">${esc(st.title)}</h2><p>${T(st.lead)}</p></div>
+      <div class="legend">${['반영','부분','미반영'].map(x=>pill(x, x+' '+(lc[x]||0))).join('')}<span>말단 ${leaves.length}개</span></div></div>
+      <div class="tree-scroll"><div class="tree"><ul>${node(st.root,0)}</ul></div></div>
+      <div class="treefoot"><span class="nd new" style="max-width:none;width:auto;display:inline-block;padding:2px 8px">신설</span><span>${T(st.new_note)}</span></div>
+      <p class="muted" style="margin:0;font-size:.78rem">${T(st.footnote)}</p></section>`;
+  }
+
+  // 흐름도
+  const U = Object.fromEntries(d.units.map(u => [u.id, u]));
+  h += `<section aria-labelledby="flowh"><div class="sechead"><div><h2 id="flowh">비용 구성 흐름도</h2><p>요청 자료 → 원가중심점(비용풀·분모) → 원단위 → 최종 산식. 각 칸의 표지는 현재 반영 상태입니다.</p></div>
+    <div class="legend">${pill('반영')}${pill('가정','부분·가정')}${pill('미반영')}${pill('문헌대체')}<span>◆ 핵심 3건</span></div></div>
+    <div class="flow-scroll"><div class="flow"><div class="colh">① 요청 자료</div><div></div><div class="colh">② 원가중심점</div><div></div><div class="colh">③ 원단위 (2025)</div><div></div><div class="colh">④ 산식 반영</div>
+    ${d.flow.map((f,i) => `
+      <div class="reqs">${f.reqs.map(id => { const r = byId[id]; if(!r){unresolved.add('request:'+id); return '';} return `<div class="req${r.core?' core':''}">${esc(r.id==='별도'?'별도':r.id+'.')} ${esc(r.name)}${r.core?' ◆':''} ${pill(r.status, r.pill)}</div>`;}).join('')}</div>
+      <div class="arrow">→</div>
+      <div class="cc ${CC[f.cc]||''}"><strong>${esc(f.name)}</strong><small>${esc(f.code)}</small>${f.memo?`<span class="muted" style="font-size:.74rem">${T(f.memo)}</span>`:''}</div>
+      <div class="arrow">→</div>
+      <div class="ucs">${f.units.map(id => { const u = U[id]; if(!u){unresolved.add('unit:'+id); return '';}
+        return `<div class="uc${u.status==='미반영'?' miss':''}"><div class="top"><span class="id">${esc(u.id)}</span>${pill(u.status, u.pill)}</div>${u.main?`<div class="v">${T(u.main)}${u.sub?` <span class="muted">${T(u.sub)}</span>`:''}</div>`:''}<div class="d">${T(u.desc)}</div></div>`;}).join('')}</div>
+      <div class="arrow">${f.term.value?'→':''}</div>
+      <div class="term"><span>${esc(f.term.label)}</span>${f.term.value?`<b>${T(f.term.value)}</b>`:''}<span class="muted">${T(f.term.memo)}</span></div>
+      ${i < d.flow.length-1 ? '<div class="rowgap"></div>' : ''}`).join('')}
+    </div></div></section>`;
+
+  // 산식
+  const st10 = V.uc10 ? '반영':'미반영', st12 = V.uc12 ? '반영':'미반영';
+  h += `<section aria-labelledby="eqh"><div class="sechead"><div><h2 id="eqh">최종 산식과 현재 값</h2><p>이수자 1인당 · 2025년 원가 · 사회적 할인율 ${F('rate','pct')} · 분석기간 5년</p></div></div>
+    <div class="eq">
+      <div class="eqbox"><h3>ΔC 1인당 증분비용</h3><div class="eqline">UC-06 + UC-10 + UC-12 + ΔM×UC-02</div><div class="terms">
+        <div><span>UC-06 프로그램</span><span>${F('uc06avg','int')}</span></div>
+        <div><span>UC-10 치료개입 ${pill(st10, V.uc10?null:'미산출')}</span><span>${F('uc10','int')}</span></div>
+        <div><span>UC-12 사후관리 ${pill(st12, V.uc12?null:'미산출')}</span><span>${F('uc12','int')}</span></div>
+        <div><span>ΔM×UC-02 ${pill('가정')}</span><span>${fmt(val('dm')*val('uc02'),'int')}</span></div>
+        <div><strong>합계${(V.uc10&&V.uc12)?'':'(하한)'}</strong><strong class="num">${F('dc','won')}</strong></div></div></div>
+      <div class="eqbox"><h3>B 1인당 편익(현재가치)</h3><div class="eqline">r0 × Δr × SCᵣ × D</div><div class="terms">
+        <div><span>r0 × Δr (회피 재범 확률)</span><span>${fmt(val('avoid')*100,'x2')}%p</span></div>
+        <div><span>SCᵣ 재수용비(${F('sent','x2')}년×${F('served','pct0')}×UC-01)</span><span>${F('reinc','int')}</span></div>
+        <div><span>SCᵣ 검찰 단계 1인당</span><span>${F('prospc','int')}</span></div>
+        <div><span>D 할인계수</span><span>${F('D','x3')}</span></div>
+        <div><strong>합계(하한)</strong><strong class="num">${F('B','won')}</strong></div></div></div>
+      <div class="eqbox final"><h3>판정</h3><div class="big">B/C ${F('bc','x2')}</div><div class="terms">
+        <div><span>NPV(1인당)</span><span>${F('npv','sign')}</span></div>
+        <div><span>ROI</span><span>${F('roi','pct0')}</span></div>
+        <div><span>손익분기 Δr*</span><span>${F('drstar','pct')}</span></div>
+        <div><span>손익분기 SCᵣ*</span><span>${F('scrstar','man')} 원/건</span></div>
+        <div><span>${esc(M.asof.slice(0,4)-1)} 이수자 전체 ΔC · B</span><span>${F('totc','eok')} · ${F('totb','eok')}</span></div></div>
+        <span class="muted" style="font-size:.78rem">SCᵣ에 형사사법 비용만 들어간 하한값. 3장의 의료·생산성·사회혼란 원단위가 더해지면 올라갑니다.</span></div>
+    </div></section>`;
+
+  // 진행표
+  h += `<section aria-labelledby="tblh"><div class="sechead"><div><h2 id="tblh">요청 자료별 반영 현황</h2><p>비고의 "진행 중"은 아직 끝나지 않은 확인·재요청 사항입니다.</p></div></div>
+    <div class="tscroll"><table><thead><tr><th>번호</th><th>요청 자료</th><th>상태</th><th>회신</th><th>반영분</th><th>모델 반영</th><th>비고</th></tr></thead><tbody>
+    ${R.map(r => `<tr class="${r.core?'core':''}"><td class="n">${esc(r.id)}</td><td>${esc(r.name)}${r.core?' ◆':''}<div class="muted" style="font-size:.72rem">${esc(r.form)} · ${esc(r.owner)}</div></td>
+      <td>${pill(r.status)}</td><td class="n">${r.asked?`${r.got}/${r.asked}`:'—'}<div class="muted" style="font-size:.72rem">${esc(r.replied||'미회신')}</div></td>
+      <td>${esc(r.received||'—')}${r.missing?`<div class="muted" style="font-size:.74rem">빠진 것: ${esc(r.missing)}</div>`:''}</td><td>${esc(r.model)}</td>
+      <td>${esc(r.note)}${r.doing?`<span class="doing">${esc(r.doing)}</span>`:''}</td></tr>`).join('')}
+    </tbody></table></div></section>`;
+
+  // 민감도
+  const pts = [1,2,3,4].map(i => ({dr: val('sens'+i+'_dr'), bc: val('sens'+i+'_bc'), cur: i===2}));
+  const xMax = Math.max(0.45, Math.ceil(Math.max(...pts.map(p=>p.dr))*1.1*20)/20), yMax = Math.max(2, Math.ceil(Math.max(...pts.map(p=>p.bc))*2)/2);
+  const X = v => 60 + v/xMax*440, Y = v => 190 - v/yMax*170;
+  const yt = []; for (let t=0; t<=yMax+1e-9; t+=0.5) yt.push(t);
+  const xt = []; for (let t=0; t<=xMax+1e-9; t+=0.1) xt.push(t);
+  const top = pts.reduce((a,p)=>p.dr>a.dr?p:a);
+  const ds = val('drstar');
+  h += `<section aria-labelledby="sensh"><div class="sechead"><div><h2 id="sensh">재범감소폭(Δr)별 B/C</h2><p>SCᵣ은 형사사법분(${F('scr','man')} 원)으로 고정. 다른 가정은 위와 같습니다.</p></div></div>
+    <div class="sens"><svg viewBox="0 0 520 230" role="img" aria-label="${pts.map(p=>`Δr ${fmt(p.dr,'pct')}일 때 ${fmt(p.bc,'x2')}`).join(', ')}" style="width:100%;height:auto">
+      <g stroke="var(--line)" stroke-width="1">${yt.map(t=>`<line x1="60" y1="${Y(t)}" x2="500" y2="${Y(t)}"/>`).join('')}</g>
+      <line x1="60" y1="${Y(1)}" x2="500" y2="${Y(1)}" stroke="var(--no)" stroke-width="1.5" stroke-dasharray="5 4"/>
+      <text x="496" y="${Y(1)-6}" text-anchor="end" style="fill:var(--no)">B/C = 1</text>
+      ${yt.map(t=>`<text x="52" y="${Y(t)+4}" text-anchor="end" class="mut">${t===0?'0':t.toFixed(1)}</text>`).join('')}
+      ${xt.map(t=>`<text x="${X(t)}" y="208" text-anchor="middle" class="mut">${Math.round(t*100)}%</text>`).join('')}
+      <text x="280" y="226" text-anchor="middle" class="mut">Δr (상대 감소율)</text>
+      <line x1="${X(0)}" y1="${Y(0)}" x2="${X(top.dr)}" y2="${Y(top.bc)}" stroke="var(--navy)" stroke-width="2.5"/>
+      ${ds>0 && ds<xMax ? `<line x1="${X(ds)}" y1="190" x2="${X(ds)}" y2="${Y(1)}" stroke="var(--muted)" stroke-dasharray="2 3"/><text x="${X(ds)+4}" y="182" class="mut">Δr* ${fmt(ds,'pct')}</text>` : ''}
+      ${pts.map(p => p.cur
+        ? `<circle cx="${X(p.dr)}" cy="${Y(p.bc)}" r="6" fill="var(--oc)" stroke="var(--panel)" stroke-width="2"/><text x="${X(p.dr)-12}" y="${Y(p.bc)+15}" text-anchor="end">현재 ${fmt(p.bc,'x2')}</text>`
+        : `<circle cx="${X(p.dr)}" cy="${Y(p.bc)}" r="5" fill="var(--panel)" stroke="var(--navy)" stroke-width="2"/><text x="${p===top?X(p.dr)-11:X(p.dr)}" y="${p===top?Y(p.bc)-6:Y(p.bc)-11}" text-anchor="${p===top?'end':'middle'}">${fmt(p.bc,'x2')}</text>`).join('')}
+    </svg><ul class="notes">${d.sensitivity_notes.map(n=>`<li>${T(n)}</li>`).join('')}</ul></div></section>`;
+
+  // 자료 검토
+  h += `<section aria-labelledby="doch"><div class="sechead"><div><h2 id="doch">긴 자료의 반영 범위</h2><p>전체를 옮기지 않고 아래 부분만 씁니다.</p></div></div>
+    <div class="docs">${d.docs.map(x=>`<div class="doc"><h3>${esc(x.title)}</h3><p>${T(x.lead)}</p><ul>${x.items.map(i=>`<li>${T(i)}</li>`).join('')}</ul></div>`).join('')}</div></section>`;
+
+  // 자동 점검
+  const checks = runChecks(d, counted);
+  const fails = checks.filter(c => !c.ok).length;
+  h += `<section aria-labelledby="ckh"><div class="sechead"><div><h2 id="ckh">입력값 자동 점검</h2><p>data.json의 값이 서로 맞는지 화면이 다시 계산해 봅니다. 허용 오차 0.1%.</p></div>
+    <span class="pill ${fails?'s-no':'s-ok'}">${fails?`${fails}건 불일치`:`${checks.length}건 모두 통과`}</span></div>
+    <div class="checks">${checks.map(c=>`<div class="ck ${c.ok?'pass':'fail'}"><span class="mark">${c.ok?'✓':'✕'}</span><span>${esc(c.name)}</span><span class="x">${esc(c.detail)}</span></div>`).join('')}</div></section>`;
+
+  h += `<footer><p style="margin:0 0 6px">출처: ${esc(M.sources)} 계산 원본은 「${esc(M.workbook)}」 원단위계산 시트입니다. 갱신 방법은 <a href="guide.html">입력 가이드</a>를 보십시오.</p>
+    <ul class="hist">${M.history.map(x=>`<li>${esc(x.version)} (${esc(x.date)}): ${esc(x.change)}</li>`).join('')}</ul></footer>`;
+  app.innerHTML = h;
+  document.title = M.title;
+}
+
+function runChecks(d, counted){
+  const out = [], rel = (a,b) => Math.abs(a-b) <= Math.max(1, Math.abs(b)*1e-3);
+  const eq = (name, got, exp, f='x3') => out.push({name, ok: Number.isFinite(got)&&Number.isFinite(exp)&&rel(got,exp), detail:`입력 ${fmt(got,f)} / 재계산 ${fmt(exp,f)}`});
+  const g = k => val(k);
+  const bad = d.requests.filter(r => !(r.status in STATUS) || ['반영','가정','미반영'].includes(r.status));
+  out.push({name:'요청 자료 상태값이 허용 목록 안에 있음', ok: !bad.length, detail: bad.length ? bad.map(r=>r.id+':'+r.status).join(', ') : `${d.requests.length}건`});
+  const sum = COUNT_ORDER.reduce((a,s)=>a+counted.filter(r=>r.status===s).length,0);
+  out.push({name:'집계 대상 건수 = 상태별 합계', ok: sum===counted.length, detail:`${sum} / ${counted.length}`});
+  const badGot = counted.filter(r => r.got > r.asked);
+  out.push({name:'회신 항목 수 ≤ 요청 항목 수', ok: !badGot.length, detail: badGot.map(r=>r.id).join(', ') || '이상 없음'});
+  const ids = new Set(d.units.map(u=>u.id)), rids = new Set(d.requests.map(r=>r.id));
+  const brk = d.flow.flatMap(f => [...f.reqs.filter(x=>!rids.has(x)), ...f.units.filter(x=>!ids.has(x))]);
+  out.push({name:'흐름도가 가리키는 요청·원단위가 모두 있음', ok: !brk.length, detail: brk.join(', ') || '이상 없음'});
+  eq('r0 = 미이수 재복역 ÷ 미이수 인원', g('r0'), g('e0')/g('n0'), 'pct');
+  eq('r1 = 이수 재복역 ÷ 이수 인원', g('r1'), g('e1')/g('n1'), 'pct');
+  eq('Δr = (r0 − r1) ÷ r0', g('dr'), (g('r0')-g('r1'))/g('r0'), 'pct');
+  eq('r0×Δr = r0 − r1', g('avoid'), g('r0')-g('r1'), 'pct');
+  eq('UC-07 = PG 비용풀 ÷ 이수 인시', g('uc07'), g('pgpool')/g('hours'), 'int');
+  eq('UC-06 평균 = PG 비용풀 ÷ 이수 인원', g('uc06avg'), g('pgpool')/g('comp'), 'int');
+  eq('ΔC = UC-06 + UC-10 + UC-12 + ΔM×UC-02', g('dc'), g('uc06avg')+g('uc10')+g('uc12')+g('dm')*g('uc02'), 'int');
+  const r = g('rate'), s3 = g('s3');
+  eq('D = Σ hₜ/(1+r)^t (1~3년 균등, 4~5년 균등)', g('D'), [1,2,3].reduce((a,t)=>a+s3/3/Math.pow(1+r,t),0)+[4,5].reduce((a,t)=>a+(1-s3)/2/Math.pow(1+r,t),0), 'x3');
+  eq('SCᵣ = 재수용비 + 검찰 단계 비용', g('scr'), g('reinc')+g('prospc'), 'int');
+  eq('재수용비 = 실형기간 × 복역비율 × UC-01', g('reinc'), g('sent')*g('served')*g('uc01y'), 'int');
+  eq('B = r0×Δr × SCᵣ × D', g('B'), g('avoid')*g('scr')*g('D'), 'int');
+  eq('B/C = B ÷ ΔC', g('bc'), g('B')/g('dc'), 'x3');
+  eq('NPV = B − ΔC', g('npv'), g('B')-g('dc'), 'int');
+  eq('ROI = (B − ΔC) ÷ ΔC', g('roi'), (g('B')-g('dc'))/g('dc'), 'pct');
+  eq('Δr* = ΔC ÷ (r0 × SCᵣ × D)', g('drstar'), g('dc')/(g('r0')*g('scr')*g('D')), 'pct');
+  eq('SCᵣ* = ΔC ÷ (r0×Δr × D)', g('scrstar'), g('dc')/(g('avoid')*g('D')), 'int');
+  eq('전체 증분비용 = ΔC × 이수 인원', g('totc'), g('dc')*g('comp'), 'eok');
+  [1,2,3,4].forEach(i => eq(`민감도 ${i}: B/C = r0×Δr×SCᵣ×D ÷ ΔC`, g('sens'+i+'_bc'), g('r0')*g('sens'+i+'_dr')*g('scr')*g('D')/g('dc'), 'x3'));
+  eq('민감도 기본값의 Δr = 현재 Δr', g('sens2_dr'), g('dr'), 'pct');
+  if (d.sc_tree) {
+    const bad=[]; const walk=n=>{ const leaf=!n.children||!n.children.length; if(leaf && !['반영','부분','미반영','가정','문헌대체'].includes(n.status)) bad.push(n.label+':'+n.status); (n.children||[]).forEach(walk); }; walk(d.sc_tree.root);
+    out.push({name:'사회적 비용 나무의 말단 상태값이 허용 목록 안에 있음', ok:!bad.length, detail: bad.join(', ')||'이상 없음'});
+    eq('N* = 검거 인원 × 암수율 λ', g('nstar'), g('arrest_drug')*g('lambda'), 'int');
+  }
+  out.push({name:'문구 속 {값} 자리표시가 모두 data.json values에 있음', ok: unresolved.size===0, detail: unresolved.size ? [...unresolved].join(', ') : '이상 없음'});
+  return out;
+}
+
+// 내용은 build_page.py가 아래 자리에 data.json 사본으로 넣습니다. 이 파일은 외부 파일을 불러오지 않습니다.
+const EMBEDDED = /*DATA-BEGIN*/{"_안내": "진행판 입력 파일입니다. 요청 13건의 상태·비고, 흐름도·나무 문구, 자료 검토, 판 정보를 여기서 고칩니다. 숫자는 data/workbook.xlsx에서 자동으로 계산되어 들어갑니다.", "meta": {"title": "교정 중독재활 비용편익 진행판", "eyebrow": "마약류범죄 사회적 비용 연구 · 교정 재활 비용편익", "asof": "2026-10-21", "version": "v3", "workbook": "교정본부_자료요청_취합본_2026-10-21.xlsx", "intro": "교정본부 자료요청 13건의 회신을 비용 모형에 반영한 현황입니다. 회신값으로 산출한 원단위, 아직 비어 있어 0이나 가정값으로 둔 항, 진행 중인 확인 사항을 한 화면에 모았습니다.", "sources": "교정본부 자료요청 회신(2026.9.7·9.29), 자료요청 2차 회신, 대검찰청 정보공개 회신(2026.10.7), 2025 마약류 범죄백서 3·4장, 김도균·나종민(2025) 형사정책연구 36(1), 인사혁신처 2026 봉급표.", "history": [{"version": "v1", "date": "2026-10-21", "change": "최초 작성. 수치를 화면에 직접 적은 고정형"}, {"version": "v2", "date": "2026-10-21", "change": "입력(data.json)과 화면(index.html) 분리, 13건 상세 현황·자동 점검 추가"}, {"version": "v2.1", "date": "2026-10-21", "change": "data.json 사본을 화면 파일에 내장(build_page.py). 화면이 비던 문제 수정"}, {"version": "v2.2", "date": "2026-10-21", "change": "외부 파일 불러오기를 완전히 없애고 데이터를 화면 스크립트 안에 내장"}, {"version": "v3", "date": "2026-10-21", "change": "화면 틀 변경: 사회적 비용(SC) 구성 나무 구역과 점검 2건 추가(sc_tree, arrest_drug·lambda·nstar)"}]}, "requests": [{"id": "1", "name": "교정 세출예산 집행내역", "form": "서식1", "owner": "교정본부 복지과", "core": false, "counted": true, "status": "부분", "pill": "8/10", "asked": 10, "got": 8, "replied": "2026-09-07", "cc": "IN", "received": "2025 집행액 8항목, 교도소 일반회계 총결산 1조 6,992억 원", "missing": "8번 교정시설 취득, 10번 교도작업특별회계", "model": "UC-01·UC-02", "note": "취득비가 빠져 UC-01은 하한", "doing": "두 항목 재요청, 총결산과 8항목 합의 차이(약 1,734억) 구성 문의"}, {"id": "2", "name": "수용인원 현황", "form": "서식2", "owner": "교정본부 보안과", "core": false, "counted": true, "status": "부분", "pill": "5/6", "asked": 6, "got": 5, "replied": "2026-09-07", "cc": "IN", "received": "1일 평균 63,680 · 정원 50,614 · 수용률 125.8% · 신입·출소 · 기관별 54개", "missing": "수용 연인원(연말 현원 64,626명이 대신 기재)", "model": "UC-01 분모", "note": "연인원은 1일 평균×365로 대체 가능", "doing": "연인원 정의 확인"}, {"id": "3", "name": "마약류사범 수용현황", "form": "서식3", "owner": "교정본부 보안과", "core": false, "counted": true, "status": "미회신", "pill": "0/9", "asked": 9, "got": 0, "replied": "2026-09-07", "cc": "IN", "received": "연말 현원 7,429명뿐(요청 항목 아님)", "missing": "1일 평균, 향정 구분, 연인원, 형기 분포, 신입·출소", "model": "미반영", "note": "사유: 공식 통계로 미집계", "doing": "교정통계연보 죄명별 표로 대체 검토"}, {"id": "4", "name": "재활교육 운영실적", "form": "서식4", "owner": "마약사범재활팀", "core": true, "counted": true, "status": "부분", "pill": "이수만", "asked": 4, "got": 1, "replied": "2026-09-07", "cc": "PG", "received": "2024~2026.7 과정별 이수 인원(전국 합계)", "missing": "기수, 개시, 중도탈락 인원·사유, 기관별 구분", "model": "UC-07·UC-06 분모", "note": "개시·탈락이 없어 1인당 원가는 과대 쪽", "doing": "중도탈락 인원 재요청"}, {"id": "5", "name": "재활 전담인력 현황", "form": "서식5", "owner": "마약사범재활팀", "core": false, "counted": true, "status": "완료", "pill": "4/4 기관", "asked": 4, "got": 4, "replied": "2026-09-07", "cc": "PG", "received": "4개 과 각 11명, 직급 구성, 투입비율 64.0·68.2%", "missing": "", "model": "PG-C-04·PG-D-02", "note": "2026 신설 조직을 2025 원가의 대리값으로 사용", "doing": ""}, {"id": "6", "name": "재활 예산 집행내역", "form": "서식6", "owner": "교정본부 복지과", "core": true, "counted": true, "status": "부분", "pill": "총액만", "asked": 8, "got": 0, "replied": "2026-09-07", "cc": "PG", "received": "재활 관련 예산 총액 5,999,392,000원", "missing": "비목별 8항목 전부(산출 불가)", "model": "PG 비용풀", "note": "비목 구분은 교정교화 사업 내에서만 가능", "doing": "예산/집행 구분, 중독재활수용동 설치비 포함 여부 확인"}, {"id": "7", "name": "의료·약물검사 실적", "form": "서식7", "owner": "교정본부 의료과", "core": false, "counted": true, "status": "부분", "pill": "4/13", "asked": 13, "got": 4, "replied": "2026-09-07", "cc": "TX", "received": "2021~25 의료비 총액·건보 예탁금, 진료 건수, 외부진료 인원", "missing": "세부 의료비, 의료 인건비, 정신과 약제비, 약물검사, 치료개입 대상 인원(미생산)", "model": "참고값만", "note": "금액이 \"원\"으로 표기됐으나 천원으로 추정", "doing": "의료과에 단위 확인(최우선)"}, {"id": "8", "name": "출소 및 재복역 현황", "form": "서식8", "owner": "마약사범재활팀", "core": false, "counted": true, "status": "미회신", "pill": "0/6", "asked": 6, "got": 0, "replied": "", "cc": "OC", "received": "", "missing": "출소연도별 3년 내 재복역, 경과기간별 재복역", "model": "hₜ 가정값 사용", "note": "2024·25 출소자는 3년 추적이 불가능한 요청이었음", "doing": "2019~2022 출소 코호트로 범위 수정해 재요청"}, {"id": "9", "name": "이수별 재복역 교차표", "form": "서식9", "owner": "마약사범재활팀", "core": true, "counted": true, "status": "문헌대체", "pill": "문헌", "asked": 4, "got": 0, "replied": "", "cc": "OC", "received": "김도균·나종민(2025) 931명 표본(이수 439/재복역 178, 미이수 492/재복역 247)", "missing": "현행 4단계 과정 기준, 과정유형별 결과", "model": "r0·Δr", "note": "구 과정(16~134시간) 대상", "doing": "현행 과정 기준 교차표 요청(논문 제1저자가 마약사범재활팀)"}, {"id": "10", "name": "이수·미이수 인적특성", "form": "서식10", "owner": "마약사범재활팀", "core": false, "counted": true, "status": "미회신", "pill": "0/6", "asked": 6, "got": 0, "replied": "", "cc": "OC", "received": "논문 전체 표본 기술통계만", "missing": "집단별 연령·형기·전과·징벌", "model": "미반영", "note": "집단 간 균형(SMD) 진단 불가", "doing": "서식 9와 함께 요청"}, {"id": "11", "name": "통계 산출기준 정의서", "form": "서식11", "owner": "각 소관과", "core": false, "counted": true, "status": "미회신", "pill": "0/6", "asked": 6, "got": 0, "replied": "", "cc": "MT", "received": "", "missing": "1일 평균·연인원·이수 인원·재복역률 정의", "model": "미반영", "note": "", "doing": "전화 확인으로 대체"}, {"id": "12", "name": "교정통계연보 표목록", "form": "서식12", "owner": "교정기획과", "core": false, "counted": true, "status": "미회신", "pill": "시트 없음", "asked": 1, "got": 0, "replied": "", "cc": "MT", "received": "", "missing": "표목록(서식 시트 자체가 파일에 없음)", "model": "미반영", "note": "", "doing": "교정통계연보 2025 직접 확보"}, {"id": "별도", "name": "치료보호·보호관찰", "form": "별도요청", "owner": "복지부·범죄예방정책국·치료처우과", "core": false, "counted": true, "status": "부분", "pill": "4/9", "asked": 9, "got": 4, "replied": "2026-09-29", "cc": "CU", "received": "보호관찰 대상 3,675→5,391명, 치료명령 234→332명, 국립법무병원 결산 85.1→123.6억, 2호 24~31명", "missing": "복지부 치료보호 예산·집행·인원·기관(4항목), 보호관찰 예산(산출 불가)", "model": "UC-12 미산출", "note": "치료보호 인원은 범죄백서 표 3-82로 대체 가능", "doing": "복지부 공문 재발송"}, {"id": "추가", "name": "대검찰청 정보공개", "form": "정보공개", "owner": "대검찰청", "core": false, "counted": false, "status": "추가", "pill": "반영", "asked": 0, "got": 0, "replied": "2026-10-07", "cc": "기타", "received": "검찰 결산 2024 1조 2,163억, 형사 검거인원 1,405,185명, 마약류 검거인원", "missing": "2025 전체 형사사건", "model": "SCᵣ 검찰 단계", "note": "", "doing": "같은 파일의 교정영역 질문지 회신 대기 여부 확인"}], "units": [{"id": "UC-01", "cc": "IN", "status": "반영", "main": "{uc01y|man}원/인·년", "sub": "(일 {uc01d|won})", "desc": "상한 {uc01by|man}원(일반회계 결산 총액 기준). 취득비·교특 미회신"}, {"id": "UC-02", "cc": "IN", "status": "가정", "main": "{uc02|won}/인·일", "sub": "", "desc": "급식+피복+일반수용비+공공요금×{utilshare|pct0}(가정)"}, {"id": "UC-07", "cc": "PG", "status": "반영", "main": "{uc07|won}/인시", "sub": "", "desc": "재활예산 {pgbud|eok} + 전담인력 직접투입 {pdir|eok} ÷ {hours|int}인시"}, {"id": "UC-06", "cc": "PG", "status": "가정", "pill": "분모=이수", "main": "평균 {uc06avg|man}원", "sub": "", "desc": "기본 {uc06_basic|man} · 집중 {uc06_inten|man} · 심화 {uc06_adv|man} · 회복이음 {uc06_rec|man}원"}, {"id": "UC-10", "cc": "TX", "status": "미반영", "pill": "미산출", "main": "—", "sub": "", "desc": "참고: 전체 수용자 1인당 의료비 {medpc|man1}원(천원 단위 가정)"}, {"id": "UC-12", "cc": "CU", "status": "미반영", "pill": "미산출", "main": "—", "sub": "", "desc": "회신: 국립법무병원 결산 {nfh|eok}, 보호관찰 대상 {prob|int}명(예산 산출 불가)"}, {"id": "r0 · Δr", "cc": "OC", "status": "문헌대체", "main": "{r0|pct} · {dr|pct}", "sub": "", "desc": "이수 {n1|int}명 중 {e1|int}명, 미이수 {n0|int}명 중 {e0|int}명 재복역. Cox 위험비 0.805"}, {"id": "hₜ · D", "cc": "OC", "status": "가정", "main": "D = {D|x3}", "sub": "", "desc": "3년 내 비중 {s3|pct}, r = {rate|pct}, T = 5년"}, {"id": "분모 정의 검증", "cc": "MT", "status": "미반영", "pill": "미실시", "main": "", "sub": "", "desc": "연인원 자리에 연말 현원이 기재되는 등 정의 혼선 확인됨"}], "flow": [{"cc": "IN", "name": "투옥", "code": "IN-C · IN-N", "memo": "1일 평균 {pop|int}명", "reqs": ["1", "2", "3"], "units": ["UC-01", "UC-02"], "term": {"label": "ΔM × UC-02", "value": "{dm|won0}", "memo": "수용기간 차이 없음(가정). UC-01은 SCᵣ 재수용비로 사용"}}, {"cc": "PG", "name": "투입(프로그램)", "code": "PG-C · PG-N · PG-D", "memo": "비용풀 {pgpool|eok} · 이수 {comp|int}명", "reqs": ["4", "5", "6"], "units": ["UC-07", "UC-06"], "term": {"label": "UC-06", "value": "{uc06avg|man}원", "memo": "ΔC의 유일한 확정 항"}}, {"cc": "TX", "name": "치료", "code": "TX-C · TX-N", "memo": "의료비 총액만 회신", "reqs": ["7"], "units": ["UC-10"], "term": {"label": "UC-10", "value": "{uc10|won0}", "memo": "자료 확보 시 입력"}}, {"cc": "CU", "name": "감호·사후관리 ※", "code": "CU-C · CU-N", "memo": "교정본부 소관 아님", "reqs": ["별도"], "units": ["UC-12"], "term": {"label": "UC-12", "value": "{uc12|won0}", "memo": "빠지면 비용 과소·편익 과대"}}, {"cc": "OC", "name": "성과 모수", "code": "OC · Δr · r0 · hₜ", "memo": "김도균·나종민(2025) 931명", "reqs": ["8", "9", "10"], "units": ["r0 · Δr", "hₜ · D"], "term": {"label": "B = r0×Δr×SCᵣ×D", "value": "{B|man}원", "memo": "SCᵣ 형사사법분 {scr|man}원 기준"}}, {"cc": "MT", "name": "정합성 검증", "code": "MT · 인원정의 · 회계구분", "memo": "", "reqs": ["11", "12"], "units": ["분모 정의 검증"], "term": {"label": "모든 원단위", "value": "", "memo": "검증 전 잠정값"}}], "sc_tree": {"title": "마약류범죄 사회적 비용(SC) 구성", "lead": "보고서 3장의 추계 구조입니다. 말단 항목의 표지는 현재 산출 상태이고, 위 칸의 표지는 아래 칸에서 자동으로 모입니다. N* = {arrest_drug|int}명 × {lambda|x2} ≈ {nstar|int}명(2025).", "new_note": "본 연구에서 신설·확장하는 항목(불특정 다수 피해, 범죄 공포, 방어적 행동)", "footnote": "모든 항목은 「1인당 원단위 × 적용 인원(N*)」 구조로 산출해 원단위와 총량을 함께 제시합니다. 지금 산출된 형사사법 두 칸은 재범 1건당 비용 SCᵣ({scr|man}원, 형사사법분)에 쓰였습니다.", "root": {"label": "마약류범죄의 사회적 비용 (SC)", "sub": "SC = TC + PGS = (DC + IC) + PGS · 항목별 비용 = 1인당 원단위 × N*, N* = N검거 × λ", "children": [{"label": "유형비용 (TC)", "sub": "시장가치로 측정되는 손실", "children": [{"label": "직접비용 (DC)", "sub": "의료·복지 지출", "children": [{"label": "직접의료비", "status": "미반영", "sub": "진료비 × 원인 기여비율", "pill": "자료 미요청"}, {"label": "간접의료비", "status": "미반영", "sub": "직접의료비 × 38.1%"}, {"label": "의료보조비", "status": "미반영", "sub": "지급 대상자 × 1인당 보조비"}]}, {"label": "간접비용 (IC)", "sub": "기회비용·대응비용", "children": [{"label": "생산성 손실", "children": [{"label": "의료이용 생산손실", "status": "미반영", "sub": "손실일수 × 기여율 × 고용 × 임금"}, {"label": "조기사망비용 (PV)", "status": "미반영", "sub": "사망자 × 잔여 소득 현재가치"}]}, {"label": "형사사법 비용", "children": [{"label": "수사·기소·재판", "status": "부분", "sub": "검찰 단계만 확보", "value": "검찰 1인당 {prospc|man}원", "pill": "검찰만"}, {"label": "수용·보호관찰·치료감호", "status": "부분", "sub": "수용은 UC-01로 산출", "value": "수용 {uc01y|man}원/인·년", "pill": "수용만"}]}, {"label": "가족·지역사회 피해비용", "status": "미반영", "sub": "돌봄·구조 비용"}, {"label": "사회혼란 비용", "sub": "불특정 다수 피해·공포·방어행동", "children": [{"label": "불특정 다수 피해 (폭력)", "status": "미반영", "sub": "피해자 수 × KOTI 중상 원단위", "new": true}, {"label": "범죄 공포 (WTP 설문)", "status": "미반영", "sub": "성인인구 × 1인당 WTP", "pill": "설문 전", "new": true}, {"label": "방어적 행동 (Home Office)", "status": "미반영", "sub": "유형별 실행 인구 × 지출액", "new": true}], "new": true}]}]}, {"label": "무형비용 (PGS)", "sub": "고통·슬픔·괴로움의 화폐가치", "children": [{"label": "사망 PGS", "status": "미반영", "sub": "사망자 수 × 원단위"}, {"label": "중독 PGS", "status": "미반영", "sub": "중독자 수 × 원단위"}]}]}}, "sensitivity_notes": ["현재 값({dr|pct})은 손익분기({drstar|pct})보다 약간 낮습니다. SCᵣ에 형사사법 비용만 들어갔기 때문입니다.", "3장 추계에서 재범 1건당 사회적 비용이 {scrstar|man}원을 넘으면 현재 Δr로도 B/C가 1을 넘습니다.", "과정별로는 기본 {bc_basic|x2}, 집중 {bc_inten|x2}, 심화 {bc_adv|x2}, 회복이음 {bc_rec|x2}입니다. 장기 과정의 효과가 더 크다는 근거가 없어 같은 Δr을 적용한 결과이므로, 과정유형별 교차표(서식 9)가 오면 다시 계산합니다.", "UC-10·UC-12가 들어오면 ΔC가 커져 B/C는 내려갑니다."], "docs": [{"title": "보고서 초안 (10.18)", "lead": "4장 1~2절 현황·원가 서술 유지", "items": ["2장 4절 비용편익 산식을 인계 메모 산식으로 교체", "4장 표2 비목별 \"추정\" 금액 삭제", "\"6배 이상 절감\" 문장 삭제", "단약 편익 항 삭제", "김도균·나종민 인용 방법 정정(PSM 아님)", "재범률 35.3% → 백서 29.8%와 대조"]}, {"title": "2025 마약류 범죄백서 3장", "lead": "180쪽 중 표 3-1·21·26·55·65·69·82~90만", "items": ["실형 기간 분포 → 평균 {sent|x2}년(재수용비)", "치료보호 1,649명, 치료감호 7명 → 정책 제언", "재범률은 입건 기준이라 r0와 정의 다름"]}, {"title": "2025 마약류 범죄백서 4장", "lead": "86쪽 중 1절 UNODC 수치만", "items": ["약물사용장애 6,400만 명, 치료율 8.1% → 1장 배경", "국제협약·공조수사는 반영 안 함"]}, {"title": "김도균·나종민 (2025)", "lead": "서식 9·10의 임시 대체", "items": ["r0 {r0|pct}, r1 {r1|pct}, Cox 위험비 0.805", "2018 출소자 3년 내 재복역 36.3% → hₜ", "한계: 구 과정, 향정 한정, 추적 5~6.7년"]}], "values": {"pop": {"label": "1일 평균 수용인원(전국)", "unit": "명", "src": "원단위계산!C5", "value": 63680}, "total_gen": {"label": "교도소 일반회계 세출 결산", "unit": "원", "src": "원단위계산!C15", "value": 1699217000000}, "uc01y": {"label": "UC-01a 수용 1인·연 총원가", "unit": "원/인·년", "src": "원단위계산!C17", "value": 23784390.703518}, "uc01d": {"label": "UC-01a 수용 1인·1일 총원가", "unit": "원/인·일", "src": "원단위계산!C18", "value": 65162.714256}, "uc01by": {"label": "UC-01b 총원가 상한(결산 총액 기준)", "unit": "원/인·년", "src": "원단위계산!C19", "value": 26507364.949749}, "utilshare": {"label": "변동원가 공공요금 비율(가정)", "unit": "비율", "src": "원단위계산!C20", "value": 0.5}, "uc02": {"label": "UC-02 수용 1인·1일 변동원가", "unit": "원/인·일", "src": "원단위계산!C21", "value": 8614.820679}, "pgbud": {"label": "마약사범 재활 예산 총액", "unit": "원", "src": "원단위계산!C24", "value": 5999392000}, "ptot": {"label": "전담인력 연 인건비(44명)", "unit": "원", "src": "원단위계산!C36", "value": 2566500480}, "pdir": {"label": "전담인력 직접투입 인건비", "unit": "원", "src": "원단위계산!C37", "value": 1697756451.84}, "pgpool": {"label": "PG 비용풀", "unit": "원", "src": "원단위계산!C39", "value": 7697148451.84}, "comp": {"label": "2025 이수 인원 합계", "unit": "명", "src": "원단위계산!C46", "value": 1589}, "hours": {"label": "2025 이수 인시 합계", "unit": "인시", "src": "원단위계산!E46", "value": 89960}, "uc07": {"label": "UC-07 재활교육 1인시당 원가", "unit": "원/인시", "src": "원단위계산!C48", "value": 85561.899198}, "uc06avg": {"label": "UC-06 이수자 평균 1인당 원가", "unit": "원/인", "src": "원단위계산!C49", "value": 4844020.422807}, "uc06_basic": {"label": "UC-06 기본(40시간)", "unit": "원/인", "src": "원단위계산!F42", "value": 3422475.967915}, "uc06_inten": {"label": "UC-06 집중(80시간)", "unit": "원/인", "src": "원단위계산!F43", "value": 6844951.935829}, "uc06_adv": {"label": "UC-06 심화(120시간)", "unit": "원/인", "src": "원단위계산!F44", "value": 10267427.903744}, "uc06_rec": {"label": "UC-06 회복이음(160시간)", "unit": "원/인", "src": "원단위계산!F45", "value": 13689903.871659}, "bc_basic": {"label": "과정별 부분 B/C 기본", "unit": "배", "src": "원단위계산!I42", "value": 1.274161}, "bc_inten": {"label": "과정별 부분 B/C 집중", "unit": "배", "src": "원단위계산!I43", "value": 0.63708}, "bc_adv": {"label": "과정별 부분 B/C 심화", "unit": "배", "src": "원단위계산!I44", "value": 0.42472}, "bc_rec": {"label": "과정별 부분 B/C 회복이음", "unit": "배", "src": "원단위계산!I45", "value": 0.31854}, "medpc": {"label": "참고: 수용자 1인당 연 의료비", "unit": "원/인·년", "src": "원단위계산!C54", "value": 80017.430905}, "uc10": {"label": "UC-10 치료개입 원가(ΔC 반영값)", "unit": "원/인", "src": "원단위계산!C55", "value": 0}, "nfh": {"label": "국립법무병원 결산(2025)", "unit": "원", "src": "원단위계산!C56", "value": 12357000000}, "prob": {"label": "보호관찰 대상 마약류사범(2025)", "unit": "명", "src": "원단위계산!C57", "value": 5391}, "uc12": {"label": "UC-12 사후관리 원가(ΔC 반영값)", "unit": "원/인", "src": "원단위계산!C58", "value": 0}, "dm": {"label": "ΔM 수용기간 차이", "unit": "일", "src": "원단위계산!C59", "value": 0}, "n1": {"label": "이수 집단 인원", "unit": "명", "src": "원단위계산!C63", "value": 439}, "e1": {"label": "이수 집단 재복역", "unit": "명", "src": "원단위계산!C64", "value": 178}, "n0": {"label": "미이수 집단 인원", "unit": "명", "src": "원단위계산!C65", "value": 492}, "e0": {"label": "미이수 집단 재복역", "unit": "명", "src": "원단위계산!C66", "value": 247}, "r0": {"label": "r0 기저재범률", "unit": "비율", "src": "원단위계산!C67", "value": 0.502033}, "r1": {"label": "r1 이수 집단 재복역률", "unit": "비율", "src": "원단위계산!C68", "value": 0.405467}, "dr": {"label": "Δr 재범감소폭(상대)", "unit": "비율", "src": "원단위계산!C69", "value": 0.192349}, "avoid": {"label": "r0×Δr 회피 재범 확률", "unit": "비율", "src": "원단위계산!C70", "value": 0.096566}, "rate": {"label": "사회적 할인율", "unit": "비율", "src": "원단위계산!C73", "value": 0.045}, "s3": {"label": "3년 내 재복역 비중(가정)", "unit": "비율", "src": "원단위계산!C74", "value": 0.796053}, "D": {"label": "할인계수 D", "unit": "배", "src": "원단위계산!C80", "value": 0.89678}, "sent": {"label": "평균 실형 기간", "unit": "년", "src": "원단위계산!C88", "value": 2.448024}, "served": {"label": "실제 복역 비율(가정)", "unit": "비율", "src": "원단위계산!C89", "value": 0.85}, "reinc": {"label": "재수용 비용", "unit": "원/건", "src": "원단위계산!C90", "value": 49491054.658508}, "prospc": {"label": "검찰 단계 1인당 비용", "unit": "원/인", "src": "원단위계산!C93", "value": 865552.222661}, "scr": {"label": "SCᵣ 재범 1건당 비용(형사사법분)", "unit": "원/건", "src": "원단위계산!C94", "value": 50356606.881169}, "dc": {"label": "ΔC 1인당 증분비용", "unit": "원/인", "src": "원단위계산!C97", "value": 4844020.422807}, "B": {"label": "B 1인당 편익", "unit": "원/인", "src": "원단위계산!C98", "value": 4360785.040823}, "bc": {"label": "B/C", "unit": "배", "src": "원단위계산!C99", "value": 0.900241}, "npv": {"label": "NPV 1인당", "unit": "원/인", "src": "원단위계산!C100", "value": -483235.381984}, "roi": {"label": "ROI", "unit": "비율", "src": "원단위계산!C101", "value": -0.099759}, "drstar": {"label": "손익분기 Δr*", "unit": "비율", "src": "원단위계산!C102", "value": 0.213664}, "scrstar": {"label": "손익분기 SCᵣ*", "unit": "원/건", "src": "원단위계산!C103", "value": 55936816.392489}, "totc": {"label": "2025 이수자 전체 증분비용", "unit": "원", "src": "원단위계산!C104", "value": 7697148451.84}, "totb": {"label": "2025 이수자 전체 편익", "unit": "원", "src": "원단위계산!C105", "value": 6929287429.86797}, "sens1_dr": {"label": "민감도 보수 Δr", "unit": "비율", "src": "원단위계산!C108", "value": 0.1}, "sens1_bc": {"label": "민감도 보수 B/C", "unit": "배", "src": "원단위계산!F108", "value": 0.468024}, "sens2_dr": {"label": "민감도 기본 Δr", "unit": "비율", "src": "원단위계산!C109", "value": 0.192349}, "sens2_bc": {"label": "민감도 기본 B/C", "unit": "배", "src": "원단위계산!F109", "value": 0.900241}, "sens3_dr": {"label": "민감도 중간 Δr", "unit": "비율", "src": "원단위계산!C110", "value": 0.25}, "sens3_bc": {"label": "민감도 중간 B/C", "unit": "배", "src": "원단위계산!F110", "value": 1.170061}, "sens4_dr": {"label": "민감도 낙관 Δr", "unit": "비율", "src": "원단위계산!C111", "value": 0.4}, "sens4_bc": {"label": "민감도 낙관 B/C", "unit": "배", "src": "원단위계산!F111", "value": 1.872097}, "oc9": {"label": "서식9 회신값 사용 여부(1=서식9)", "unit": "", "src": "원단위계산!C62", "value": 0}, "arrest_drug": {"label": "마약류 단속 인원(최근 연도)", "unit": "명", "src": "수기(dashboard.json manual_values)", "value": 23403, "note": "2025 마약류 범죄백서 표 3-1"}, "lambda": {"label": "암수율 λ", "unit": "배", "src": "수기(dashboard.json manual_values)", "value": 28.57, "note": "박성수·백민석(2019)"}, "nstar": {"label": "N* 암수 보정 실제 사용자 수", "unit": "명", "src": "자동(arrest_drug × lambda)", "value": 668623.71}}}/*DATA-END*/;
+Promise.resolve().then(() => { if (!EMBEDDED) throw new Error('내장 데이터가 없습니다. build_page.py로 index.html을 다시 만드십시오.'); return EMBEDDED; })
+  .then(render)
+  .catch(e => { app.innerHTML = `<div class="err"><b>진행판을 그리지 못했습니다.</b><br>${esc(e.message)}</div>`; });
+})();
+</script>

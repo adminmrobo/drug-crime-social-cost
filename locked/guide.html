@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>진행판 입력 가이드</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: 한 줄 기둥의 업무 매뉴얼 — 파일 구분 → 갱신 순서 → 필드 사전 → 금지 사항 → v1 대조 결과 */
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#1b2333; --muted:#5d6678; --line:#d9dee7; --navy:#1f3864;
+  --ok:#1f7a4a; --ok-bg:#dff1e6; --part:#9a6200; --part-bg:#fdf0d5; --no:#b3261e; --no-bg:#fbe3e1; --alt:#2f5d95; --alt-bg:#e2ecf8; --code:#eef1f6;
+  --f-sans:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  color-scheme:light; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12161e; --panel:#1a202b; --ink:#e6e9ef; --muted:#9aa3b5; --line:#2e3646; --navy:#9db8e6;
+  --ok:#7fd3a3; --ok-bg:#183326; --part:#f0c26a; --part-bg:#33290f; --no:#f19a92; --no-bg:#3a1c1a; --alt:#8fb6e8; --alt-bg:#1b2738; --code:#232a37; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12161e; --panel:#1a202b; --ink:#e6e9ef; --muted:#9aa3b5; --line:#2e3646; --navy:#9db8e6;
+  --ok:#7fd3a3; --ok-bg:#183326; --part:#f0c26a; --part-bg:#33290f; --no:#f19a92; --no-bg:#3a1c1a; --alt:#8fb6e8; --alt-bg:#1b2738; --code:#232a37; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-sans);font-size:14px;line-height:1.65}
+.wrap{max-width:980px;margin:0 auto;padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:22px}
+h1{font-size:1.5rem;margin:0;text-wrap:balance}
+h2{font-size:1.08rem;margin:0;text-wrap:balance}
+h3{font-size:.92rem;margin:0}
+p{margin:0;max-width:72ch}
+.eyebrow{font-size:.72rem;letter-spacing:.08em;color:var(--muted);font-family:var(--f-mono)}
+section{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:20px;display:grid;gap:12px;min-width:0}
+code,kbd{font-family:var(--f-mono);font-size:.82em;background:var(--code);padding:1px 5px;border-radius:3px}
+pre{font-family:var(--f-mono);font-size:.78rem;background:var(--code);padding:12px 14px;border-radius:6px;overflow-x:auto;margin:0;line-height:1.5}
+.files{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
+.file{border:1px solid var(--line);border-radius:6px;padding:12px;display:grid;gap:4px;align-content:start}
+.file .tag{font-size:.7rem;font-weight:700;letter-spacing:.04em}
+.file.lock .tag{color:var(--no)} .file.edit .tag{color:var(--ok)} .file.tool .tag{color:var(--alt)}
+.file p{font-size:.8rem;color:var(--muted)}
+ol.steps{margin:0;padding-left:1.4em;display:grid;gap:8px}
+ol.steps li{max-width:75ch}
+.tscroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:.8rem}
+th,td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}
+th{font-size:.72rem;color:var(--muted);background:var(--bg);font-weight:600}
+td:first-child{font-family:var(--f-mono);white-space:nowrap}
+.pill{display:inline-block;font-size:.72rem;font-weight:600;padding:0 8px;border-radius:999px;white-space:nowrap}
+.s-ok{color:var(--ok);background:var(--ok-bg)} .s-part{color:var(--part);background:var(--part-bg)} .s-no{color:var(--no);background:var(--no-bg)} .s-alt{color:var(--alt);background:var(--alt-bg)}
+ul.rules{margin:0;padding-left:1.2em;display:grid;gap:6px}
+.verdict{border-left:3px solid var(--ok);padding:6px 12px;background:var(--ok-bg)}
+a{color:var(--navy)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header style="display:grid;gap:6px">
+    <div class="eyebrow">교정 중독재활 비용편익 진행판 · 입력 가이드 · v3 · 저장소 운영판 · 2026-10-21</div>
+    <h1>진행판 입력 가이드</h1>
+    <p>진행판은 잠긴 틀과 두 입력 파일(서식 엑셀, dashboard.json)로 나뉘어 있습니다. 회신이 오면 입력 파일만 고치고 push하면 계산과 대시보드가 자동으로 바뀝니다. 화면 파일을 손대지 않으므로 서식과 기존 내역이 바뀌지 않습니다. <a href="index.html">진행판으로 돌아가기</a></p>
+  </header>
+
+  <section>
+    <h2>저장소 구성</h2>
+    <p>GitHub 저장소에 올라가 있으며, push할 때마다 GitHub Actions가 계산과 대시보드 생성을 자동으로 합니다.</p>
+    <div class="files">
+      <div class="file edit"><span class="tag">입력 · 고침</span><h3>data/workbook.xlsx</h3><p>자료요청 서식 엑셀. 회신값은 빈칸·파란 글씨 칸에, 가정은 원단위계산의 노란 칸에만 넣습니다.</p></div>
+      <div class="file edit"><span class="tag">입력 · 고침</span><h3>data/dashboard.json</h3><p>요청 13건의 상태·비고·진행 중, 흐름도·비용 나무 문구, 자료 검토, 판 정보, 수기값(단속 인원·암수율).</p></div>
+      <div class="file lock"><span class="tag">잠금</span><h3>locked/ · config/ · pipeline/</h3><p>대시보드 틀, 이 가이드, 서식 고정 칸 목록, 값↔셀 연결표, 파이프라인. 해시가 기록돼 있어 바뀌면 자동 계산이 멈춥니다.</p></div>
+      <div class="file tool"><span class="tag">결과 · 자동 생성</span><h3>dist/</h3><p>index.html(대시보드), data.json, guide.html, workbook.xlsx(재계산용 산식 포함), report.md(갱신 보고). 손으로 고치지 않습니다.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>갱신 순서</h2>
+    <p>사람이 하는 일은 1~3번뿐입니다. 4번부터는 자동입니다.</p>
+    <ol class="steps">
+      <li><b>회신값을 엑셀에 넣기.</b> data/workbook.xlsx의 해당 서식 칸(빈칸 또는 파란 글씨 칸)에 입력합니다. 제목·항목명·KEY·산식 칸은 잠겨 있어 바꾸면 갱신이 멈춥니다.</li>
+      <li><b>상태 고치기.</b> data/dashboard.json의 requests에서 해당 건의 status, pill, got, received, missing, doing을 고치고, meta.asof와 meta.version을 올리고 meta.history에 한 줄을 더합니다.</li>
+      <li><b>push.</b> 두 파일을 커밋해 main에 올립니다. 검토를 받으려면 pull request로 올리면 점검만 돌고 결과는 저장하지 않습니다.</li>
+      <li><b>자동: 잠금 점검.</b> 잠금 파일 해시와 서식 고정 칸을 확인합니다. 어긋나면 어느 칸이 바뀌었는지 보여 주고 멈춥니다.</li>
+      <li><b>자동: 재계산.</b> 요청표 진행 상태와 「취합현황」 시트를 dashboard.json으로 다시 만들고, LibreOffice로 원단위계산을 재계산합니다.</li>
+      <li><b>자동: 점검과 생성.</b> 산식 관계 31건을 점검하고, 통과하면 dist/에 대시보드와 보고서를 씁니다. 바뀐 값과 고칠 문구(경고)는 Actions 실행 요약과 dist/report.md에 나옵니다.</li>
+      <li><b>대시보드 게시.</b> dist/index.html을 Claude 진행판 링크에 다시 올립니다(Claude에게 "dist 기준으로 진행판 갱신"이라고 요청).</li>
+    </ol>
+    <p>회신이 들어오면 자동으로 바뀌는 값: 서식9 2025 전체 이수·미이수 두 줄이 모두 채워지면 r0·r1·Δr이 논문값에서 회신값으로, 서식7 6번·12번이 채워지면 UC-10이, 별도요청 2번·3번이 채워지면 UC-12가 계산됩니다. 그 밖의 값은 연결된 서식 칸이 바뀌면 그대로 따라 바뀝니다.</p>
+  </section>
+  <section>
+    <h2>상태값 기준</h2>
+    <p>요청 자료의 <code>status</code>는 아래 다섯 가지만 씁니다. 새 상태를 만들면 점검 패널이 ✕를 표시합니다.</p>
+    <div class="tscroll"><table>
+      <thead><tr><th>값</th><th>화면</th><th>판정 기준</th><th>집계</th></tr></thead>
+      <tbody>
+        <tr><td>완료</td><td><span class="pill s-ok">완료</span></td><td>요청 항목을 전부 받았거나, 못 받은 항목이 모델에 쓰이지 않음</td><td>13건에 포함</td></tr>
+        <tr><td>부분</td><td><span class="pill s-part">부분</span></td><td>요청 항목 중 하나 이상을 받았고 빠진 항목이 있음. 총액만 온 경우도 부분</td><td>포함</td></tr>
+        <tr><td>미회신</td><td><span class="pill s-no">미회신</span></td><td>요청 항목을 하나도 받지 못함. 요청하지 않은 참고값만 와도 미회신</td><td>포함</td></tr>
+        <tr><td>문헌대체</td><td><span class="pill s-alt">문헌 대체</span></td><td>회신은 없지만 공개 문헌으로 임시값을 넣음. 회신이 오면 부분이나 완료로 바꿈</td><td>포함</td></tr>
+        <tr><td>추가</td><td><span class="pill s-ok">추가 반영</span></td><td>요청하지 않았으나 받아서 쓰는 자료. <code>counted</code>는 false</td><td>제외</td></tr>
+      </tbody></table></div>
+    <p>원단위(<code>units</code>)의 <code>status</code>는 별도로 <code>반영</code>·<code>가정</code>·<code>미반영</code>·<code>문헌대체</code> 네 가지를 씁니다.</p>
+  </section>
+
+  <section>
+    <h2>dashboard.json 필드 사전</h2>
+    <h3>requests · 요청 자료 한 건</h3>
+    <div class="tscroll"><table>
+      <thead><tr><th>필드</th><th>뜻</th><th>쓰는 법</th><th>예</th></tr></thead>
+      <tbody>
+        <tr><td>id</td><td>번호</td><td>바꾸지 않음. 흐름도가 이 값으로 연결됨</td><td>"4", "별도"</td></tr>
+        <tr><td>name · form · owner</td><td>자료명 · 서식 · 소관 부서</td><td>부서는 회신한 부서로</td><td>"마약사범재활팀"</td></tr>
+        <tr><td>core</td><td>핵심 3건 여부</td><td>true면 ◆ 표시</td><td>true</td></tr>
+        <tr><td>counted</td><td>13건 집계 포함</td><td>요청 외 자료만 false</td><td>true</td></tr>
+        <tr><td>status · pill</td><td>상태 · 표지 문구</td><td>pill은 짧게(6자 안팎). 비우면 상태명이 나옴</td><td>"부분", "이수만"</td></tr>
+        <tr><td>asked · got</td><td>요청 항목 수 · 회신 항목 수</td><td>서식의 요청 행(또는 열) 개수 기준. got ≤ asked</td><td>13, 4</td></tr>
+        <tr><td>replied</td><td>회신일</td><td>YYYY-MM-DD, 없으면 ""</td><td>"2026-09-07"</td></tr>
+        <tr><td>received · missing</td><td>받은 것 · 빠진 것</td><td>한 문장. 숫자는 회신 원문 그대로</td><td></td></tr>
+        <tr><td>model</td><td>모델 반영</td><td>어느 원단위에 들어갔는지</td><td>"UC-07·UC-06 분모"</td></tr>
+        <tr><td>note</td><td>비고(사실)</td><td>한계나 해석</td><td></td></tr>
+        <tr><td>doing</td><td>진행 중인 일</td><td>남은 확인·재요청. 끝나면 ""로 비움. 화면에 "진행 중 ·"이 붙음</td><td>"중도탈락 인원 재요청"</td></tr>
+      </tbody></table></div>
+
+    <h3>숫자 · values (자동)</h3>
+    <p>숫자는 dashboard.json에 쓰지 않습니다. 파이프라인이 config/values_map.json의 연결표대로 재계산된 엑셀 셀에서 읽어 dist/data.json의 values에 넣습니다. 엑셀 밖 숫자 두 개(최근 단속 인원 <code>arrest_drug</code>, 암수율 <code>lambda</code>)만 dashboard.json의 <code>manual_values</code>에 적고, N*는 둘의 곱으로 자동 계산됩니다.</p>
+
+    <h3>문구 속 숫자 자리표시</h3>
+    <p>흐름도, 원단위 설명, 민감도 메모, 자료 검토의 문구에는 숫자를 직접 쓰지 않고 <code>{키|형식}</code>으로 씁니다. 값이 바뀌면 문구도 같이 바뀝니다.</p>
+    <div class="tscroll"><table>
+      <thead><tr><th>형식</th><th>결과</th><th>예 (값)</th></tr></thead>
+      <tbody>
+        <tr><td>man</td><td>만 원 단위 반올림</td><td><code>{dc|man}</code> → 484만</td></tr>
+        <tr><td>man1</td><td>만 원, 소수 한 자리</td><td><code>{medpc|man1}</code> → 8.0만</td></tr>
+        <tr><td>won / int</td><td>원 / 정수</td><td><code>{uc02|won}</code> → 8,615원</td></tr>
+        <tr><td>eok</td><td>억 원(100억 미만 소수 둘째 자리)</td><td><code>{pgbud|eok}</code> → 59.99억</td></tr>
+        <tr><td>pct / pct0</td><td>백분율 소수 한 자리 / 정수</td><td><code>{dr|pct}</code> → 19.2%</td></tr>
+        <tr><td>x2 / x3</td><td>소수 둘째·셋째 자리</td><td><code>{D|x3}</code> → 0.897</td></tr>
+      </tbody></table></div>
+    <p>없는 키를 쓰면 화면에 ⟨키?⟩가 나오고 점검 패널이 ✕를 표시합니다.</p>
+
+    <h3>나머지 블록</h3>
+    <ul class="rules">
+      <li><code>meta</code>: 제목, 기준일(asof), 판(version), 계산 원본 파일명, 출처 문장, 변경 이력(history).</li>
+      <li><code>units</code>: 흐름도의 원단위 칸. id, 원가중심점(cc: IN·PG·TX·CU·OC·MT), status, pill, main(큰 숫자), desc(설명).</li>
+      <li><code>flow</code>: 흐름도의 행 순서. 각 행이 가리키는 요청 id와 원단위 id, ④열의 산식 항(term).</li>
+      <li><code>sensitivity_notes</code>, <code>docs</code>: 민감도 설명과 자료 검토 카드 문구.</li>
+      <li><code>sc_tree</code>: 사회적 비용(SC) 구성 나무. 노드마다 <code>label</code>, <code>sub</code>(산식 설명), 말단만 <code>status</code>(반영·부분·미반영), 선택으로 <code>value</code>(자리표시 사용), <code>pill</code>(표지 문구), <code>new</code>(true면 신설 표시). 위 칸의 상태는 화면이 아래 칸에서 자동으로 모으므로 적지 않습니다. 3장 항목이 산출되면 해당 말단의 <code>status</code>와 <code>value</code>만 고칩니다.</li>
+
+    </ul>
+  </section>
+
+  <section>
+    <h2>하지 않는 일</h2>
+    <ul class="rules">
+      <li>locked/, config/, pipeline/, .github/ 아래 파일을 고치지 않습니다. 고치면 다음 실행이 "잠금 파일이 바뀌었습니다"로 멈춥니다.</li>
+      <li>엑셀에서 시트를 추가·삭제하거나 이름·순서를 바꾸지 않습니다. 원단위계산 시트에는 파란 글씨·노란 칸 밖에 아무것도 쓰지 않습니다.</li>
+      <li>「취합현황」 시트와 1.요청표의 진행 상태 칸은 고치지 않습니다. dashboard.json에서 자동으로 만들어집니다.</li>
+      <li>dist/의 파일을 손으로 고치지 않습니다. 다음 실행 때 덮어써집니다.</li>
+      <li>request의 id, values의 키, 상태값 이름을 바꾸지 않습니다.</li>
+      <li>서식이나 대시보드 틀을 꼭 바꿔야 할 때만 <code>python pipeline/relock.py --version 새판 --reason "이유"</code>로 판을 올립니다. 이유는 locked/CHANGELOG.md에 남습니다.</li>
+    </ul>
+  </section>
+  <section>
+    <h2>v1 대조 검토 결과</h2>
+    <div class="verdict">v1(값 고정형)과 v2(입력 분리형)를 같은 브라우저 조건에서 렌더링해 비교했습니다. 화면에 나오는 숫자 308개 중 305개가 같고, 다른 3개는 억 원 표기의 소수 자리만 다릅니다.</div>
+    <div class="tscroll"><table>
+      <thead><tr><th>항목</th><th>v1</th><th>v2</th><th>판정</th></tr></thead>
+      <tbody>
+        <tr><td>숫자 일치</td><td>308개</td><td>305개 동일</td><td><span class="pill s-ok">일치</span></td></tr>
+        <tr><td>전담인력 직접투입</td><td>17.0억</td><td>16.98억</td><td><span class="pill s-part">표기 통일</span> 엑셀값 1,697,756,452원. 억 단위 표기를 한 규칙으로 맞춤</td></tr>
+        <tr><td>이수자 전체 ΔC · B</td><td>77.0억 · 69.3억</td><td>76.97억 · 69.29억</td><td><span class="pill s-part">표기 통일</span> 흐름도의 76.97억과 맞춤</td></tr>
+        <tr><td>ROI</td><td>−10%</td><td>−10%</td><td><span class="pill s-ok">일치</span></td></tr>
+        <tr><td>요청 13건 요약</td><td>1·6·5·1 고정 숫자</td><td>requests에서 자동 집계</td><td><span class="pill s-ok">일치</span> 상태를 고치면 숫자가 따라 바뀜</td></tr>
+        <tr><td>엑셀 셀값</td><td>손으로 옮김</td><td>62개 값을 src 셀에서 읽음</td><td><span class="pill s-ok">일치</span></td></tr>
+        <tr><td>산식 일관성</td><td>점검 없음</td><td>27개 점검 모두 통과 (v3: 29개)</td><td><span class="pill s-ok">통과</span></td></tr>
+        <tr><td>data.json을 못 읽는 환경</td><td>해당 없음</td><td>내장 사본으로 정상 표시</td><td><span class="pill s-ok">통과</span> v2 첫 게시 때 화면이 비던 문제를 고침</td></tr>
+        <tr><td>휴대폰 폭(400px)</td><td>가로 넘침 없음</td><td>가로 넘침 없음</td><td><span class="pill s-ok">통과</span></td></tr>
+      </tbody></table></div>
+    <p>v2에서 새로 생긴 것은 「자료요청 13건 상세」(상태별 목록, 핵심 3건, 부서별 미결, 진행 중 목록, 요청 항목 대비 회신 막대)와 「입력값 자동 점검」 두 구역입니다. 나머지 구역의 배치와 문구는 v1과 같습니다.</p>
+  </section>
+
+  <section>
+    <h2>요청 한 건의 예</h2>
+    <pre>{
+ "id": "4", "name": "재활교육 운영실적", "form": "서식4", "owner": "마약사범재활팀",
+ "core": true, "counted": true, "status": "부분", "pill": "이수만",
+ "asked": 4, "got": 1, "replied": "2026-09-07", "cc": "PG",
+ "received": "2024~2026.7 과정별 이수 인원(전국 합계)",
+ "missing": "기수, 개시, 중도탈락 인원·사유, 기관별 구분",
+ "model": "UC-07·UC-06 분모",
+ "note": "개시·탈락이 없어 1인당 원가는 과대 쪽",
+ "doing": "중도탈락 인원 재요청"
+}</pre>
+    <p>중도탈락 인원이 회신되면 <code>got</code>을 2로, <code>missing</code>에서 해당 문구를 빼고, <code>doing</code>을 ""로 바꾼 뒤 서식4 엑셀의 개시·탈락 칸에 값을 넣고 push합니다.</p>
+  </section>
+</div>
+</body>
+</html>

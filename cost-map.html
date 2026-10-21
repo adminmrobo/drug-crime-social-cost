@@ -1,0 +1,719 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="마약류 사회적 비용 추계 모델: 당초 설계·구현 모델·회신 자료 비교와 비용 항목별 계산 상태">
+<meta name="robots" content="noindex, nofollow">
+<title>마약류 사회적 비용 구조도</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: 보고서 부록 도판처럼 — 좁은 본문 열 + 넓은 도판(가로 스크롤), 상단 범례가 전 페이지의 색 기준 */
+:root{
+  --paper:#f7f8fa; --sheet:#ffffff; --ink:#18212f; --ink2:#4a5566; --rule:#d5dbe3; --navy:#1f3352; --navy2:#2f4b75;
+  --A:#1d7a5c; --Abg:#e3f3ec; --B:#2b5fa8; --Bbg:#e5edf8; --C:#a8660b; --Cbg:#fbf0dc; --R:#b3352f; --Rbg:#f9e3e1; --N:#6a45a8; --Nbg:#efe8f8; --X:#6b7380; --Xbg:#eef0f3;
+  --f-display:"Noto Serif KR","Nanum Myeongjo",serif; --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#11161e; --sheet:#171e29; --ink:#e6eaf0; --ink2:#a6b0bf; --rule:#2c3646; --navy:#9db8e0; --navy2:#7f9ccc;
+  --A:#5fcfa4; --Abg:#173329; --B:#8cb4ef; --Bbg:#1a2a42; --C:#efb55a; --Cbg:#3a2c12; --R:#f08a82; --Rbg:#3d1d1b; --N:#bb9cf0; --Nbg:#2b2140; --X:#a3abb7; --Xbg:#232b37; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#11161e; --sheet:#171e29; --ink:#e6eaf0; --ink2:#a6b0bf; --rule:#2c3646; --navy:#9db8e0; --navy2:#7f9ccc;
+  --A:#5fcfa4; --Abg:#173329; --B:#8cb4ef; --Bbg:#1a2a42; --C:#efb55a; --Cbg:#3a2c12; --R:#f08a82; --Rbg:#3d1d1b; --N:#bb9cf0; --Nbg:#2b2140; --X:#a3abb7; --Xbg:#232b37; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:14.5px;line-height:1.6}
+.wrap{max-width:1240px;margin:0 auto;padding-block:28px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;color:var(--ink)}
+h1{font-size:28px;line-height:1.3}
+h2{font-size:21px;margin-top:44px;padding-top:18px;border-top:2px solid var(--ink)}
+h3{font-size:16px;margin:22px 0 8px}
+p{margin:6px 0;max-width:78ch}
+.eyebrow{font-size:12px;letter-spacing:.08em;color:var(--ink2);font-weight:600}
+.lead{color:var(--ink2);max-width:80ch}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.num{font-variant-numeric:tabular-nums}
+.small{font-size:12.5px;color:var(--ink2)}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:10px;border:1px solid var(--rule);background:var(--sheet);border-radius:4px}
+.fig{padding:18px}
+.figcap{font-size:13px;font-weight:600;margin:16px 0 0;color:var(--ink)}
+.figcap span{font-weight:400;color:var(--ink2)}
+
+/* 범례 */
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px;margin-top:18px}
+.lg{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--rule);background:var(--sheet);border-radius:4px;cursor:pointer;text-align:left;font:inherit;color:inherit}
+.lg:focus-visible,.btn:focus-visible{outline:2px solid var(--navy2);outline-offset:2px}
+.lg[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.lg b{display:block;font-size:13.5px}
+.lg small{display:block;font-size:12px;color:var(--ink2);line-height:1.45}
+.lg .cnt{margin-left:auto;font-family:var(--f-mono);font-size:13px;color:var(--ink2)}
+.chip{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:22px;padding:0 7px;border-radius:3px;font-size:11.5px;font-weight:700;font-family:var(--f-mono);letter-spacing:.02em;flex:none}
+.cA{background:var(--A);color:var(--sheet)} .cB{background:var(--B);color:var(--sheet)} .cC{background:var(--C);color:var(--sheet)} .cR{background:var(--R);color:var(--sheet)} .cN{background:var(--N);color:var(--sheet)} .cX{background:var(--X);color:var(--sheet)}
+.tA{background:var(--Abg)} .tB{background:var(--Bbg)} .tC{background:var(--Cbg)} .tR{background:var(--Rbg)} .tN{background:var(--Nbg)} .tX{background:var(--Xbg)}
+
+/* 요약 수치 */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);margin-top:18px}
+.kpi{background:var(--sheet);padding:12px 14px}
+.kpi .k{font-size:12px;color:var(--ink2)}
+.kpi .v{font-family:var(--f-mono);font-size:20px;font-weight:500;margin-top:2px}
+.kpi .s{font-size:11.5px;color:var(--ink2)}
+
+/* 단계 탭 */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+.btn{font:inherit;font-size:13.5px;padding:7px 14px;border:1px solid var(--rule);background:var(--sheet);color:var(--ink);border-radius:3px;cursor:pointer}
+.btn[aria-selected="true"]{background:var(--ink);color:var(--sheet);border-color:var(--ink)}
+
+/* 조직도형 나무 (1단계) */
+.tree{min-width:1120px}
+.tree ul{display:flex;justify-content:center;padding-top:18px;position:relative;margin:0;padding-left:0;list-style:none}
+.tree li{position:relative;padding:18px 5px 0;display:flex;flex-direction:column;align-items:center;flex:1 1 auto}
+.tree .nd{min-width:104px}
+.to{display:block;font-size:10.5px;color:var(--navy2);margin-top:3px;font-weight:600}
+.tree li::before,.tree li::after{content:"";position:absolute;top:0;width:50%;height:18px;border-top:1.5px solid var(--rule)}
+.tree li::before{right:50%}
+.tree li::after{left:50%;border-left:1.5px solid var(--rule)}
+.tree li:only-child::before,.tree li:only-child::after{display:none}
+.tree li:only-child{padding-top:0}
+.tree li:first-child::before,.tree li:last-child::after{border:0 none}
+.tree li:last-child::before{border-right:1.5px solid var(--rule)}
+.tree ul ul::before{content:"";position:absolute;top:0;left:50%;height:18px;border-left:1.5px solid var(--rule)}
+.tree>ul{padding-top:0}
+.nd{border:1px solid var(--rule);background:var(--sheet);padding:7px 9px;border-radius:3px;text-align:center;font-size:12.5px;line-height:1.4;max-width:190px}
+.nd b{display:block;font-size:13px}
+.nd .f{font-family:var(--f-mono);font-size:11px;color:var(--ink2)}
+.nd.root{background:var(--navy);color:var(--sheet);border-color:var(--navy);max-width:none;padding:10px 18px}
+.nd.root .f{color:var(--sheet);opacity:.85}
+.nd.l1{border-color:var(--navy2);border-width:1.5px}
+.nd.new{border:1.5px dashed var(--C)}
+.nd.del{text-decoration:line-through;color:var(--ink2)}
+
+/* 흐름도 (2·3단계) */
+.flow{display:grid;grid-template-columns:230px 190px 260px 240px;gap:0 34px;min-width:1040px;position:relative}
+.col h4{margin:0 0 8px;font-size:12px;letter-spacing:.06em;color:var(--ink2);font-weight:600;border-bottom:1.5px solid var(--ink);padding-bottom:5px}
+.stack{display:flex;flex-direction:column;gap:7px}
+.box{border:1px solid var(--rule);background:var(--sheet);border-radius:3px;padding:6px 9px;font-size:12.5px;line-height:1.4;position:relative}
+.box b{font-weight:600}
+.box .v{font-family:var(--f-mono);font-size:12px;display:block;margin-top:2px}
+.box .st{position:absolute;top:6px;right:7px}
+.box.core{border-color:var(--ink);border-width:1.5px}
+.grp{display:flex;flex-direction:column;gap:7px;padding:8px;border-radius:3px;border:1px dashed var(--rule)}
+.grp .gl{font-size:11px;color:var(--ink2);font-weight:600}
+.final{background:var(--navy);color:var(--sheet);border-color:var(--navy)}
+.final .v{color:var(--sheet)}
+.arrow{font-family:var(--f-mono);color:var(--ink2);font-size:12px;text-align:center}
+.side{margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.note{border-left:3px solid var(--ink);padding:4px 0 4px 12px;font-size:13px;color:var(--ink2);max-width:90ch;margin-top:10px}
+
+/* 변화표·분류표 */
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{border-bottom:1px solid var(--rule);padding:8px 10px;text-align:left;vertical-align:top}
+th{font-size:12px;color:var(--ink2);font-weight:600;background:var(--paper);position:sticky;top:0}
+td.k{font-weight:600;white-space:nowrap}
+.tblwrap{overflow-x:auto;border:1px solid var(--rule);background:var(--sheet);border-radius:4px;margin-top:10px}
+.tblwrap table{min-width:860px}
+.arrowcell{color:var(--ink2);font-family:var(--f-mono)}
+
+/* 큰 그림 */
+.map{min-width:1160px;padding:20px}
+.mroot{background:var(--navy);color:var(--sheet);padding:12px 18px;border-radius:3px;display:flex;flex-wrap:wrap;gap:6px 22px;align-items:baseline}
+.mroot b{font-family:var(--f-display);font-size:17px}
+.mroot .f{font-family:var(--f-mono);font-size:12px;opacity:.9}
+.trunk{height:16px;border-left:1.5px solid var(--rule);margin-left:50%}
+.secs{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.sec{border-top:2px solid var(--ink);padding-top:8px}
+.sec .sh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px}
+.sec .sh b{font-size:14px}
+.sec .sh span{font-size:11.5px;color:var(--ink2)}
+.leaf{border-radius:3px;padding:8px 10px;margin-bottom:7px;border:1px solid transparent;transition:opacity .15s}
+.leaf .top{display:flex;gap:8px;align-items:flex-start}
+.leaf .id{font-family:var(--f-mono);font-size:11px;color:var(--ink2);flex:none;padding-top:2px}
+.leaf .nm{font-weight:600;font-size:13px;line-height:1.35;flex:1}
+.leaf .meta{font-size:11.5px;color:var(--ink2);margin-top:3px;line-height:1.45}
+.leaf .val{font-family:var(--f-mono);font-size:12px;margin-top:3px;color:var(--ink)}
+.dim .leaf:not(.on){opacity:.18}
+.bridge{margin:18px 0 10px;display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center}
+.bridge .bx{border:1.5px solid var(--ink);border-radius:3px;padding:10px 14px;background:var(--sheet);font-size:13px}
+.bridge .bx b{font-family:var(--f-display);font-size:15px}
+.bridge .ar{font-family:var(--f-mono);font-size:20px;color:var(--ink2)}
+.cba{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:6px}
+.cbahead{background:var(--sheet);border:1.5px solid var(--navy2);border-radius:3px;padding:10px 14px;margin-top:4px;display:flex;flex-wrap:wrap;gap:6px 20px;align-items:baseline}
+.cbahead b{font-family:var(--f-display);font-size:15px}
+.cbahead .f{font-family:var(--f-mono);font-size:12px;color:var(--ink2)}
+
+.catsec{margin-top:26px}
+.cathead{display:flex;gap:10px;align-items:center}
+.cathead h3{margin:0}
+.catdesc{color:var(--ink2);font-size:13px;margin:4px 0 0}
+.files td:first-child{font-family:var(--f-mono);white-space:nowrap}
+.warn{background:var(--Cbg);border:1px solid var(--C);border-radius:4px;padding:10px 14px;margin-top:14px;font-size:13px}
+.warn b{color:var(--C)}
+/* 2-1 변경 표지 */
+.tg{display:inline-block;margin-top:4px;font-size:10.5px;font-weight:600;padding:1px 6px;border-radius:2px;border:1px solid var(--ink2);color:var(--ink2);line-height:1.5}
+.tg.new{border-style:dashed;color:var(--ink);border-color:var(--ink)}
+.tg.mod{background:var(--Xbg)}
+.tg.mov{border-color:var(--navy2);color:var(--navy2)}
+.nd.dash{border-style:dashed;border-width:1.5px;border-color:var(--ink)}
+.nd.gone{opacity:.55}
+.nd.gone b{text-decoration:line-through}
+.chlegend{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:10px;font-size:12px;color:var(--ink2)}
+.chlegend span{display:inline-flex;gap:6px;align-items:center}
+.treepair{display:flex;flex-direction:column;gap:26px;width:max-content;min-width:100%}
+.nd .tg{display:block;width:fit-content;margin:5px auto 0}
+.treelabel{font-size:12px;font-weight:600;color:var(--ink2);letter-spacing:.04em;margin-bottom:-6px}
+/* 2-2 행렬 */
+.mx{border-collapse:separate;border-spacing:0;font-size:12px;min-width:1240px}
+.mx th,.mx td{border-bottom:1px solid var(--rule);padding:4px 3px;text-align:center;vertical-align:middle}
+.mx thead th{position:static;background:var(--sheet);font-size:11px;line-height:1.3;color:var(--ink);font-weight:600}
+.mx thead tr.mgrp th{font-size:11px;color:var(--ink2);border-bottom:1.5px solid var(--ink);padding:6px 3px}
+.mx .rh{text-align:left;position:sticky;left:0;background:var(--sheet);z-index:1;min-width:250px;padding-left:10px;border-right:1px solid var(--rule)}
+.mx .rh .id{font-family:var(--f-mono);font-size:10.5px;color:var(--ink2);margin-right:6px}
+.mx tr.sep td{background:var(--paper);text-align:left;font-weight:600;font-size:12px;padding:6px 10px;border-bottom:1.5px solid var(--ink)}
+.mx tr.sep td.rh{background:var(--paper)}
+.mx td.cell{width:46px;height:28px;font-size:14px;line-height:1}
+.mx th.st{font-size:10px;font-weight:600;padding:3px 2px}
+.mx td.gl{border-left:1.5px solid var(--ink2)}
+.mx th.gl{border-left:1.5px solid var(--ink2)}
+.sgot{background:var(--Abg);color:var(--A)} .spart{background:var(--Cbg);color:var(--C)} .sno{background:var(--Rbg);color:var(--R)} .ssub{background:var(--Bbg);color:var(--B)} .stodo{background:var(--Xbg);color:var(--B)} .sasm{background:var(--Cbg);color:var(--C)} .snone{background:var(--Xbg);color:var(--X)}
+.mx tfoot td{font-family:var(--f-mono);font-size:11.5px;color:var(--ink2);border-top:1.5px solid var(--ink)}
+.slegend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font-size:12px}
+.slegend span{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:22px;height:16px;border-radius:2px;text-align:center;font-size:11px;line-height:16px}
+/* 계산 가능 범위 막대 */
+.bars{display:grid;gap:7px;margin-top:12px}
+.bar{display:grid;grid-template-columns:150px 1fr 120px;gap:10px;align-items:center;font-size:12.5px}
+.bar .track{display:flex;height:20px;border-radius:2px;overflow:hidden;background:var(--Xbg)}
+.bar .track span{display:flex;align-items:center;justify-content:center;color:var(--sheet);font-size:11px;font-family:var(--f-mono)}
+.bar .r{font-family:var(--f-mono);font-size:12px;color:var(--ink2)}
+details.ref{margin-top:18px}
+details.ref summary{cursor:pointer;font-size:13px;font-weight:600}
+.sym{font-family:var(--f-mono);font-size:11px;font-weight:600;color:var(--navy2)!important;white-space:nowrap}
+.sd{font-size:11.5px;color:var(--ink2);margin:-4px 0 8px;line-height:1.45}
+.eq td{font-size:13px}
+.flowline{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0;margin-top:8px;border:1px solid var(--rule);background:var(--sheet);border-radius:4px}
+.flowline div{padding:10px 12px;border-right:1px solid var(--rule);display:flex;flex-direction:column;gap:3px;position:relative}
+.flowline div:last-child{border-right:0;background:var(--Xbg)}
+.flowline b{font-size:13px}
+.flowline span{font-size:12px;color:var(--ink2);line-height:1.45}
+.flowline i{font-style:normal;font-family:var(--f-mono);font-size:11px;font-weight:600;color:var(--navy2);margin-top:auto}
+@media (max-width:900px){.flowline{grid-template-columns:repeat(2,minmax(0,1fr))}.flowline div{border-bottom:1px solid var(--rule)}}
+/* 확인 사항 목록 */
+.checks{display:flex;flex-direction:column;gap:12px;margin-top:12px}
+.ck{background:var(--sheet);border:1px solid var(--rule);border-radius:4px;padding:14px 16px;display:grid;grid-template-columns:34px 1fr;gap:4px 12px}
+.ck .no{grid-row:1 / span 5;font-family:var(--f-mono);font-size:20px;color:var(--C);font-weight:500}
+.ck h3{margin:0;font-size:15px}
+.ck dl{margin:4px 0 0;display:grid;grid-template-columns:92px 1fr;gap:5px 10px;font-size:13px}
+.ck dt{color:var(--ink2);font-weight:600}
+.ck dd{margin:0}
+@media (max-width:640px){.ck dl{grid-template-columns:1fr}.ck dt{margin-top:4px}.bar{grid-template-columns:96px 1fr 84px}}
+@media (max-width:640px){h1{font-size:23px} .kpi .v{font-size:17px}}
+@media (prefers-reduced-motion:reduce){.leaf{transition:none}}
+html,body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">마약의 사회적 비용 추계 모델 연구 · 2026. 10. 21. 회신 기준</div>
+  <h1>마약류 사회적 비용 구조도</h1>
+  <p class="lead">1단계 당초 설계(제안서 4장), 2단계 실제 구현 모델(자료요청 통합서식), 3단계 회신 자료(10.21 기준 13개 파일)를 단계별 그림으로 비교하고, 전체 비용구조를 하나의 큰 그림으로 묶어 항목마다 계산 상태를 다섯 가지로 나누었다. 범례를 누르면 큰 그림에서 해당 분류만 강조된다.</p>
+
+  <div class="legend" id="legend"></div>
+
+  </div>
+
+  <!-- ============ 단계별 그림 ============ -->
+  <h2>1. 단계별 그림</h2>
+  <p class="lead">1단계와 2-1은 같은 나무 형식으로 그려 칸끼리 바로 비교할 수 있게 했다. 1단계 칸 아래 파란 글씨는 2단계에서 옮겨 간 자리이고, 2-1 칸 아래 표지는 1단계 대비 변화이다. 2-2는 2-1의 칸마다 어떤 자료가 들어가는지와 그 자료의 회신 상태를 한 표에 모아, 지금 자료로 구현 모델의 어디까지 계산되는지 보여 준다. 3단계는 비용편익 흐름에 실제 회신값을 채운 것이다.</p>
+  <div class="tabs" role="tablist">
+    <button class="btn" role="tab" id="tab-s1" aria-selected="true" aria-controls="p-s1">1단계 · 당초 모델</button>
+    <button class="btn" role="tab" id="tab-s2" aria-selected="false" aria-controls="p-s2">2-1 · 구현 모델</button>
+    <button class="btn" role="tab" id="tab-s22" aria-selected="false" aria-controls="p-s22">2-2 · 모델과 자료 연결</button>
+    <button class="btn" role="tab" id="tab-s3" aria-selected="false" aria-controls="p-s3">3단계 · 회신 반영</button>
+    <button class="btn" role="tab" id="tab-s4" aria-selected="false" aria-controls="p-s4">변화 비교표</button>
+  </div>
+
+  <!-- 1단계 -->
+  <section id="p-s1" role="tabpanel" aria-labelledby="tab-s1">
+    <p class="figcap">그림 1-a. 당초 사회적 비용 설계도 <span>— 제안서 요약본(2026. 8. 20.) 4장 가~다항</span></p>
+    <div class="scroll"><div class="fig tree" style="min-width:1220px">
+      <ul><li>
+        <div class="nd root"><b>마약류범죄의 사회적 비용 (SC)</b><span class="f">SC = TC + PGS = (DC + IC) + PGS · 모든 항목 = 1인당 원단위 × N*, N* = N검거 × 28.57</span></div>
+        <ul>
+          <li><div class="nd l1"><b>유형비용 (TC)</b>시장가치 손실</div>
+            <ul>
+              <li><div class="nd l1"><b>직접비용 (DC)</b>의료·복지</div>
+                <ul>
+                  <li><div class="nd"><b>직접의료비</b><span class="f">Σ진료비 × 기여비율</span><span class="to">→ 제1절 1 유지</span></div></li>
+                  <li><div class="nd"><b>간접의료비</b><span class="f">직접 × 38.1%</span><span class="to">→ 제1절 2 이름 변경</span></div></li>
+                  <li><div class="nd"><b>의료보조비</b><span class="f">대상자 × 보조비</span><span class="to">→ 제1절 3 재정의</span></div></li>
+                </ul>
+              </li>
+              <li><div class="nd l1"><b>간접비용 (IC)</b>기회·대응비용</div>
+                <ul>
+                  <li><div class="nd"><b>생산성 손실</b><span class="f">의료이용(외래 ⅓일) · 조기사망 PV</span><span class="to">→ 제2절 1·2</span></div></li>
+                  <li><div class="nd"><b>형사사법</b><span class="f">수사·기소·재판 · 수용·보호관찰·치료감호</span><span class="to">→ 제3절로 독립</span></div></li>
+                  <li><div class="nd"><b>가족·지역사회 파급</b><span class="f">산식 없음</span><span class="to">→ 제4절 3</span></div></li>
+                  <li><div class="nd new"><b>사회혼란 (신설)</b><span class="f">불특정 다수 피해 · 범죄 공포(WTP) · 방어행동</span><span class="to">→ 제4절 1 + 제5절 2로 분할</span></div></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li><div class="nd l1"><b>무형비용 (PGS)</b>고통의 화폐가치</div>
+            <ul>
+              <li><div class="nd"><b>사망 PGS</b><span class="f">사망자 × 원단위</span><span class="to">→ 제4절 2</span></div></li>
+              <li><div class="nd"><b>중독 PGS</b><span class="f">중독자 × 중상 원단위</span><span class="to">→ 제4절 2 · 적용 인원 재정의</span></div></li>
+            </ul>
+          </li>
+          <li><div class="nd l1"><b>별도 축 (다항)</b>생애·누적</div>
+            <ul>
+              <li><div class="nd"><b>세대별 손실 PV_a</b><span class="f">r = 4%, 20대 초반 5.8억 원(예비)</span><span class="to">→ 제2절 3, r 4.5%</span></div></li>
+              <li><div class="nd"><b>재범 누적 TC_코호트</b><span class="f">p ≥ 50%</span><span class="to">→ 제2절 3, C_1회 = SCᵣ</span></div></li>
+            </ul>
+          </li>
+        </ul>
+      </li></ul>
+    </div></div>
+    <p class="figcap">그림 1-b. 당초 교정 재활 비용편익 <span>— 제안서 4장 라항. 예비 B/C 0.85 / 1.79 / 2.57 (Δr 10 / 25 / 40%, 1인 350만 원)</span></p>
+    <div class="scroll"><div class="fig tree" style="min-width:1000px">
+      <ul><li>
+        <div class="nd root"><b>B/C · NPV · ROI</b><span class="f">출소 후 5년, r = 4.5% · 효과 Δr = PSM·DID</span></div>
+        <ul>
+          <li><div class="nd l1"><b>총비용 C</b></div>
+            <ul>
+              <li><div class="nd"><b>C1 수용</b><span class="f">수용관리비 전액</span><span class="to">→ ΔC에서 빠지고 SCᵣ로</span></div></li>
+              <li><div class="nd"><b>C2 프로그램</b><span class="to">→ UC-06</span></div></li>
+              <li><div class="nd"><b>C3 치료개입</b><span class="to">→ UC-10</span></div></li>
+            </ul></li>
+          <li><div class="nd l1"><b>총편익 B</b></div>
+            <ul>
+              <li><div class="nd"><b>B1 단약</b><span class="f">수용 × 월 50만 원 × 개월</span><span class="to">→ 삭제</span></div></li>
+              <li><div class="nd"><b>B2 재범감소</b><span class="f">참여 × Δr × 재범 1건당 비용</span><span class="to">→ r0 × Δr × SCᵣ × D</span></div></li>
+              <li><div class="nd"><b>B3 의료절감</b><span class="f">억제 인원 × 의료비</span><span class="to">→ SCᵣ 안으로</span></div></li>
+              <li><div class="nd"><b>B4 생산성회복</b><span class="f">복귀 × 임금 × 유지율</span><span class="to">→ SCᵣ 안으로</span></div></li>
+            </ul></li>
+        </ul>
+      </li></ul>
+    </div></div>
+  </section>
+
+  <!-- 2-1 -->
+  <section id="p-s2" role="tabpanel" aria-labelledby="tab-s2" hidden>
+    <p class="figcap">그림 2-1. 구현 모델 <span>— 1단계 나무를 제3장 목차(제1~6절)와 인계메모 확정 산식에 맞춰 다시 그림. 칸 아래 표지는 1단계 대비 변화</span></p>
+    <div class="chlegend"><span><i class="tg">유지</i>1단계와 같음</span><span><i class="tg mod">수정</i>이름·산식·적용 인원이 바뀜</span><span><i class="tg mov">이동 ←</i>다른 자리에서 옮겨 옴</span><span><i class="tg new">신설</i>1단계에 없던 칸(점선 테두리)</span><span><i class="tg">삭제</i>빠진 칸(흐리게, 취소선)</span></div>
+    <div class="scroll"><div class="fig treepair">
+      <div class="treelabel">사회적 비용 SC (제3장)</div>
+      <div class="tree" style="min-width:1560px">
+      <ul><li>
+        <div class="nd root"><b>2025년 마약류 사회적 비용 (SC)</b><span class="f">SC = TC + PGS · 항목별 적용 인원 구분(형사사법·조기사망은 실제 인원, λ 미적용) · 연간 총액과 생애 누적은 분리</span></div>
+        <ul>
+          <li><div class="nd l1"><b>제1절 의료·복지</b>DC</div>
+            <ul>
+              <li><div class="nd"><b>직접 의료비</b><span class="f">진료비·치료보호·수용자 의료</span><i class="tg mod">수정 · 암수 보정</i></div></li>
+              <li><div class="nd"><b>직접 비의료비</b><span class="f">× 38.1%</span><i class="tg mod">수정 ← 간접의료비</i></div></li>
+              <li><div class="nd dash"><b>정신건강·복지 지원</b><span class="f">센터 운영비</span><i class="tg new">재정의 ← 의료보조비</i></div></li>
+            </ul></li>
+          <li><div class="nd l1"><b>제2절 생산성</b>IC</div>
+            <ul>
+              <li><div class="nd"><b>조기 사망</b><span class="f">PV, r 4.5%</span><i class="tg">유지</i></div></li>
+              <li><div class="nd"><b>이환·입원</b><span class="f">외래 ⅓일</span><i class="tg">유지</i></div></li>
+              <li><div class="nd dash"><b>노동력 상실·미취업</b><span class="f">구금 · 의존 미취업 · PV_a · 코호트</span><i class="tg new">신설 · 별도 축 이동</i></div></li>
+            </ul></li>
+          <li><div class="nd l1"><b>제3절 형사사법</b>λ 미적용</div>
+            <ul>
+              <li><div class="nd"><b>단속·수사</b><span class="f">경찰·검찰·관세청·해경</span><i class="tg mod">수정 · 기관 확대</i></div></li>
+              <li><div class="nd"><b>재판</b><span class="f">법원·국선변호</span><i class="tg mod">분리 ← 수사·기소·재판</i></div></li>
+              <li><div class="nd"><b>형 집행·교정</b><span class="f">수용·보호관찰·치료감호</span><i class="tg">유지</i></div></li>
+            </ul></li>
+          <li><div class="nd l1"><b>제4절 피해자·주위</b></div>
+            <ul>
+              <li><div class="nd"><b>2차 범죄 피해</b><span class="f">불특정 다수 피해</span><i class="tg mov">이동 ← 사회혼란</i></div></li>
+              <li><div class="nd"><b>고통 PGS</b><span class="f">피해자 사망·중상 · 중독자 본인</span><i class="tg mov">이동 ← PGS</i></div></li>
+              <li><div class="nd"><b>가족·주변인 케어</b><span class="f">산식 없음</span><i class="tg mov">이동 ← 가족·지역사회</i></div></li>
+            </ul></li>
+          <li><div class="nd l1"><b>제5절 기타</b>인구 단위</div>
+            <ul>
+              <li><div class="nd dash"><b>예방·홍보·R&amp;D</b><span class="f">부처 예산</span><i class="tg new">신설</i></div></li>
+              <li><div class="nd"><b>사회 불안</b><span class="f">범죄 공포 · 방어행동</span><i class="tg mov">이동 ← 사회혼란</i></div></li>
+            </ul></li>
+          <li><div class="nd l1"><b>제6절 종합</b></div>
+            <ul>
+              <li><div class="nd dash"><b>총액·GDP 비율</b><span class="f">λ 10 비교</span><i class="tg new">신설</i></div></li>
+              <li><div class="nd dash"><b>1인당 · SCᵣ</b><span class="f">비용편익으로 연결</span><i class="tg new">신설</i></div></li>
+            </ul></li>
+        </ul>
+      </li></ul>
+      </div>
+      <div class="treelabel">교정 재활 비용편익 (제4·5장)</div>
+      <div class="tree" style="min-width:1320px">
+      <ul><li>
+        <div class="nd root"><b>B/C = B ÷ ΔC</b><span class="f">1인당 기준 · 출소 후 5년 · r = 4.5% · 효과 = 집계 교차표 비교 + SMD</span></div>
+        <ul>
+          <li><div class="nd l1"><b>증분비용 ΔC</b><i class="tg mod">수정 ← 총비용 C</i></div>
+            <ul>
+              <li><div class="nd"><b>UC-06 프로그램</b><span class="f">과정유형별</span><i class="tg mod">수정 ← C2</i></div></li>
+              <li><div class="nd"><b>UC-10 치료개입</b><i class="tg">유지 ← C3</i></div></li>
+              <li><div class="nd dash"><b>UC-12 사후관리</b><span class="f">÷ (1+r)^t</span><i class="tg new">신설</i></div></li>
+              <li><div class="nd"><b>ΔM × UC-02</b><span class="f">수용기간 차이만</span><i class="tg mod">수정 ← C1</i></div></li>
+              <li><div class="nd gone"><b>C1 수용 전액</b><span class="f">이수·미이수 공통</span><i class="tg">삭제 → SCᵣ로</i></div></li>
+            </ul></li>
+          <li><div class="nd l1"><b>편익 B</b><span class="f">r0 × Δr × SCᵣ × D</span><i class="tg mod">수정 · 단일 경로</i></div>
+            <ul>
+              <li><div class="nd dash"><b>r0 기저재범률</b><span class="f">미이수 집단</span><i class="tg new">신설</i></div></li>
+              <li><div class="nd"><b>Δr</b><span class="f">상대 감소율</span><i class="tg mod">수정</i></div></li>
+              <li><div class="nd"><b>SCᵣ 재복역 1건당</b><span class="f">제3장에서 공급</span><i class="tg mod">수정 ← B2 · B3·B4 흡수</i></div></li>
+              <li><div class="nd dash"><b>D 할인계수</b><span class="f">Σ hₜ ÷ (1+r)^t</span><i class="tg new">신설</i></div></li>
+              <li><div class="nd gone"><b>B1 단약</b><span class="f">불법시장 지출 = 이전</span><i class="tg">삭제</i></div></li>
+              <li><div class="nd gone"><b>B3 · B4 별도 합산</b><span class="f">이중계상</span><i class="tg">삭제 → SCᵣ 안</i></div></li>
+            </ul></li>
+        </ul>
+      </li></ul>
+      </div>
+    </div></div>
+    <div class="note">1단계와 비교하면 SC 나무는 칸이 사라진 것보다 자리를 옮긴 것이 많다. 사회혼란 비용은 제4절(불특정 다수 피해)과 제5절(공포·방어)로 나뉘었고, 별도 축이던 PV_a·재범 누적은 제2절 3으로 들어왔다. 비용편익 나무는 구조 자체가 바뀌었다. 수용비와 단약 편익이 빠졌고, 비용은 증분비용으로, 편익은 SCᵣ 하나의 경로로 모였다. 두 나무를 잇는 칸이 SCᵣ이다.</div>
+  </section>
+
+  <!-- 2-2 -->
+  <section id="p-s22" role="tabpanel" aria-labelledby="tab-s22" hidden>
+    <p class="figcap">그림 2-2. 구현 모델의 칸과 자료의 연결 <span>— 행은 구현 모델의 칸(큰 그림과 같은 번호), 열은 자료원. 칸 색은 10.21 기준 그 자료의 상태</span></p>
+    <p class="lead" id="mxsum"></p>
+    <div class="bars" id="bars"></div>
+    <div class="slegend" id="slegend"></div>
+    <div class="scroll"><table class="mx" id="mx"></table></div>
+    <p class="small" style="margin-top:8px">● 직접 투입(없으면 그 칸을 계산할 수 없음) · ○ 보조·검증 · 맨 오른쪽 표지는 그 칸의 현재 분류(3장 분류별 정리와 같음)</p>
+    <div class="note">요청서(서식 1~12, 별도요청)가 닿는 칸은 비용편익 쪽과 제3절 3에 몰려 있다. 제3장 제1·2절, 제3절 1·2, 제4·5절은 "공개통계·예산서"나 "설문" 열에만 점이 찍혀 있다. 요청서를 다시 보내도 이 칸들은 채워지지 않고, 연구진이 공개 자료를 모으거나 설문을 해야 채워진다.</div>
+    <h3>지금 계산된 값 (잠정)</h3>
+    <p class="small">1차 취합 때 진행판에서 계산한 값이다. 모두 일부 항목만 들어간 값이라 결론으로 쓰지 않는다. "빠진 것"이 채워지면 값이 바뀐다.</p>
+    <div class="tblwrap"><table>
+      <thead><tr><th style="width:17%">값</th><th style="width:20%">무엇을 뜻하나</th><th style="width:22%">어떻게 계산했나</th><th>빠진 것 · 한계</th><th style="width:9%">분류</th><th style="width:10%">원본 파일</th></tr></thead>
+      <tbody>
+        <tr><td><b>N* 668,624명</b><div class="small">제3장 · 6-1</div></td><td>실제 마약류 사용자 추정 수. 검거된 1명 뒤에 숨어 있는 사용자까지 센 값</td><td>2025년 단속 23,403명 × 암수율 λ 28.57</td><td>λ는 박성수·백민석(2019)의 한 연구값이다. λ 10으로도 같이 제시해야 한다. 모든 비용에 곱하지 않는다(형사사법·조기사망 제외).</td><td><span class="chip cA">A</span></td><td>백서 3장</td></tr>
+        <tr><td><b>UC-01 2,378만 원</b><div class="small">수용 1인·1년 · 3-3a</div></td><td>교정시설이 수용자 1명을 1년 동안 데리고 있는 데 드는 돈</td><td>교정 집행액 8항목 합 ÷ 1일 평균 수용 63,680명</td><td>시설 취득비·교도작업특별회계가 빠진 하한. 결산 총액에서 교정·교화(재활예산 포함)를 빼고 나누면 상한 2,651만 원. 제4장 원고는 2,396만 원.</td><td><span class="chip cA">A</span></td><td><b>없음</b> (서식1)</td></tr>
+        <tr><td><b>SCᵣ 5,036만 원</b><div class="small">재복역 1건당 · CB-8</div></td><td>출소자 1명이 다시 교도소에 들어올 때 사회가 치르는 비용</td><td>평균 실형 2.45년 × 실제 복역 85%(가정) × UC-01 + 검찰 단계 87만 원</td><td>형사사법 비용만 들어 있다. 재중독 기간의 의료·생산성·2차 피해(CB-9)가 빠져 있어 실제보다 작다.</td><td><span class="chip cA">A</span> <span class="chip cN">N</span></td><td>일부 없음</td></tr>
+        <tr><td><b>ΔC 484만 원</b><div class="small">이수자 1인당 · CB-2</div></td><td>재활교육을 받게 하려고 1명에게 추가로 드는 돈</td><td>재활교육 원가(UC-06)만 반영</td><td>치료개입(UC-10)·사후관리(UC-12)를 0으로 둔 하한. 들어오면 커진다.</td><td><span class="chip cC">C</span></td><td><b>없음</b> (서식6)</td></tr>
+        <tr><td><b>B/C 0.90</b><div class="small">비용편익비</div></td><td>재활에 1원 쓸 때 돌아오는 편익. 1 이상이면 이득</td><td>편익 436만 원(0.0966 × 5,036만 × 0.897) ÷ 484만 원</td><td>편익(SCᵣ)과 비용(ΔC)이 둘 다 덜 채워져 있다. 편익이 커질 요인과 비용이 커질 요인이 같이 있어 지금은 1보다 큰지 작은지 판단할 수 없다. 손익분기 Δr* 21.4%, SCᵣ* 5,594만 원.</td><td><span class="chip cC">C</span></td><td>일부 없음</td></tr>
+      </tbody>
+    </table></div>
+    <details class="ref"><summary>참고: 요청서가 설계한 비용편익 원가 흐름 (요청 자료 → 원가중심점 → 원단위 → 지표)</summary>
+    <div class="scroll"><div class="fig flow">
+      <div class="col"><h4>① 요청 자료</h4><div class="stack">
+        <div class="box">서식 1 교정 세출예산</div><div class="box">서식 2 수용인원</div><div class="box">서식 3 마약류사범 수용</div>
+        <div class="box core">서식 4 재활교육 실적 ◆</div><div class="box">서식 5 전담인력</div><div class="box core">서식 6 재활 예산 ◆</div>
+        <div class="box">서식 7 의료·약물검사</div><div class="box">서식 8 출소·재복역</div><div class="box core">서식 9 이수별 재복역 ◆</div>
+        <div class="box">서식 10 인적특성</div><div class="box">서식 11·12 정의서·표목록</div><div class="box">별도요청 치료보호·보호관찰·국립법무병원</div>
+      </div></div>
+      <div class="col"><h4>② 원가중심점</h4><div class="stack">
+        <div class="box"><b>투옥</b> IN-C · IN-N<span class="v">서식 1·2·3</span></div>
+        <div class="box"><b>투입</b> PG-C · PG-N · PG-D<span class="v">서식 4·5·6</span></div>
+        <div class="box"><b>치료</b> TX-C · TX-N<span class="v">서식 7</span></div>
+        <div class="box"><b>감호·사후관리</b> CU-C · CU-N<span class="v">별도요청</span></div>
+        <div class="box"><b>성과 모수</b> OC<span class="v">서식 8·9·10</span></div>
+        <div class="box"><b>정합성</b> MT<span class="v">서식 11·12</span></div>
+      </div></div>
+      <div class="col"><h4>③ 원단위</h4><div class="stack">
+        <div class="box">UC-01 수용 1인 총원가<span class="v">→ ΔC 제외, SCᵣ·제3장 제3절로</span></div>
+        <div class="box">UC-02 수용 1인·1일 변동원가</div>
+        <div class="box">UC-07 1인시당 원가 → UC-06 과정별 1인당</div>
+        <div class="box">UC-10 치료개입 1인·연간</div>
+        <div class="box">UC-12 사후관리 1인·연간</div>
+        <div class="box">r0 · r1 · Δr · hₜ</div>
+        <div class="box">분모 정의 검증</div>
+      </div></div>
+      <div class="col"><h4>④ 산식·지표</h4><div class="stack">
+        <div class="box core"><b>ΔC 증분비용</b><span class="v">UC-06 + UC-10 + UC-12/(1+r)^t + ΔM × UC-02</span></div>
+        <div class="box core"><b>B 편익</b><span class="v">r0 × Δr × SCᵣ × D</span><span class="v">D = Σ hₜ ÷ (1+r)^t, T = 5년</span></div>
+        <div class="box"><b>SCᵣ 재복역 1건당</b><span class="v">형사사법 + 재중독 기간 의료·생산성·2차 피해</span>제3장에서 공급</div>
+        <div class="box final"><b>B/C · NPV · ROI · Δr*</b><span class="v">r = 4.5%</span></div>
+      </div></div>
+    </div></div>
+    </details>
+  </section>
+
+  <!-- 3단계 -->
+  <section id="p-s3" role="tabpanel" aria-labelledby="tab-s3" hidden>
+    <p class="figcap">그림 3. 회신값을 채운 비용편익 흐름 <span>— 색은 아래 다섯 가지 분류. 서식1 8항목·서식6 총액은 1차 회신값(이번 묶음에 원본 없음)</span></p>
+    <div class="scroll"><div class="fig flow">
+      <div class="col"><h4>① 요청 자료 · 회신</h4><div class="stack">
+        <div class="box tA">서식 1 교정 세출예산<span class="st chip cA">부분</span><span class="v">교도소 결산 1조 6,992억</span></div>
+        <div class="box tA">서식 2 수용인원<span class="st chip cA">5/6</span><span class="v">1일 평균 63,680명</span></div>
+        <div class="box tR">서식 3 마약류사범 수용<span class="st chip cR">0/9</span><span class="v">연말 현원 7,429명만</span></div>
+        <div class="box core tA">서식 4 재활교육 ◆<span class="st chip cA">이수만</span><span class="v">2025 이수 1,589명</span></div>
+        <div class="box tA">서식 5 전담인력<span class="st chip cA">완료</span><span class="v">44명, 투입 64.0·68.2%</span></div>
+        <div class="box core tA">서식 6 재활 예산 ◆<span class="st chip cA">총액만</span><span class="v">59.99억(1차 회신)</span></div>
+        <div class="box tC">서식 7 의료·검사<span class="st chip cC">4/13</span><span class="v">총액 5,095,510(단위?)</span></div>
+        <div class="box tR">서식 8 출소·재복역<span class="st chip cR">미회신</span></div>
+        <div class="box core tB">서식 9 이수별 재복역 ◆<span class="st chip cB">문헌</span><span class="v">김도균·나종민(2025)</span></div>
+        <div class="box tR">서식 10 인적특성<span class="st chip cR">미회신</span></div>
+        <div class="box tR">서식 11·12<span class="st chip cR">미회신</span></div>
+        <div class="box tC">별도요청<span class="st chip cC">4/9</span><span class="v">법무병원·보호관찰 인원만</span></div>
+      </div></div>
+      <div class="col"><h4>② 원가중심점</h4><div class="stack">
+        <div class="box tA"><b>투옥</b><span class="v">63,680명</span></div>
+        <div class="box tA"><b>투입</b><span class="v">비용풀 76.97억</span></div>
+        <div class="box tR"><b>치료</b><span class="v">마약류 분리 불가</span></div>
+        <div class="box tB"><b>감호·사후관리</b><span class="v">치료보호 예산 미회신</span></div>
+        <div class="box tB"><b>성과 모수</b><span class="v">문헌 931명</span></div>
+        <div class="box tR"><b>정합성</b><span class="v">미실시</span></div>
+      </div></div>
+      <div class="col"><h4>③ 원단위</h4><div class="stack">
+        <div class="box tA">UC-01 수용 1인 총원가<span class="v">2,378만 원/년 (상한 2,651만)</span></div>
+        <div class="box tC">UC-02 변동원가<span class="v">8,615원/일 · 공공요금 50% 가정</span></div>
+        <div class="box tA">UC-07 1인시당<span class="v">85,562원</span></div>
+        <div class="box tC">UC-06 과정별 1인당<span class="v">평균 484만 · 342~1,369만 원</span></div>
+        <div class="box tR">UC-10 치료개입<span class="v">0 (미산출)</span></div>
+        <div class="box tB">UC-12 사후관리<span class="v">0 (미산출)</span></div>
+        <div class="box tB">r0 50.2% · Δr 19.2%<span class="v">추적 5~6.7년, 구 과정</span></div>
+        <div class="box tC">hₜ → D 0.897<span class="v">3년 내 비중 79.6% 가정</span></div>
+      </div></div>
+      <div class="col"><h4>④ 산식·지표</h4><div class="stack">
+        <div class="box core tC"><b>ΔC = 484만 원</b><span class="v">UC-06만 · 하한</span></div>
+        <div class="box tA"><b>SCᵣ 형사사법분 5,036만 원</b><span class="v">실형 2.45년 × 85% × UC-01 + 검찰 87만</span></div>
+        <div class="box tN"><b>SCᵣ 비형사사법분</b><span class="v">재중독 기간 의료·생산성·2차 피해</span>새로 산정해야 함</div>
+        <div class="box core tC"><b>B = 436만 원</b><span class="v">0.0966 × 5,036만 × 0.897</span></div>
+        <div class="box final"><b>부분 B/C 0.90</b><span class="v">Δr* 21.4% · NPV −48만 원</span></div>
+      </div></div>
+    </div></div>
+    <div class="note">B/C 0.90은 SCᵣ에 형사사법 비용만 넣은 하한 쪽 값이다. 제3장이 SCᵣ에 의료·생산성·2차 피해를 더하면 B는 커진다. UC-10·UC-12가 들어오면 ΔC도 커진다. 두 방향이 반대라 현재 값으로 결론을 내릴 수 없다.</div>
+  </section>
+
+  <!-- 변화표 -->
+  <section id="p-s4" role="tabpanel" aria-labelledby="tab-s4" hidden>
+    <p class="figcap">표 1. 1단계 → 2단계 → 3단계에서 달라진 것</p>
+    <div class="tblwrap"><table>
+      <thead><tr><th style="width:13%">구분</th><th>1단계 당초 모델</th><th>2단계 구현 모델</th><th>3단계 현재(10.21)</th></tr></thead>
+      <tbody>
+        <tr><td class="k">적용 인원</td><td>모든 항목 × N* (λ 28.57 일괄)</td><td>항목별 구분. 형사사법·조기사망은 실제 인원, 미취업은 의존 상태 인원만</td><td>N* 668,624명 산출. 항목별 인원은 대부분 미확정</td></tr>
+        <tr><td class="k">형사사법 위치</td><td>간접비용(IC) 아래</td><td>제3장 제3절 + SCᵣ 형사사법분</td><td>검찰 단계·수용만 산출. 경찰·법원·보호관찰 비용 없음</td></tr>
+        <tr><td class="k">신설 항목</td><td>사회혼란(불특정 다수·공포·방어)</td><td>불특정 다수는 제4절 1, 공포·방어는 제5절 2로 분리. 구금 손실·예방예산 항 추가 필요</td><td>CVM 설문 미실시. 공포·방어 계산 불가</td></tr>
+        <tr><td class="k">비용편익 비용</td><td>C = C1 수용 + C2 프로그램 + C3 치료</td><td>ΔC = UC-06 + UC-10 + UC-12/(1+r)^t + ΔM × UC-02. C1(UC-01)은 공통 발생이라 제외</td><td>UC-06만 확보 → ΔC 484만 원(하한)</td></tr>
+        <tr><td class="k">비용편익 편익</td><td>B1 단약 + B2 재범감소 + B3 의료 + B4 생산성</td><td>B = r0 × Δr × SCᵣ × D 단일 경로. B1 삭제, B3·B4는 SCᵣ 안</td><td>SCᵣ 형사사법분만 → B 436만 원</td></tr>
+        <tr><td class="k">효과 추정</td><td>이수·미이수 3년 재복역, PSM·DID</td><td>집계 교차표(서식 9) + 표준화 평균차(서식 10). PSM은 후속</td><td>서식 9·10 미회신 → 문헌 대체, 균형 진단 불가</td></tr>
+        <tr><td class="k">할인율</td><td>PV_a 4%, 비용편익 4.5%</td><td>기본 4.5%, 민감도 3~5%</td><td>4.5% 적용</td></tr>
+        <tr><td class="k">판정 결과</td><td>예비 B/C 0.85 / 1.79 / 2.57</td><td>같은 지표, 새 산식</td><td>부분 B/C 0.90 (Δr 25%면 1.17, 40%면 1.87)</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- ============ 큰 그림 ============ -->
+  <h2>2. 전체 비용구조 큰 그림</h2>
+  <p class="lead">마약류 때문에 우리 사회가 1년 동안 잃는 것을 모두 더한 값이 사회적 비용(SC)이다. 보고서 제3장은 이 손실을 "누가, 무엇을 잃는가"에 따라 여섯 절로 나누어 계산한다. 아래 그림은 그 여섯 절을 뼈대로 모든 비용 칸을 늘어놓고, 그중 재범 1건당 값(SCᵣ)이 제4·5장 비용편익으로 넘어가는 길까지 그린 것이다. 칸마다 1단계 출처, 2단계 요청 서식, 현재 값과 분류를 적었다.</p>
+  <div class="tblwrap"><table class="eq">
+    <thead><tr><th style="width:12%">기호</th><th style="width:20%">이름</th><th>뜻</th><th style="width:34%">해당하는 절</th></tr></thead>
+    <tbody>
+      <tr><td class="mono"><b>SC</b></td><td>사회적 비용 (총액)</td><td>아래 TC와 PGS를 더한 전체 손실. 2025년 한 해 기준</td><td>제6절에서 합계</td></tr>
+      <tr><td class="mono">&nbsp;├ <b>TC</b></td><td>유형비용</td><td>돈으로 바로 잴 수 있는 손실. DC와 IC를 더한 것</td><td>제1~5절 대부분</td></tr>
+      <tr><td class="mono">&nbsp;│ ├ <b>DC</b></td><td>직접비용</td><td>실제로 돈을 쓴 것. 치료비, 예방 예산처럼 지출이 장부에 남는 비용</td><td>제1절 의료·복지 · 제5절 1 예방 예산</td></tr>
+      <tr><td class="mono">&nbsp;│ └ <b>IC</b></td><td>간접비용</td><td>일을 못 해 잃은 소득, 단속·처벌에 들어간 공공 자원, 범죄 피해처럼 마약이 없었다면 생기지 않았을 손실</td><td>제2절 생산성 · 제3절 형사사법 · 제4절 1·3 · 제5절 2</td></tr>
+      <tr><td class="mono">&nbsp;└ <b>PGS</b></td><td>무형비용 (고통)</td><td>사망·중상으로 생긴 고통과 슬픔을 돈으로 환산한 값. 교통사고 비용 계산 방식을 따른다</td><td>제4절 2</td></tr>
+      <tr><td class="mono"><b>λ</b></td><td>암수율 (28.57)</td><td>검거된 1명 뒤에 실제 사용자가 몇 명 있는지 나타내는 배율. 항목마다 곱할지 따로 정한다</td><td>제1·2·4절 일부에만 적용, 제3절에는 적용 안 함</td></tr>
+      <tr><td class="mono"><b>SCᵣ</b></td><td>재복역 1건당 사회적 비용</td><td>출소자 1명이 다시 교도소에 들어올 때 드는 비용. 제1~4절에서 1인당 값을 뽑아 합친다</td><td>제6절에서 산출 → 제4·5장으로</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small" style="margin-top:8px">형사사법 비용은 1단계 설계를 따라 간접비용(IC)에 두었다. 같은 비용을 국가가 실제로 지출한 직접비용으로 분류하는 연구도 있어 보고서에서는 분류 근거를 밝혀야 한다. "연간 총액"은 2025년 한 해 동안 생긴 비용이고, "생애 누적"(제2절 3의 PV_a·코호트)은 새로 중독된 사람이 평생 잃는 손실이라 기준이 달라 더하지 않는다.</p>
+  <h3>절을 읽는 순서</h3>
+  <div class="flowline">
+    <div><b>제1절 의료·복지</b><span>중독을 치료하는 데 실제로 쓴 돈</span><i>DC</i></div>
+    <div><b>제2절 생산성</b><span>아프거나 죽거나 갇혀서 일하지 못해 잃은 소득</span><i>IC</i></div>
+    <div><b>제3절 형사사법</b><span>국가가 단속·재판·수용에 쓴 돈</span><i>IC</i></div>
+    <div><b>제4절 피해자·주위</b><span>범죄 피해자와 가족이 입은 손해와 고통</span><i>IC · PGS</i></div>
+    <div><b>제5절 기타</b><span>예방 예산, 사회 전체의 불안과 방어 비용</span><i>DC · IC</i></div>
+    <div><b>제6절 종합</b><span>모두 더해 총액·1인당·SCᵣ을 낸다</span><i>SC</i></div>
+  </div>
+  <p class="small" style="margin-top:8px">의료·복지가 맨 앞에 오는 이유는 중독자 본인에게 가장 먼저, 가장 직접 생기는 비용이기 때문이다. 이후 본인의 소득 손실(제2절), 국가의 대응 비용(제3절), 다른 사람이 입는 피해(제4절), 사회 전체의 비용(제5절)으로 범위가 넓어진다.</p>
+  <div class="scroll"><div class="map" id="map">
+    <div class="mroot"><b>2025년 마약류 사회적 비용 SC (제3장)</b><span class="f">사회적 비용 SC = 유형비용 TC + 무형비용 PGS = (직접비용 DC + 간접비용 IC) + 무형비용 PGS</span></div>
+    <div class="trunk"></div>
+    <div class="secs" id="secs"></div>
+    <div class="bridge">
+      <div class="bx"><b>SCᵣ 재복역 1건당 사회적 비용</b><br>= 제3절 형사사법(1건당) + 제1절 의료 + 제2절 생산성 + 제4절 2차 피해 귀속분<br><span class="small">현재 형사사법분 5,036만 원만 들어 있음</span></div>
+      <div class="ar">→</div>
+      <div class="bx"><b>제4·5장 비용편익</b><br>B/C = (r0 × Δr × SCᵣ × D) ÷ ΔC<br><span class="small">의료절감·생산성회복을 따로 더하지 않음</span></div>
+    </div>
+    <div class="cbahead"><b>교정 재활 비용편익 (제4·5장)</b><span class="f">1인당 증분비용 ΔC = 프로그램 UC-06 + 치료개입 UC-10 + 사후관리 UC-12/(1+r)^t + 수용기간 차이 ΔM × 변동원가 UC-02</span><span class="f">1인당 편익 B = 기저재범률 r0 × 재범 감소율 Δr × 재복역 1건당 비용 SCᵣ × 할인계수 D · 할인율 r = 4.5%, 5년</span></div>
+    <div class="cba" id="cba"></div>
+  </div></div>
+
+  <!-- ============ 분류별 목록 ============ -->
+  <h2>3. 분류별 정리</h2>
+  <p class="lead">큰 그림의 칸을 다섯 분류로 다시 묶었다. 한 칸에 성격이 둘 이상 섞이면 계산을 막는 쪽을 주 분류로 두고 이유 칸에 함께 적었다.</p>
+  <div id="cats"></div>
+
+  <!-- ============ 자료 목록 ============ -->
+  <h2>4. 3단계 회신 자료 13개</h2>
+  <div class="tblwrap"><table class="files">
+    <thead><tr><th>파일</th><th>내용</th><th>쓰인 곳</th></tr></thead>
+    <tbody>
+      <tr><td>백서 3장 (PDF 180쪽)</td><td>2025 마약류 범죄백서 국내 동향. 단속 23,403명, 유형·연령, 검찰 처분, 1심 5,931명, 실형 2,456명·기간 분포, 치료보호 1,649명, 치료감호 7명, 재범률 29.8%</td><td>N*, SCᵣ 실형 기간, 제2절 3 연령, 제3절 2 사건 수, UC-12 인원</td></tr>
+      <tr><td>백서 4장 (PDF 86쪽)</td><td>국제 동향. 약물사용장애 6,400만 명, 치료율 8.1%</td><td>제1장 배경만. 비용 계산에 쓰지 않음</td></tr>
+      <tr><td>김도균·나종민(2025) (PDF)</td><td>2018~2019 출소 향정 투약사범 931명. 이수 439명 중 178명, 미이수 492명 중 247명 재복역. Cox 위험비 0.805</td><td>서식 9 대체 → r0·r1·Δr</td></tr>
+      <tr><td>서식4 회신 ×3 (xlsx)</td><td>같은 파일 3부. 과정별 이수 인원 2024·2025·2026. 7.</td><td>UC-07·UC-06 분모</td></tr>
+      <tr><td>0907 회신 1 (xlsx)</td><td>서식 7: 의료비 총액·건보 예탁금 2021~2025, 진료 건수, 외부진료 인원. 나머지 9항목 미생산</td><td>수용자 의료비(단위 확인 필요)</td></tr>
+      <tr><td>0907 회신 (xlsx)</td><td>서식 2: 1일 평균 63,680명, 연말 현원 64,626명, 정원 50,614명, 수용률 125.8%, 신입·출소, 기관별 54곳. 서식 3: 연말 현원 7,429명</td><td>UC-01 분모</td></tr>
+      <tr><td>0929 회신 1007 (xlsx)</td><td>서식 2 동일 + 별도요청 8·9: 국립법무병원 결산 85.1~123.6억, 약물중독(2호) 연평균 24~31명</td><td>제3절 3 치료감호</td></tr>
+      <tr><td>0929 회신 (xlsx)</td><td>서식 2 동일 + 별도요청 5·6: 보호관찰 마약류 5,391명, 치료명령 등 332명. 7번 예산은 산출 불가</td><td>제3절 3 보호관찰 인원</td></tr>
+      <tr><td>전담인력 회신 (xlsx)</td><td>서식 5: 4개 기관 각 11명, 직급 구성, 투입비율 64.0·68.2%</td><td>UC-07 인건비</td></tr>
+      <tr><td>요청 2차 (hwpx)</td><td>서식별 담당 부서, 교도소 일반회계 결산 2024 1조 6,741억, 2025 1조 6,992억</td><td>UC-01 상한</td></tr>
+      <tr><td>정보공개 1007 (hwpx)</td><td>대검: 검찰 결산 2024 1조 2,163억·2025 1조 2,879억, 형사 검거 2024 1,405,185명, 마약 검거 23,022·23,403명. 교정영역 질문지는 빈칸</td><td>검찰 단계 1인당 87만 원</td></tr>
+    </tbody>
+  </table></div>
+  <h2>5. 확인할 점</h2>
+  <p class="lead">계산 결과를 보고서에 옮기기 전에 정리해야 할 네 가지이다.</p>
+  <div class="checks">
+    <div class="ck"><span class="no">1</span><h3>서식1 8항목·서식6 총액의 회신 원본 파일이 없음</h3>
+      <dl><dt>무엇이</dt><dd>수용비 원단위(2,378만 원)를 만든 서식1 8항목 집행액과, 재활교육 원가를 만든 서식6 재활예산 총액 59.99억 원은 취합본 엑셀(drug-cost-dashboard)에 "회신(복지과, 26.9.7)"으로 값이 기록되어 있다. 그러나 복지과가 보낸 회신 파일 자체는 이번 13개 파일에도 프로젝트에도 없다.</dd>
+      <dt>쉽게 말하면</dt><dd>숫자와 받은 날짜는 남아 있지만, 그 숫자가 적힌 원래 문서를 보여 줄 수 없는 상태이다. 검토자가 출처를 물으면 엑셀에 옮겨 적은 값밖에 내놓을 것이 없다.</dd>
+      <dt>영향</dt><dd>UC-01, UC-07, UC-06, SCᵣ 형사사법분, 부분 B/C 0.90이 모두 이 두 값에 기대고 있다.</dd>
+      <dt>할 일</dt><dd>1차 취합 때 받은 회신 파일(9.7. 회신 중 서식1·6이 든 파일)을 찾아 프로젝트에 올린다. 없으면 복지과에 재송부를 요청한다.</dd></dl></div>
+    <div class="ck"><span class="no">2</span><h3>수용비 원단위가 세 가지라 기본값을 정해야 함</h3>
+      <dl><dt>무엇이</dt><dd>수용자 1인당 연간 수용비가 2,378만 원, 2,651만 원, 2,396만 원 세 가지로 쓰이고 있다.</dd>
+      <dt>쉽게 말하면</dt><dd>2,378만 원은 회신된 8항목 합 ÷ 63,680명이다(교정·교화 제외, 시설 취득비·교도작업특별회계가 빠진 하한). 2,651만 원은 결산 총액 1조 6,992억 원에서 교정·교화 112억 원을 뺀 1조 6,880억 원 ÷ 63,680명이다(상한). 교정·교화를 빼는 이유는 그 안에 재활예산이 들어 있어 빼지 않으면 재활비가 두 번 잡히기 때문이다. 2,396만 원은 제4장 원고 값으로, 교정·교화를 포함했다.</dd>
+      <dt>영향</dt><dd>어느 값을 쓰느냐에 따라 SCᵣ 형사사법분과 제3절 3 수용비 총액이 최대 약 11% 달라진다.</dd>
+      <dt>할 일</dt><dd>기본값 하나(권장: 2,378만 원, 민감도 상한 2,651만 원)를 정하고 제4장 원고의 2,396만 원을 맞춘다.</dd></dl></div>
+    <div class="ck"><span class="no">3</span><h3>서식7 의료비의 금액 단위가 확인되지 않음</h3>
+      <dl><dt>무엇이</dt><dd>서식7 수용자 의료비가 "원" 단위 칸에 5,095,510으로 적혀 있다.</dd>
+      <dt>쉽게 말하면</dt><dd>그대로 읽으면 전국 교정시설이 한 해 의료비로 510만 원을 썼다는 뜻이 되어 맞지 않는다. 천원 단위로 보면 51억 원이고, 수용자 1인당 연 8.0만 원이다. 지금은 천원이라고 가정해 두었다.</dd>
+      <dt>영향</dt><dd>제1절 수용자 의료비, 치료개입 원가(UC-10) 대리값, 건강보험 예탁금 30.2억 원이 모두 이 가정에 달려 있다.</dd>
+      <dt>할 일</dt><dd>의료과에 전화로 단위를 확인한다. 같은 통화에서 정신과·향정 의약품비를 따로 뽑을 수 있는지도 묻는다.</dd></dl></div>
+    <div class="ck"><span class="no">4</span><h3>서식4 회신 파일 3개가 같은 파일임</h3>
+      <dl><dt>무엇이</dt><dd>올라온 서식4 회신 3개(파일명 끝 1·2·없음)는 내용이 한 글자도 다르지 않다.</dd>
+      <dt>쉽게 말하면</dt><dd>세 번 받은 것이 아니라 같은 파일이 세 번 저장된 것이다. 기수·개시·중도탈락 인원이 담긴 다른 판이 있었는지 확인이 필요하다.</dd>
+      <dt>영향</dt><dd>중도탈락 인원이 없어 UC-06은 이수 인원으로 나눈 값(과대 쪽)이고, 과정유형별 효과도 볼 수 없다.</dd>
+      <dt>할 일</dt><dd>마약사범재활팀에 다른 판이 있는지 묻고, 없으면 개시·탈락 인원을 다시 요청한다.</dd></dl></div>
+  </div>
+  <p class="small" style="margin-top:14px">자료: 제안서 요약본(2026. 8. 20.), 교정본부 자료요청 통합서식, 작성표준 및 제3장 명세(2026. 10. 21.), 인계메모 데이터취합(2026. 10. 21.), 진행판 v4 계산값, 3단계 회신 13개 파일.</p>
+</div>
+
+<script>
+const CATS={
+  A:{n:'A',t:'계산 완료',d:'요청해서 받은 자료로 지금 계산한 부분'},
+  B:{n:'B',t:'미확보·계산 가능',d:'요청 자료는 없지만 문헌·공개통계로 계산했거나 계산할 수 있는 부분'},
+  C:{n:'C',t:'가정 처리',d:'자료 없이 가정값으로 채운 부분. 값이 가정에 따라 바뀜'},
+  R:{n:'R1',t:'계산 불가',d:'자료가 없고 대체 자료도 없어 지금은 계산할 수 없는 부분'},
+  N:{n:'N',t:'신규 산정 필요',d:'2단계 모델을 구현하려면 새로 정의하거나 산정해야 하는 부분'}
+};
+const SECS=[
+ {k:'s1',t:'제1절 의료·복지',s:'DC 직접비용',d:'치료에 실제로 쓴 돈 · λ 적용 방식 결정 필요'},
+ {k:'s2',t:'제2절 생산성 손실',s:'IC 간접비용',d:'일하지 못해 잃은 소득'},
+ {k:'s3',t:'제3절 형사사법',s:'IC 간접비용',d:'단속·재판·수용에 쓴 공공 자원 · λ 적용 안 함'},
+ {k:'s4',t:'제4절 피해자·주위 피해',s:'IC + PGS 무형',d:'피해자·가족의 손해와 고통'},
+ {k:'s5',t:'제5절 기타 사회적 비용',s:'DC + IC',d:'예방 예산, 사회 전체의 불안 · SCᵣ에서 제외'},
+ {k:'s6',t:'제6절 종합',s:'SC 합계',d:'총액 · 1인당 · 민감도'}
+];
+const I=[
+ // 제1절
+ {id:'1-1a',sec:'s1',c:'B',nm:'건강보험·의료급여 진료비',o:'1단계 직접의료비',q:'요청 안 함',val:'',why:'심평원·공단 상병별 진료비(물질 관련 장애)로 계산할 수 있다. 미치료 사용자 보정 방식이 정해지지 않았다.',nx:'심평원 공개 통계 수집, 암수 보정 방식 결정'},
+ {id:'1-1b',sec:'s1',c:'B',nm:'치료보호 국고지원',o:'1단계 직접의료비(국고지원)',q:'별도요청 1~3 · 미회신',val:'2025 1,649명(외래 1,422 · 입원 227)',why:'인원은 백서 표 3-82로 확보했다. 금액은 복지부 사업 예산서(공개)로 채울 수 있다. 2024. 7. 건강보험 적용 이후 1-1a와 겹친다.',nx:'복지부 예산서 확보, 1-1a와 중복 제거'},
+ {id:'1-1c',sec:'s1',c:'C',nm:'교정시설 수용자 의료비',o:'1단계 없음',q:'서식 7 · 4/13',val:'총액 5,095,510(천원 가정 51억) · 1인당 8.0만 원',why:'단위를 천원으로 가정했다. 마약류 수용자 몫은 1인당 평균 × 마약류 인원으로 가정해야 한다. 제3절 3과 한 곳에만 넣는다.',nx:'의료과 단위 확인, 배치 결정'},
+ {id:'1-2',sec:'s1',c:'C',nm:'직접 비의료비 (간접의료비)',o:'1단계 간접의료비 × 38.1%',q:'요청 안 함',val:'',why:'비율 38.1%는 1단계 설계의 가정이다. 출처 보고서명·연도가 확인되지 않았다. 1-1이 정해져야 계산된다.',nx:'한국보건사회연구원 원문 확인, 용어 통일'},
+ {id:'1-3',sec:'s1',c:'N',nm:'정신건강·복지 지원',o:'1단계 의료보조비',q:'요청 안 함',val:'',why:'의료보조비는 이전지출이라 사회적 비용에서 빠진다. 함께한걸음센터·중독관리통합지원센터 운영비, 마퇴본부 재활사업비로 다시 정의해야 한다.',nx:'항 재정의, 예산서·결산 수집'},
+ // 제2절
+ {id:'2-1',sec:'s2',c:'B',nm:'조기 사망 생산성 손실',o:'1단계 조기사망비용(PV)',q:'요청 안 함',val:'',why:'통계청 사망원인통계(약물 중독), 경제활동인구조사, 임금 자료가 모두 공개 자료이다. 사망자가 적어 3개년 평균을 검토한다.',nx:'사망원인통계 수집, r 4.5% 적용'},
+ {id:'2-2',sec:'s2',c:'B',nm:'이환·입원 생산성 손실',o:'1단계 의료이용 생산손실',q:'요청 안 함',val:'',why:'심평원 입원·외래일수와 임금 자료로 계산한다. 외래 1회 = ⅓일은 1단계 설계의 가정이다.',nx:'1-1a와 같은 자료에서 일수 추출'},
+ {id:'2-3a',sec:'s2',c:'N',nm:'구금 기간 생산성 손실',o:'1단계 없음',q:'서식 3 · 미회신',val:'연말 현원 7,429명 (1일 평균 미회신)',why:'목차와 1단계에 자리가 없다. 분모인 마약류 1일 평균 수용인원도 받지 못해 연말 현원으로 대체해야 한다. 2-3b와 같은 기간을 두 번 세지 않게 해야 한다.',nx:'항 신설, 교정통계연보로 1일 평균 추정'},
+ {id:'2-3b',sec:'s2',c:'R',nm:'의존 상태 미취업 손실',o:'1단계 없음',q:'요청 안 함',val:'',why:'N* 중 의존(장애) 상태 비율을 알려주는 자료가 없다. 문헌 비율을 가정으로 들이면 C로 바뀐다.',nx:'국내외 문헌 비율 검토 후 가정 여부 결정'},
+ {id:'2-3c',sec:'s2',c:'C',nm:'연령대별 생애 손실 PV_a',o:'1단계 다항 세대별 손실',q:'요청 안 함',val:'연령별 사범 수 확보(백서 표 3-6)',why:'δ 생산성 손실률, g 임금상승률, 근로 종료 연령이 가정이다. 제안서 예비값 5.8억 원은 r 4% 기준이라 4.5%로 다시 계산한다. 연간 총액에 더하지 않는다.',nx:'δ·g·종료 연령 확정'},
+ {id:'2-3d',sec:'s2',c:'C',nm:'재범 누적 TC_코호트',o:'1단계 다항 재범 누적',q:'서식 8·9',val:'p ≈ r0 50.2%(문헌)',why:'C_1회 = SCᵣ이 완성되어야 계산된다. 재범 시점 t_k는 서식 8이 없어 가정이다. 연간 총액에 더하지 않는다.',nx:'SCᵣ 확정 후 계산'},
+ // 제3절
+ {id:'3-1a',sec:'s3',c:'A',nm:'검찰 단계 비용',o:'1단계 수사·기소',q:'대검 정보공개 · 회신',val:'1인당 87만 원 (2024 결산 1조 2,163억 ÷ 1,405,185명)',why:'검찰 결산과 형사 검거 인원으로 계산했다. 2025 결산(1조 2,879억)은 받았으나 2025 형사 검거 인원이 없어 2024 값을 썼다.',nx:'2025 형사 검거 인원 확보 시 갱신'},
+ {id:'3-1b',sec:'s3',c:'B',nm:'경찰·관세청·해경 수사 비용',o:'1단계 수사',q:'요청 안 함',val:'밀수 사범 1,772명',why:'각 기관 예산서와 범죄통계로 마약 사건 비중만큼 나누어 계산할 수 있다. 배분 비율은 가정이 들어간다.',nx:'예산서 수집, 전담·배분분 구분'},
+ {id:'3-2',sec:'s3',c:'B',nm:'재판·국선변호 비용',o:'1단계 재판',q:'요청 안 함',val:'1심 5,931명 · 구공판 8,193명',why:'사건 수는 백서로 확보했다. 법원 예산과 사건 가중치는 사법연감·법원 예산서(공개)로 채운다.',nx:'사법연감 수집, 검찰 기소 단계와 경계 설정'},
+ {id:'3-3a',sec:'s3',c:'A',nm:'교정 수용 관리비 (UC-01)',o:'1단계 수용',q:'서식 1·2 · 부분',val:'2,378만 원/인·년 · 상한 2,651만 원',why:'8항목 집행액(1차 회신) ÷ 1일 평균 63,680명. 교정시설 취득비·교도작업특별회계가 빠져 하한이다. 마약류 분모는 연말 현원 7,429명을 대신 쓴다.',nx:'제4장 2,396만 원과 하나로 확정'},
+ {id:'3-3b',sec:'s3',c:'B',nm:'보호관찰·이수명령 비용',o:'1단계 보호관찰',q:'별도요청 5~7 · 부분',val:'대상 5,391명 · 치료명령 등 332명',why:'인원은 받았으나 예산은 "별도 편성되지 않아 산출 불가" 회신. 범죄예방정책국 전체 예산을 마약류 비중으로 나누면 계산할 수 있다(배분 가정).',nx:'범죄예방정책국 예산서 확보'},
+ {id:'3-3c',sec:'s3',c:'B',nm:'치료감호 (국립법무병원 2호)',o:'1단계 치료감호',q:'별도요청 8~9 · 회신',val:'결산 123.6억(2025) · 2호 연평균 24명',why:'결산은 병원 전체 값이다. 2호 몫은 전체 수용인원 대비 비율로 나누어야 하는데 전체 인원은 받지 않았다(공개 통계로 확보 가능). 제1절과 한 곳에만 넣는다.',nx:'전체 수용인원 확보, 배치 결정'},
+ // 제4절
+ {id:'4-1',sec:'s4',c:'B',nm:'2차 범죄 직접 피해 (불특정 다수)',o:'1단계 사회혼란 · 불특정 다수 피해',q:'요청 안 함',val:'',why:'대검 범죄분석(범행 시 정신상태), 경찰 약물운전 통계로 건수를 구할 수 있다. 원단위는 Heeks 외(2018) 환산이라 환산 가정이 들어간다.',nx:'건수 자료 수집, 환산 방법 명시'},
+ {id:'4-2a',sec:'s4',c:'B',nm:'피해자 사망·중상 PGS',o:'1단계 사망 PGS',q:'요청 안 함',val:'',why:'KOTI 사망·중상 PGS 원단위는 공개되어 있다. 사망자 수는 2-1과 같은 자료를 쓴다.',nx:'심상우 외(2023) 원단위 적용'},
+ {id:'4-2b',sec:'s4',c:'N',nm:'중독자 본인 고통 PGS',o:'1단계 중독 PGS',q:'요청 안 함',val:'',why:'1단계는 중독자 수(N*) × 중상 원단위였다. N* 66만 명에 곱하면 과대가 된다. 포함 여부와 적용 인원(의존 상태 인원)을 새로 정해야 한다.',nx:'팀 결정: 포함 여부, 적용 인원'},
+ {id:'4-3',sec:'s4',c:'R',nm:'가족·주변인 케어',o:'1단계 가족·지역사회 파급',q:'요청 안 함',val:'',why:'1단계에도 산식이 없고, 돌봄 시간·아동보호 조치 실태 자료가 없다. 정성 기술과 향후 과제로 둔다.',nx:'CVM 설문에 문항 추가 검토'},
+ // 제5절
+ {id:'5-1',sec:'s5',c:'N',nm:'예방·홍보·R&D 예산',o:'1단계 없음',q:'요청 안 함',val:'',why:'1단계에 없는 항목이다. 마약류 관리 기본계획 소요예산과 부처 예산서로 계산할 수 있으나 제1절 3·제3절과 겹치는 사업을 먼저 가려야 한다.',nx:'항 신설, 중복 사업 제외 기준'},
+ {id:'5-2a',sec:'s5',c:'R',nm:'범죄 공포 (WTP)',o:'1단계 사회혼란 · 범죄 공포',q:'연구진 CVM 설문',val:'',why:'CVM 설문(1,000명)이 실시되지 않아 지불용의액이 없다.',nx:'설문 실시 여부·일정 결정'},
+ {id:'5-2b',sec:'s5',c:'R',nm:'방어적 행동',o:'1단계 사회혼란 · 방어행동',q:'연구진 설문',val:'',why:'방어행동 유형별 실행률과 지출액 자료가 없다.',nx:'설문 또는 문헌값 대체 결정'},
+ // 제6절
+ {id:'6-1',sec:'s6',c:'A',nm:'N* 실질 사용자 수',o:'1단계 총괄식',q:'백서 · 문헌',val:'668,624명 (23,403명 × 28.57)',why:'단속 인원(백서 표 3-1)과 암수율(박성수·백민석, 2019)로 계산했다.',nx:'λ 1·10·28.57 민감도'},
+ {id:'6-2',sec:'s6',c:'N',nm:'λ 10 비교·GDP 대비 비율',o:'1단계 기대효과',q:'—',val:'비교 기준 2조 2,389억(2016)',why:'박성수(2018)와 같은 조건(λ 10) 비교, 사범 수·물가 변화 분리, GDP 대비 비율은 2단계 산식에 없다.',nx:'제6절 산출 틀 작성'},
+ {id:'6-3',sec:'s6',c:'N',nm:'연간 총액 ↔ 생애 누적 분리표',o:'1단계에 구분 없음',q:'—',val:'',why:'횡단 연간 총액과 PV_a·코호트 누적은 기준이 달라 더하지 않는다. 별도 표 틀이 필요하다.',nx:'표 틀 작성'}
+];
+const CB=[
+ // 비용 ΔC
+ {id:'CB-1',grp:'ΔC 비용',c:'A',nm:'UC-07 재활교육 1인시당 원가',o:'1단계 C2 프로그램',q:'서식 4·5·6',val:'85,562원/인시',why:'재활예산 59.99억 + 전담인력 직접투입 인건비 16.98억 ÷ 이수 인시 89,960. 인건비는 봉급표 환산, 2026 신설 조직을 2025 대리값으로 썼다.',nx:'서식6 예산/집행 구분 확인'},
+ {id:'CB-2',grp:'ΔC 비용',c:'C',nm:'UC-06 과정유형별 1인당 원가',o:'1단계 C2',q:'서식 4',val:'평균 484만 · 기본 342 · 집중 684 · 심화 1,027 · 회복이음 1,369만 원',why:'과정시간 비례로 배부했다. 개시·중도탈락 인원이 없어 분모를 이수 인원으로 썼다(과대 쪽).',nx:'개시·탈락 인원 재요청'},
+ {id:'CB-3',grp:'ΔC 비용',c:'R',nm:'UC-10 치료개입 원가',o:'1단계 C3 치료',q:'서식 7 6·12번 · 미생산',val:'0으로 둠',why:'정신과·향정 의약품비와 치료개입 대상 인원 모두 "별도 생산하지 않음" 회신. 수용자 평균 의료비로 대리하면 C로 바뀐다.',nx:'대리값 사용 여부 결정'},
+ {id:'CB-4',grp:'ΔC 비용',c:'B',nm:'UC-12 사후관리 원가',o:'1단계 없음',q:'별도요청 1~3 · 미회신',val:'0으로 둠 · 치료보호 1,649명',why:'복지부 회신이 없다. 인원은 백서, 예산은 복지부 공개 예산서로 채울 수 있다. 빠지면 비용 과소·편익 과대.',nx:'복지부 공문 재발송 또는 예산서 사용'},
+ {id:'CB-5',grp:'ΔC 비용',c:'C',nm:'ΔM × UC-02 수용기간 차이',o:'1단계 C1 수용(제외)',q:'서식 1·3',val:'UC-02 8,615원/일 · ΔM = 0',why:'변동원가에 공공요금 50%를 가정했다. 이수·미이수 수용기간 차이는 자료가 없어 0으로 두었다.',nx:'치료조건부 가석방 시 음수 가능성 검토'},
+ // 편익
+ {id:'CB-6',grp:'B 편익',c:'B',nm:'r0 · r1 · Δr',o:'1단계 B2 재범감소',q:'서식 9 · 문헌 대체',val:'r0 50.2% · r1 40.6% · Δr 19.2%',why:'김도균·나종민(2025) 931명으로 계산했다. 추적 기간이 5~6.7년이라 "3년 내"가 아니고, 현행 4단계 과정 이전 대상이다.',nx:'현행 과정 기준 교차표 요청'},
+ {id:'CB-7',grp:'B 편익',c:'C',nm:'hₜ 경과기간별 재복역 → D',o:'1단계 없음',q:'서식 8 · 미회신',val:'D = 0.897 (3년 내 비중 79.6% 가정)',why:'2024·2025 출소자에게 3년 추적을 물어 값이 나올 수 없는 요청이었다. 4~5년차는 외삽해야 한다.',nx:'2019~2022 출소 코호트로 재요청'},
+ {id:'CB-8',grp:'B 편익',c:'A',nm:'SCᵣ 형사사법분',o:'1단계 B2 "재범 1건당 비용"',q:'서식 1·2, 백서, 대검',val:'5,036만 원/건',why:'평균 실형 2.45년(백서 표 3-69) × 실제 복역 85%(가정) × UC-01 + 검찰 87만 원. 복역 비율만 가정이다.',nx:'제3절 결과로 대체(법원·보호관찰 추가)'},
+ {id:'CB-9',grp:'B 편익',c:'N',nm:'SCᵣ 비형사사법분',o:'1단계 B3 의료절감 · B4 생산성회복',q:'요청 안 함',val:'',why:'재중독 기간 1인당 의료(제1절)·생산성(제2절)·2차 피해(제4절) 값. 2단계 편익 산식의 핵심인데 요청서에도 1단계에도 원단위 자리가 없다.',nx:'제1·2·4절에서 1인당 값 산출'},
+ // 판정·검증
+ {id:'CB-10',grp:'판정·검증',c:'R',nm:'선택편의 점검 (SMD)',o:'1단계 PSM·DID',q:'서식 10 · 미회신',val:'',why:'이수·미이수 집단의 연령·형기·전과 집계가 없어 균형 진단을 할 수 없다.',nx:'서식 9와 함께 요청'},
+ {id:'CB-11',grp:'판정·검증',c:'R',nm:'중도탈락·과정유형별 효과',o:'1단계 없음',q:'서식 4·9',val:'',why:'중도탈락 인원과 과정유형별 재복역이 없다. 과정별 B/C(1.27~0.32)는 같은 Δr을 넣은 값이다.',nx:'과정유형별 교차표 요청'},
+ {id:'CB-12',grp:'판정·검증',c:'N',nm:'KEY 산식 정정',o:'—',q:'통합서식 KEY 설명',val:'',why:'서식의 최종 산식이 아직 "SC"이고 UC-12 할인이 없다. SCᵣ, UC-12/(1+r)^t로 고쳐야 한다. UC-01 원단위도 2,378·2,396·2,651만 원 중 하나로 확정한다.',nx:'서식·원고 동시 수정'}
+];
+const ALL=I.concat(CB);
+function leaf(x){
+  return `<div class="leaf t${x.c}" data-c="${x.c}"><div class="top"><span class="id">${x.id}</span><span class="nm">${x.nm}</span><span class="chip c${x.c}">${CATS[x.c].n}</span></div>`+
+  `<div class="meta">${x.o} · ${x.q}</div>`+(x.val?`<div class="val">${x.val}</div>`:'')+`</div>`;
+}
+// 범례
+const cnt={};ALL.forEach(x=>cnt[x.c]=(cnt[x.c]||0)+1);
+const lg=document.getElementById('legend');
+lg.innerHTML=Object.keys(CATS).map(k=>`<button class="lg" aria-pressed="false" data-k="${k}"><span class="chip c${k}">${CATS[k].n}</span><span><b>${CATS[k].t}</b><small>${CATS[k].d}</small></span><span class="cnt">${cnt[k]||0}</span></button>`).join('');
+// 큰 그림
+document.getElementById('secs').innerHTML=SECS.map(s=>`<div class="sec"><div class="sh"><b>${s.t}</b><span class="sym">${s.s}</span></div><div class="sd">${s.d}</div>${I.filter(x=>x.sec===s.k).map(leaf).join('')}</div>`).join('');
+const G=['ΔC 비용','B 편익','판정·검증'];
+document.getElementById('cba').innerHTML=G.map(g=>`<div class="sec"><div class="sh"><b>${g}</b></div>${CB.filter(x=>x.grp===g).map(leaf).join('')}</div>`).join('');
+// 분류별 목록
+document.getElementById('cats').innerHTML=Object.keys(CATS).map(k=>{
+  const rows=ALL.filter(x=>x.c===k);
+  return `<div class="catsec"><div class="cathead"><span class="chip c${k}">${CATS[k].n}</span><h3>${CATS[k].t} · ${rows.length}건</h3></div><p class="catdesc">${CATS[k].d}</p>`+
+  `<div class="tblwrap"><table><thead><tr><th style="width:7%">칸</th><th style="width:19%">항목</th><th style="width:18%">현재 값</th><th>이 분류인 이유</th><th style="width:19%">다음 조치</th></tr></thead><tbody>`+
+  rows.map(x=>`<tr><td class="mono">${x.id}</td><td><b>${x.nm}</b><div class="small">${x.o}</div></td><td class="num">${x.val||'—'}</td><td>${x.why}</td><td>${x.nx}</td></tr>`).join('')+
+  `</tbody></table></div></div>`;}).join('');
+// 2-2 행렬
+const COLS=[
+ {k:'f1',l:'서식<br>1',s:'part',g:'r'},{k:'f2',l:'서식<br>2',s:'got',g:'r'},{k:'f3',l:'서식<br>3',s:'no',g:'r'},{k:'f4',l:'서식<br>4',s:'part',g:'r'},
+ {k:'f5',l:'서식<br>5',s:'got',g:'r'},{k:'f6',l:'서식<br>6',s:'part',g:'r'},{k:'f7',l:'서식<br>7',s:'part',g:'r'},{k:'f8',l:'서식<br>8',s:'no',g:'r'},
+ {k:'f9',l:'서식<br>9',s:'sub',g:'r'},{k:'f10',l:'서식<br>10',s:'no',g:'r'},{k:'f11',l:'서식<br>11·12',s:'no',g:'r'},{k:'sep',l:'별도<br>요청',s:'part',g:'r'},
+ {k:'bk',l:'범죄<br>백서',s:'got',g:'x'},{k:'spo',l:'대검<br>정보공개',s:'got',g:'x'},{k:'lit',l:'선행<br>논문',s:'got',g:'x'},
+ {k:'pub',l:'공개통계<br>예산서',s:'todo',g:'o'},{k:'svy',l:'CVM<br>설문',s:'no',g:'o'},{k:'asm',l:'가정',s:'asm',g:'o'},{k:'none',l:'대응<br>자료 없음',s:'none',g:'o'}
+];
+const ST={got:'회신·확보',part:'부분 회신',no:'미회신·미실시',sub:'미회신 → 문헌 대체',todo:'수집 필요(아직 안 함)',asm:'가정값',none:'필요 자료가 없음'};
+const SRC={'1-1a':'pub','1-1b':'sep bk? pub','1-1c':'f7 f2? f3? asm?','1-2':'asm','1-3':'pub','2-1':'pub asm?','2-2':'pub asm?','2-3a':'f3 f2? pub','2-3b':'none pub?','2-3c':'bk pub asm','2-3d':'f8 f9 lit? asm?',
+ '3-1a':'spo','3-1b':'pub bk? asm?','3-2':'bk pub','3-3a':'f1 f2 f3? bk?','3-3b':'sep pub asm?','3-3c':'sep pub?','4-1':'pub asm?','4-2a':'pub','4-2b':'none pub?','4-3':'svy none','5-1':'pub','5-2a':'svy','5-2b':'svy','6-1':'bk lit','6-2':'pub','6-3':'',
+ 'CB-1':'f4 f5 f6 f1?','CB-2':'f4 f6 asm?','CB-3':'f7 none?','CB-4':'sep bk? pub?','CB-5':'f1 f2 f3? asm','CB-6':'f9 lit f8?','CB-7':'f8 lit? asm','CB-8':'f1 f2 bk spo asm?','CB-9':'pub none?','CB-10':'f10','CB-11':'f4 f9','CB-12':'f11?'};
+function parse(s){const m={};(s||'').split(/\s+/).filter(Boolean).forEach(t=>{const a=t.endsWith('?');m[a?t.slice(0,-1):t]=a?'a':'d'});return m}
+const ROWS=[...SECS.map(s=>({h:s.t,items:I.filter(x=>x.sec===s.k)})),...G.map(g=>({h:'비용편익 · '+g,items:CB.filter(x=>x.grp===g)}))];
+let h='<thead><tr class="mgrp"><th class="rh"></th><th colspan="12">2단계 요청 자료 (교정본부 12건 + 타 기관)</th><th colspan="3" class="gl">3단계에 추가 확보한 자료</th><th colspan="4" class="gl">요청서 밖 · 아직 없음</th><th class="gl"></th></tr>';
+h+='<tr><th class="rh" style="text-align:left">구현 모델의 칸</th>'+COLS.map((c,i)=>`<th class="${(i==12||i==15)?'gl':''}">${c.l}</th>`).join('')+'<th class="gl">분류</th></tr>';
+h+='<tr><th class="rh small" style="text-align:left;font-weight:400">10.21 자료 상태 →</th>'+COLS.map((c,i)=>`<th class="st s${c.s} ${(i==12||i==15)?'gl':''}">${ST[c.s].split(/[·(→ ]/)[0]}</th>`).join('')+'<th class="gl"></th></tr></thead><tbody>';
+const colCount={};
+ROWS.forEach(r=>{h+=`<tr class="sep"><td class="rh">${r.h}</td><td colspan="${COLS.length+1}"></td></tr>`;
+ r.items.forEach(x=>{const m=parse(SRC[x.id]);h+=`<tr><td class="rh"><span class="id">${x.id}</span>${x.nm}</td>`+
+  COLS.map((c,i)=>{const v=m[c.k];if(v)colCount[c.k]=(colCount[c.k]||0)+1;return `<td class="cell ${v?'s'+c.s:''} ${(i==12||i==15)?'gl':''}" ${v?`title="${ST[c.s]} · ${v==='d'?'직접 투입':'보조'}"`:''}>${v==='d'?'●':v==='a'?'○':''}</td>`}).join('')+
+  `<td class="gl"><span class="chip c${x.c}">${CATS[x.c].n}</span></td></tr>`;});});
+h+='</tbody><tfoot><tr><td class="rh">이 자료가 걸린 칸 수</td>'+COLS.map((c,i)=>`<td class="${(i==12||i==15)?'gl':''}">${colCount[c.k]||0}</td>`).join('')+'<td class="gl"></td></tr></tfoot>';
+document.getElementById('mx').innerHTML=h;
+document.getElementById('slegend').innerHTML=Object.keys(ST).map(k=>`<span><i class="sw s${k}">●</i>${ST[k]}</span>`).join('');
+// 계산 가능 범위 막대
+const reqKeys=COLS.filter(c=>c.g==='r').map(c=>c.k);
+const inReq=ALL.filter(x=>Object.keys(parse(SRC[x.id])).some(k=>reqKeys.includes(k))).length;
+const ok=ALL.filter(x=>'ABC'.includes(x.c)).length;
+document.getElementById('mxsum').innerHTML=`구현 모델 ${ALL.length}칸 중 2단계 요청 자료가 하나라도 걸린 칸은 ${inReq}칸이다. 지금 계산했거나 확보·추정할 자료로 계산할 수 있는 칸(A·B·C)은 ${ok}칸(${Math.round(ok/ALL.length*100)}%)이고, 계산할 수 없거나(R1) 새로 정의해야 하는(N) 칸이 ${ALL.length-ok}칸이다.`;
+const order=['A','B','C','R','N'];
+document.getElementById('bars').innerHTML=ROWS.map(r=>{const n=r.items.length;const c={};r.items.forEach(x=>c[x.c]=(c[x.c]||0)+1);const g=(c.A||0)+(c.B||0)+(c.C||0);
+ return `<div class="bar"><span>${r.h.replace('비용편익 · ','비용편익 ')}</span><div class="track">${order.filter(k=>c[k]).map(k=>`<span class="c${k}" style="width:${c[k]/n*100}%" title="${CATS[k].t} ${c[k]}칸">${CATS[k].n} ${c[k]}</span>`).join('')}</div><span class="r">계산 가능 ${g}/${n}</span></div>`}).join('');
+// 범례 강조
+let sel=null;const map=document.getElementById('map');
+lg.addEventListener('click',e=>{const b=e.target.closest('.lg');if(!b)return;const k=b.dataset.k;sel=(sel===k)?null:k;
+  lg.querySelectorAll('.lg').forEach(x=>x.setAttribute('aria-pressed',x.dataset.k===sel?'true':'false'));
+  map.classList.toggle('dim',!!sel);map.querySelectorAll('.leaf').forEach(l=>l.classList.toggle('on',l.dataset.c===sel));
+  if(sel)map.closest('.scroll').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});});
+// 탭
+const tabs=[...document.querySelectorAll('[role=tab]')];
+function show(id){tabs.forEach(t=>{const on=t.id===id;t.setAttribute('aria-selected',on);document.getElementById(t.getAttribute('aria-controls')).hidden=!on;});try{localStorage.setItem('costmap-tab',id)}catch(e){}}
+tabs.forEach(t=>t.addEventListener('click',()=>show(t.id)));
+try{const s=localStorage.getItem('costmap-tab');if(s&&document.getElementById(s))show(s)}catch(e){}
+</script>
+</body>
+</html>

@@ -1,0 +1,437 @@
+<title>교정 중독재활 비용편익 진행판</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: 보고서 부록처럼 위에서 아래로 — 요약 띠 → 비용 구성 흐름도(원가중심점별 행) → 산식 → 진행표 → 민감도 → 자료 검토 */
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#1b2333; --muted:#5d6678; --line:#d9dee7; --navy:#1f3864;
+  --in:#8a6a3f;  --in-bg:#f3ebe1;   /* 투옥 */
+  --pg:#2f5d95;  --pg-bg:#e6eef8;   /* 투입 */
+  --tx:#3c7a5a;  --tx-bg:#e4f0e9;   /* 치료 */
+  --cu:#7a5a95;  --cu-bg:#efe8f5;   /* 감호 */
+  --oc:#a8741f;  --oc-bg:#f8eedc;   /* 성과 */
+  --mt:#6b7280;  --mt-bg:#eceef1;   /* 정합성 */
+  --ok:#1f7a4a; --ok-bg:#dff1e6; --part:#9a6200; --part-bg:#fdf0d5; --no:#b3261e; --no-bg:#fbe3e1; --alt:#2f5d95; --alt-bg:#e2ecf8;
+  --key:#fbe7d9; --new:#b8571a;
+  --f-sans:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12161e; --panel:#1a202b; --ink:#e6e9ef; --muted:#9aa3b5; --line:#2e3646; --navy:#9db8e6;
+  --in:#d2b28a; --in-bg:#2c251c; --pg:#8fb6e8; --pg-bg:#1b2738; --tx:#8fcfac; --tx-bg:#1a2b23; --cu:#c3a6de; --cu-bg:#261e30;
+  --oc:#e2b469; --oc-bg:#2e2617; --mt:#a7adb8; --mt-bg:#232933;
+  --ok:#7fd3a3; --ok-bg:#183326; --part:#f0c26a; --part-bg:#33290f; --no:#f19a92; --no-bg:#3a1c1a; --alt:#8fb6e8; --alt-bg:#1b2738; --key:#3a2a1e; --new:#f0a067;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12161e; --panel:#1a202b; --ink:#e6e9ef; --muted:#9aa3b5; --line:#2e3646; --navy:#9db8e6;
+  --in:#d2b28a; --in-bg:#2c251c; --pg:#8fb6e8; --pg-bg:#1b2738; --tx:#8fcfac; --tx-bg:#1a2b23; --cu:#c3a6de; --cu-bg:#261e30;
+  --oc:#e2b469; --oc-bg:#2e2617; --mt:#a7adb8; --mt-bg:#232933;
+  --ok:#7fd3a3; --ok-bg:#183326; --part:#f0c26a; --part-bg:#33290f; --no:#f19a92; --no-bg:#3a1c1a; --alt:#8fb6e8; --alt-bg:#1b2738; --key:#3a2a1e; --new:#f0a067;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-sans);font-size:14px;line-height:1.6}
+.wrap{max-width:1180px;margin:0 auto;padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:28px}
+h1{font-size:1.6rem;line-height:1.3;margin:0;text-wrap:balance;font-weight:700}
+h2{font-size:1.1rem;margin:0 0 4px;text-wrap:balance}
+.eyebrow{font-size:.72rem;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;font-family:var(--f-mono)}
+.sub{color:var(--muted);margin:4px 0 0;max-width:72ch}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+section{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:20px;display:grid;gap:14px;min-width:0}
+.sechead{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 16px;align-items:baseline}
+.sechead p{margin:0;color:var(--muted);font-size:.85rem}
+
+/* 요약 띠 */
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.stat{border:1px solid var(--line);background:var(--panel);border-radius:6px;padding:12px 14px;display:grid;gap:2px}
+.stat b{font-family:var(--f-mono);font-size:1.35rem;font-variant-numeric:tabular-nums}
+.stat span{font-size:.78rem;color:var(--muted)}
+.stat.key{background:var(--key)}
+.bar{display:flex;height:10px;border-radius:3px;overflow:hidden;border:1px solid var(--line)}
+.bar i{display:block}
+
+/* 상태 표지 */
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:.72rem;font-weight:600;padding:1px 8px;border-radius:999px;white-space:nowrap;border:1px solid transparent}
+.pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.s-ok{color:var(--ok);background:var(--ok-bg)} .s-part{color:var(--part);background:var(--part-bg)}
+.s-no{color:var(--no);background:var(--no-bg)} .s-alt{color:var(--alt);background:var(--alt-bg)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:.78rem;color:var(--muted);align-items:center}
+
+/* 흐름도 */
+.flow-scroll{overflow-x:auto}
+.flow{display:grid;grid-template-columns:minmax(190px,1.1fr) 26px minmax(170px,.9fr) 26px minmax(260px,1.6fr) 26px minmax(150px,.8fr);gap:10px 0;min-width:900px}
+.colh{font-size:.72rem;color:var(--muted);letter-spacing:.04em;border-bottom:2px solid var(--ink);padding-bottom:6px;margin-bottom:4px;font-weight:600}
+.arrow{display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:1rem}
+.reqs{display:grid;gap:4px;align-content:center}
+.req{font-size:.78rem;border:1px solid var(--line);border-radius:4px;padding:3px 8px;display:flex;justify-content:space-between;gap:6px;align-items:center;background:var(--panel)}
+.req.core{font-weight:700}
+.cc{border-radius:6px;padding:10px 12px;display:grid;align-content:center;gap:2px;border:1.5px solid}
+.cc strong{font-size:.9rem}
+.cc small{font-family:var(--f-mono);font-size:.72rem;color:var(--muted)}
+.c-in{background:var(--in-bg);border-color:var(--in)} .c-pg{background:var(--pg-bg);border-color:var(--pg)}
+.c-tx{background:var(--tx-bg);border-color:var(--tx)} .c-cu{background:var(--cu-bg);border-color:var(--cu);border-style:dashed}
+.c-oc{background:var(--oc-bg);border-color:var(--oc)} .c-mt{background:var(--mt-bg);border-color:var(--mt)}
+.ucs{display:grid;gap:6px;align-content:center}
+.uc{border:1px solid var(--line);border-radius:5px;padding:7px 10px;background:var(--panel);display:grid;gap:2px}
+.uc .top{display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap}
+.uc .id{font-family:var(--f-mono);font-size:.74rem;font-weight:600}
+.uc .v{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-weight:600}
+.uc .d{font-size:.74rem;color:var(--muted)}
+.uc.miss{border-style:dashed;border-color:var(--no)}
+.term{border-radius:6px;padding:10px;display:grid;align-content:center;gap:4px;border:1px solid var(--line);background:var(--bg);font-size:.8rem}
+.term b{font-family:var(--f-mono)}
+.rowgap{grid-column:1/-1;height:4px}
+
+/* 산식 */
+.eq{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.eqbox{border:1px solid var(--line);border-radius:6px;padding:14px;display:grid;gap:6px;min-width:0}
+.eqbox.final{background:var(--navy);border-color:var(--navy);color:var(--bg)}
+.eqbox.final .muted{color:var(--bg);opacity:.8}
+.eqbox h3{margin:0;font-size:.95rem}
+.eqline{font-family:var(--f-mono);font-size:.82rem;overflow-wrap:anywhere}
+.terms{display:grid;gap:3px;font-size:.8rem}
+.terms div{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dotted var(--line);padding-bottom:2px}
+.terms span:last-child{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.muted{color:var(--muted)}
+.big{font-family:var(--f-mono);font-size:1.9rem;font-weight:600;line-height:1.1}
+
+/* 표 */
+.tscroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:860px;font-size:.82rem}
+th,td{border-bottom:1px solid var(--line);padding:8px 8px;text-align:left;vertical-align:top}
+th{font-size:.74rem;color:var(--muted);font-weight:600;letter-spacing:.03em;background:var(--bg);position:sticky;top:0}
+td.n{font-family:var(--f-mono);white-space:nowrap}
+td .doing{display:block;margin-top:4px;color:var(--part);font-weight:600}
+td .doing::before{content:"진행 중 · ";font-weight:700}
+tr.core td:nth-child(2){font-weight:700}
+
+/* 민감도 */
+.sens{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:760px){.sens{grid-template-columns:1fr}}
+svg text{fill:var(--ink);font-family:var(--f-mono);font-size:11px}
+svg .mut{fill:var(--muted)}
+.notes{margin:0;padding-left:1.1em;display:grid;gap:6px;font-size:.85rem}
+.notes li{max-width:70ch}
+
+.docs{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.doc{border:1px solid var(--line);border-radius:6px;padding:12px 14px;display:grid;gap:6px;align-content:start;min-width:0}
+.doc h3{margin:0;font-size:.9rem}
+.doc p{margin:0;font-size:.8rem;color:var(--muted)}
+.doc ul{margin:0;padding-left:1.1em;font-size:.8rem;display:grid;gap:3px}
+footer{font-size:.75rem;color:var(--muted)}
+</style>
+<style>
+/* v2 추가: 13건 상세, 점검 패널, 로딩/오류 */
+.detail{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.scol{border:1px solid var(--line);border-radius:6px;display:grid;align-content:start;min-width:0}
+.scol header{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line)}
+.scol header b{font-family:var(--f-mono);font-size:1.5rem;line-height:1}
+.scol.k-ok header{background:var(--ok-bg);color:var(--ok)} .scol.k-part header{background:var(--part-bg);color:var(--part)}
+.scol.k-no header{background:var(--no-bg);color:var(--no)} .scol.k-alt header{background:var(--alt-bg);color:var(--alt)}
+.scol ol{list-style:none;margin:0;padding:6px 12px 10px;display:grid;gap:8px}
+.scol li{display:grid;gap:1px;font-size:.8rem}
+.scol li .t{display:flex;gap:6px;align-items:baseline;justify-content:space-between}
+.scol li .t span:first-child{font-weight:600}
+.scol li .m{color:var(--muted);font-size:.74rem}
+.scol .empty{color:var(--muted);font-size:.8rem;padding:10px 12px}
+.fill{display:grid;gap:5px}
+.frow{display:grid;grid-template-columns:minmax(150px,220px) 1fr 64px;gap:10px;align-items:center;font-size:.78rem}
+.frow .track{height:9px;background:var(--bg);border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.frow .track i{display:block;height:100%}
+.frow .n{font-family:var(--f-mono);text-align:right;font-variant-numeric:tabular-nums}
+@media (max-width:560px){.frow{grid-template-columns:1fr 56px}.frow .track{grid-column:1/-1;order:3}}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.fact{border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-size:.8rem;display:grid;gap:4px;min-width:0;align-content:start}
+.fact h3{margin:0;font-size:.82rem}
+.fact ul{margin:0;padding-left:1.1em;display:grid;gap:2px}
+.checks{display:grid;gap:4px;font-size:.8rem}
+.ck{display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:8px;align-items:baseline;border-bottom:1px dotted var(--line);padding:3px 0}
+.ck .mark{font-weight:700}
+.ck.pass .mark{color:var(--ok)} .ck.fail .mark{color:var(--no)} .ck.fail{background:var(--no-bg)}
+.ck .x{font-family:var(--f-mono);font-size:.72rem;color:var(--muted);text-align:right}
+.loading,.err{padding:24px;border:1px dashed var(--line);border-radius:6px;color:var(--muted)}
+.err{color:var(--no);border-color:var(--no);background:var(--no-bg)}
+.hist{margin:0;padding-left:1.1em}
+/* v3: 사회적 비용 나무 */
+.tree-scroll{overflow-x:auto;padding-bottom:6px}
+.tree{width:max-content;min-width:100%}
+.tree ul{list-style:none;margin:0;padding:0 0 0 24px;position:relative;display:flex;flex-direction:column;justify-content:center}
+.tree ul::before{content:"";position:absolute;left:0;top:50%;width:12px;border-top:1.5px solid var(--line)}
+.tree li{display:flex;align-items:center;position:relative;padding:4px 0 4px 12px}
+.tree li::before{content:"";position:absolute;left:0;top:0;bottom:0;border-left:1.5px solid var(--line)}
+.tree li::after{content:"";position:absolute;left:0;top:50%;width:12px;border-top:1.5px solid var(--line)}
+.tree li:first-child::before{top:50%}
+.tree li:last-child::before{bottom:50%}
+.tree li:only-child::before{display:none}
+.tree>ul{padding-left:0}
+.tree>ul::before{display:none}
+.tree>ul>li{padding-left:0}
+.tree>ul>li::before,.tree>ul>li::after{display:none}
+.nd{border:1.5px solid var(--line);border-radius:6px;padding:7px 10px;background:var(--panel);display:grid;gap:3px;justify-items:start;text-align:left;width:178px;font-size:.76rem;line-height:1.35;flex:none}
+.nd b{font-size:.8rem}
+.nd .s{color:var(--muted);font-size:.7rem}
+.nd .vv{font-family:var(--f-mono);font-size:.72rem;font-weight:600}
+.nd.l0{background:var(--navy);border-color:var(--navy);color:var(--bg);width:196px}
+.nd.l0 .s{color:var(--bg);opacity:.85}
+.nd.l1{background:var(--pg);border-color:var(--pg);color:var(--panel)}
+.nd.l1 .s{color:var(--panel);opacity:.85}
+.nd.l2{background:var(--pg-bg);border-color:var(--pg)}
+.nd.new{border-color:var(--new);border-width:2px;color:var(--new)}
+.nd.new .s{color:var(--new)}
+.nd .newtag{font-size:.64rem;font-weight:700;color:var(--new);letter-spacing:.04em}
+.nd.miss{border-style:dashed}
+.nd.l3{width:160px}
+.tree li li li li .nd{width:196px}
+.treefoot{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.78rem;color:var(--muted);align-items:center}
+a{color:var(--navy)}
+.stat b{font-size:clamp(1.02rem,3.6vw,1.35rem);overflow-wrap:anywhere}
+@media (max-width:560px){.summary{grid-template-columns:1fr 1fr}.summary .stat:first-child{grid-column:1/-1}}
+</style>
+
+<div class="wrap" id="app">
+  <div class="loading">진행판을 불러오는 중입니다.</div>
+</div>
+
+<script>
+(function(){
+'use strict';
+/* ────────────────────────────────────────────────────────────────
+   화면 파일(렌더러). 내용은 모두 data.json에서 읽습니다.
+   이 파일은 수치·문구를 담지 않으므로 갱신할 때 고치지 않습니다.
+   ──────────────────────────────────────────────────────────────── */
+const STATUS = { // 허용 상태값 → 표지 색과 화면 표기
+  '완료':['s-ok','완료'], '부분':['s-part','부분'], '미회신':['s-no','미회신'], '문헌대체':['s-alt','문헌 대체'], '추가':['s-ok','추가 반영'],
+  '반영':['s-ok','반영'], '가정':['s-part','가정'], '미반영':['s-no','미반영']
+};
+const COUNT_ORDER = ['완료','부분','미회신','문헌대체'];
+const KIND = {'완료':'k-ok','부분':'k-part','미회신':'k-no','문헌대체':'k-alt'};
+const BAR = {'완료':'var(--ok)','부분':'var(--part)','미회신':'var(--no)','문헌대체':'var(--alt)'};
+const CC = {IN:'c-in',PG:'c-pg',TX:'c-tx',CU:'c-cu',OC:'c-oc',MT:'c-mt'};
+const app = document.getElementById('app');
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const unresolved = new Set();
+let V = {};
+
+function fmt(x, t){
+  if (x === null || x === undefined || Number.isNaN(x)) return '—';
+  const c = (n,d=0) => Number(n).toLocaleString('ko-KR',{minimumFractionDigits:d,maximumFractionDigits:d}).replace('-','−');
+  switch(t){
+    case 'man': return c(Math.round(x/1e4))+'만';
+    case 'man1': return c(x/1e4,1)+'만';
+    case 'won': return c(Math.round(x))+'원';
+    case 'won0': return c(Math.round(x))+'원';
+    case 'int': return c(Math.round(x));
+    case 'pct': return c(x*100,1)+'%';
+    case 'pct0': return c(x*100,0)+'%';
+    case 'x2': return c(x,2);
+    case 'x3': return c(x,3);
+    case 'eok': { const e = x/1e8; return c(e, e>=100?1:2)+'억'; }
+    case 'sign': return (x<0?'−':'')+c(Math.abs(Math.round(x)))+'원';
+    default: return String(x);
+  }
+}
+const val = k => { if(!(k in V)){unresolved.add(k); return NaN;} return V[k]; };
+const T = s => esc(s).replace(/\{(\w+)\|(\w+)\}/g, (m,k,t) => { if(!(k in V)){unresolved.add(k); return '⟨'+k+'?⟩';} return fmt(V[k], t); });
+const pill = (st, text) => { const s = STATUS[st] || ['s-no', st+'?']; return `<span class="pill ${s[0]}">${esc(text || s[1])}</span>`; };
+const F = (k,t) => fmt(val(k), t);
+
+function render(d){
+  V = {}; for (const [k,o] of Object.entries(d.values)) V[k] = o.value;
+  const M = d.meta, R = d.requests, counted = R.filter(r => r.counted);
+  const byId = Object.fromEntries(R.map(r => [r.id, r]));
+  const cnt = Object.fromEntries(COUNT_ORDER.map(s => [s, counted.filter(r => r.status === s).length]));
+  const core = counted.filter(r => r.core);
+  const doing = R.filter(r => r.doing);
+  const asked = counted.reduce((a,r)=>a+(r.asked||0),0), got = counted.reduce((a,r)=>a+(r.got||0),0);
+  const owners = {};
+  counted.forEach(r => { const o = owners[r.owner] ||= {n:0, open:0}; o.n++; if (r.status !== '완료') o.open++; });
+
+  let h = '';
+  // 머리
+  h += `<header style="display:grid;gap:6px"><div class="eyebrow">${esc(M.eyebrow)} · ${esc(M.asof)} 취합 기준 · ${esc(M.version)}</div>
+    <h1>${esc(M.title)}</h1><p class="sub">${esc(M.intro)}</p></header>`;
+
+  // 요약 띠
+  h += `<div class="summary">
+    <div class="stat"><span>자료요청 ${counted.length}건</span><b class="num">${COUNT_ORDER.map(s=>cnt[s]).join(' · ')}</b><span>완료 · 부분 · 미회신 · 문헌 대체 (<a href="#detail">상세</a>)</span>
+      <div class="bar" aria-label="${COUNT_ORDER.map(s=>STATUS[s][1]+' '+cnt[s]).join(', ')}">${COUNT_ORDER.map(s=>`<i style="flex:${cnt[s]};background:${BAR[s]}"></i>`).join('')}</div></div>
+    <div class="stat"><span>ΔC 이수자 1인당 증분비용</span><b>${F('dc','man')} 원</b><span>치료개입·사후관리 0 처리 → 하한</span></div>
+    <div class="stat"><span>r0 → r1 (재복역률)</span><b>${F('r0','pct')} → ${F('r1','pct')}</b><span>Δr ${F('dr','pct')} · 문헌 대체값</span></div>
+    <div class="stat"><span>SCᵣ 재범 1건당 (형사사법분만)</span><b>${F('scr','man')} 원</b><span>의료·생산성·사회혼란 미반영</span></div>
+    <div class="stat key"><span>부분 B/C · 손익분기 Δr*</span><b>${F('bc','x2')} · ${F('drstar','pct')}</b><span>SCᵣ이 ${F('scrstar','man')} 원을 넘으면 B/C ≥ 1</span></div>
+  </div>`;
+
+  // 13건 상세
+  h += `<section id="detail" aria-labelledby="dh"><div class="sechead"><div><h2 id="dh">자료요청 ${counted.length}건 상세</h2>
+    <p>상태별 항목, 요청 항목 대비 회신 항목, 핵심 3건과 부서별 미결을 함께 봅니다. 추가로 받은 자료(${R.length-counted.length}건)는 집계에서 뺐습니다.</p></div></div>
+    <div class="detail">${COUNT_ORDER.map(s => {
+      const items = counted.filter(r => r.status === s);
+      return `<div class="scol ${KIND[s]}"><header><span>${esc(STATUS[s][1])}</span><b>${items.length}</b></header>${items.length ? `<ol>${items.map(r =>
+        `<li><div class="t"><span>${esc(r.id)}. ${esc(r.name)}${r.core?' ◆':''}</span>${pill(r.status, r.pill)}</div>
+         <div class="m">${esc(r.status==='완료' ? r.received : (r.missing ? '빠진 것: '+r.missing : r.received))}</div></li>`).join('')}</ol>` : '<div class="empty">해당 없음</div>'}</div>`;
+    }).join('')}</div>
+    <div class="facts">
+      <div class="fact"><h3>핵심 ${core.length}건 (없으면 분석 불성립)</h3><ul>${core.map(r=>`<li>${esc(r.id)}. ${esc(r.name)} ${pill(r.status, r.pill)}</li>`).join('')}</ul></div>
+      <div class="fact"><h3>부서별 미결 / 요청</h3><ul>${Object.entries(owners).map(([o,x])=>`<li>${esc(o)}: <span class="num">${x.open}/${x.n}</span></li>`).join('')}</ul></div>
+      <div class="fact"><h3>진행 중 ${doing.length}건</h3><ul>${doing.slice(0,5).map(r=>`<li>${esc(r.id)}. ${esc(r.doing)}</li>`).join('')}${doing.length>5?`<li class="muted">외 ${doing.length-5}건은 아래 표 비고</li>`:''}</ul></div>
+    </div>
+    <div><div class="sechead" style="margin-bottom:6px"><p>요청 항목 대비 회신 항목 · 전체 <span class="num">${got}/${asked}</span> (${fmt(asked?got/asked:0,'pct0')})</p></div>
+    <div class="fill">${counted.filter(r=>r.asked>0).map(r=>{const p=r.got/r.asked;return `<div class="frow"><span>${esc(r.id)}. ${esc(r.name)}${r.core?' ◆':''}</span><div class="track"><i style="width:${(p*100).toFixed(1)}%;background:${BAR[r.status]||'var(--muted)'}"></i></div><span class="n">${r.got}/${r.asked}</span></div>`;}).join('')}</div></div>
+  </section>`;
+
+  // 사회적 비용 나무 (v3)
+  if (d.sc_tree) {
+    const st = d.sc_tree, leaves = [];
+    const roll = n => { if (!n.children || !n.children.length) { leaves.push(n); return n.status; }
+      const ss = n.children.map(roll); n._status = ss.every(x=>x==='반영') ? '반영' : (ss.some(x=>x==='반영'||x==='부분'||x==='가정'||x==='문헌대체') ? '부분' : '미반영'); return n._status; };
+    roll(st.root);
+    const lc = {}; leaves.forEach(n => lc[n.status] = (lc[n.status]||0)+1);
+    const node = (n, lv) => { const stt = n.status || n._status; const isLeaf = !n.children || !n.children.length;
+      return `<li><div class="nd l${Math.min(lv,3)}${n.new?' new':''}${isLeaf&&stt==='미반영'?' miss':''}">${n.new?'<span class="newtag">신설</span>':''}<b>${esc(n.label)}</b>${n.sub?`<span class="s">${T(n.sub)}</span>`:''}${n.value?`<span class="vv">${T(n.value)}</span>`:''}${lv>0?pill(stt, n.pill):''}</div>${isLeaf?'':`<ul>${n.children.map(c=>node(c,lv+1)).join('')}</ul>`}</li>`; };
+    h += `<section aria-labelledby="sch"><div class="sechead"><div><h2 id="sch">${esc(st.title)}</h2><p>${T(st.lead)}</p></div>
+      <div class="legend">${['반영','부분','미반영'].map(x=>pill(x, x+' '+(lc[x]||0))).join('')}<span>말단 ${leaves.length}개</span></div></div>
+      <div class="tree-scroll"><div class="tree"><ul>${node(st.root,0)}</ul></div></div>
+      <div class="treefoot"><span class="nd new" style="max-width:none;width:auto;display:inline-block;padding:2px 8px">신설</span><span>${T(st.new_note)}</span></div>
+      <p class="muted" style="margin:0;font-size:.78rem">${T(st.footnote)}</p></section>`;
+  }
+
+  // 흐름도
+  const U = Object.fromEntries(d.units.map(u => [u.id, u]));
+  h += `<section aria-labelledby="flowh"><div class="sechead"><div><h2 id="flowh">비용 구성 흐름도</h2><p>요청 자료 → 원가중심점(비용풀·분모) → 원단위 → 최종 산식. 각 칸의 표지는 현재 반영 상태입니다.</p></div>
+    <div class="legend">${pill('반영')}${pill('가정','부분·가정')}${pill('미반영')}${pill('문헌대체')}<span>◆ 핵심 3건</span></div></div>
+    <div class="flow-scroll"><div class="flow"><div class="colh">① 요청 자료</div><div></div><div class="colh">② 원가중심점</div><div></div><div class="colh">③ 원단위 (2025)</div><div></div><div class="colh">④ 산식 반영</div>
+    ${d.flow.map((f,i) => `
+      <div class="reqs">${f.reqs.map(id => { const r = byId[id]; if(!r){unresolved.add('request:'+id); return '';} return `<div class="req${r.core?' core':''}">${esc(r.id==='별도'?'별도':r.id+'.')} ${esc(r.name)}${r.core?' ◆':''} ${pill(r.status, r.pill)}</div>`;}).join('')}</div>
+      <div class="arrow">→</div>
+      <div class="cc ${CC[f.cc]||''}"><strong>${esc(f.name)}</strong><small>${esc(f.code)}</small>${f.memo?`<span class="muted" style="font-size:.74rem">${T(f.memo)}</span>`:''}</div>
+      <div class="arrow">→</div>
+      <div class="ucs">${f.units.map(id => { const u = U[id]; if(!u){unresolved.add('unit:'+id); return '';}
+        return `<div class="uc${u.status==='미반영'?' miss':''}"><div class="top"><span class="id">${esc(u.id)}</span>${pill(u.status, u.pill)}</div>${u.main?`<div class="v">${T(u.main)}${u.sub?` <span class="muted">${T(u.sub)}</span>`:''}</div>`:''}<div class="d">${T(u.desc)}</div></div>`;}).join('')}</div>
+      <div class="arrow">${f.term.value?'→':''}</div>
+      <div class="term"><span>${esc(f.term.label)}</span>${f.term.value?`<b>${T(f.term.value)}</b>`:''}<span class="muted">${T(f.term.memo)}</span></div>
+      ${i < d.flow.length-1 ? '<div class="rowgap"></div>' : ''}`).join('')}
+    </div></div></section>`;
+
+  // 산식
+  const st10 = V.uc10 ? '반영':'미반영', st12 = V.uc12 ? '반영':'미반영';
+  h += `<section aria-labelledby="eqh"><div class="sechead"><div><h2 id="eqh">최종 산식과 현재 값</h2><p>이수자 1인당 · 2025년 원가 · 사회적 할인율 ${F('rate','pct')} · 분석기간 5년</p></div></div>
+    <div class="eq">
+      <div class="eqbox"><h3>ΔC 1인당 증분비용</h3><div class="eqline">UC-06 + UC-10 + UC-12 + ΔM×UC-02</div><div class="terms">
+        <div><span>UC-06 프로그램</span><span>${F('uc06avg','int')}</span></div>
+        <div><span>UC-10 치료개입 ${pill(st10, V.uc10?null:'미산출')}</span><span>${F('uc10','int')}</span></div>
+        <div><span>UC-12 사후관리 ${pill(st12, V.uc12?null:'미산출')}</span><span>${F('uc12','int')}</span></div>
+        <div><span>ΔM×UC-02 ${pill('가정')}</span><span>${fmt(val('dm')*val('uc02'),'int')}</span></div>
+        <div><strong>합계${(V.uc10&&V.uc12)?'':'(하한)'}</strong><strong class="num">${F('dc','won')}</strong></div></div></div>
+      <div class="eqbox"><h3>B 1인당 편익(현재가치)</h3><div class="eqline">r0 × Δr × SCᵣ × D</div><div class="terms">
+        <div><span>r0 × Δr (회피 재범 확률)</span><span>${fmt(val('avoid')*100,'x2')}%p</span></div>
+        <div><span>SCᵣ 재수용비(${F('sent','x2')}년×${F('served','pct0')}×UC-01)</span><span>${F('reinc','int')}</span></div>
+        <div><span>SCᵣ 검찰 단계 1인당</span><span>${F('prospc','int')}</span></div>
+        <div><span>D 할인계수</span><span>${F('D','x3')}</span></div>
+        <div><strong>합계(하한)</strong><strong class="num">${F('B','won')}</strong></div></div></div>
+      <div class="eqbox final"><h3>판정</h3><div class="big">B/C ${F('bc','x2')}</div><div class="terms">
+        <div><span>NPV(1인당)</span><span>${F('npv','sign')}</span></div>
+        <div><span>ROI</span><span>${F('roi','pct0')}</span></div>
+        <div><span>손익분기 Δr*</span><span>${F('drstar','pct')}</span></div>
+        <div><span>손익분기 SCᵣ*</span><span>${F('scrstar','man')} 원/건</span></div>
+        <div><span>${esc(M.asof.slice(0,4)-1)} 이수자 전체 ΔC · B</span><span>${F('totc','eok')} · ${F('totb','eok')}</span></div></div>
+        <span class="muted" style="font-size:.78rem">SCᵣ에 형사사법 비용만 들어간 하한값. 3장의 의료·생산성·사회혼란 원단위가 더해지면 올라갑니다.</span></div>
+    </div></section>`;
+
+  // 진행표
+  h += `<section aria-labelledby="tblh"><div class="sechead"><div><h2 id="tblh">요청 자료별 반영 현황</h2><p>비고의 "진행 중"은 아직 끝나지 않은 확인·재요청 사항입니다.</p></div></div>
+    <div class="tscroll"><table><thead><tr><th>번호</th><th>요청 자료</th><th>상태</th><th>회신</th><th>반영분</th><th>모델 반영</th><th>비고</th></tr></thead><tbody>
+    ${R.map(r => `<tr class="${r.core?'core':''}"><td class="n">${esc(r.id)}</td><td>${esc(r.name)}${r.core?' ◆':''}<div class="muted" style="font-size:.72rem">${esc(r.form)} · ${esc(r.owner)}</div></td>
+      <td>${pill(r.status)}</td><td class="n">${r.asked?`${r.got}/${r.asked}`:'—'}<div class="muted" style="font-size:.72rem">${esc(r.replied||'미회신')}</div></td>
+      <td>${esc(r.received||'—')}${r.missing?`<div class="muted" style="font-size:.74rem">빠진 것: ${esc(r.missing)}</div>`:''}</td><td>${esc(r.model)}</td>
+      <td>${esc(r.note)}${r.doing?`<span class="doing">${esc(r.doing)}</span>`:''}</td></tr>`).join('')}
+    </tbody></table></div></section>`;
+
+  // 민감도
+  const pts = [1,2,3,4].map(i => ({dr: val('sens'+i+'_dr'), bc: val('sens'+i+'_bc'), cur: i===2}));
+  const xMax = Math.max(0.45, Math.ceil(Math.max(...pts.map(p=>p.dr))*1.1*20)/20), yMax = Math.max(2, Math.ceil(Math.max(...pts.map(p=>p.bc))*2)/2);
+  const X = v => 60 + v/xMax*440, Y = v => 190 - v/yMax*170;
+  const yt = []; for (let t=0; t<=yMax+1e-9; t+=0.5) yt.push(t);
+  const xt = []; for (let t=0; t<=xMax+1e-9; t+=0.1) xt.push(t);
+  const top = pts.reduce((a,p)=>p.dr>a.dr?p:a);
+  const ds = val('drstar');
+  h += `<section aria-labelledby="sensh"><div class="sechead"><div><h2 id="sensh">재범감소폭(Δr)별 B/C</h2><p>SCᵣ은 형사사법분(${F('scr','man')} 원)으로 고정. 다른 가정은 위와 같습니다.</p></div></div>
+    <div class="sens"><svg viewBox="0 0 520 230" role="img" aria-label="${pts.map(p=>`Δr ${fmt(p.dr,'pct')}일 때 ${fmt(p.bc,'x2')}`).join(', ')}" style="width:100%;height:auto">
+      <g stroke="var(--line)" stroke-width="1">${yt.map(t=>`<line x1="60" y1="${Y(t)}" x2="500" y2="${Y(t)}"/>`).join('')}</g>
+      <line x1="60" y1="${Y(1)}" x2="500" y2="${Y(1)}" stroke="var(--no)" stroke-width="1.5" stroke-dasharray="5 4"/>
+      <text x="496" y="${Y(1)-6}" text-anchor="end" style="fill:var(--no)">B/C = 1</text>
+      ${yt.map(t=>`<text x="52" y="${Y(t)+4}" text-anchor="end" class="mut">${t===0?'0':t.toFixed(1)}</text>`).join('')}
+      ${xt.map(t=>`<text x="${X(t)}" y="208" text-anchor="middle" class="mut">${Math.round(t*100)}%</text>`).join('')}
+      <text x="280" y="226" text-anchor="middle" class="mut">Δr (상대 감소율)</text>
+      <line x1="${X(0)}" y1="${Y(0)}" x2="${X(top.dr)}" y2="${Y(top.bc)}" stroke="var(--navy)" stroke-width="2.5"/>
+      ${ds>0 && ds<xMax ? `<line x1="${X(ds)}" y1="190" x2="${X(ds)}" y2="${Y(1)}" stroke="var(--muted)" stroke-dasharray="2 3"/><text x="${X(ds)+4}" y="182" class="mut">Δr* ${fmt(ds,'pct')}</text>` : ''}
+      ${pts.map(p => p.cur
+        ? `<circle cx="${X(p.dr)}" cy="${Y(p.bc)}" r="6" fill="var(--oc)" stroke="var(--panel)" stroke-width="2"/><text x="${X(p.dr)-12}" y="${Y(p.bc)+15}" text-anchor="end">현재 ${fmt(p.bc,'x2')}</text>`
+        : `<circle cx="${X(p.dr)}" cy="${Y(p.bc)}" r="5" fill="var(--panel)" stroke="var(--navy)" stroke-width="2"/><text x="${p===top?X(p.dr)-11:X(p.dr)}" y="${p===top?Y(p.bc)-6:Y(p.bc)-11}" text-anchor="${p===top?'end':'middle'}">${fmt(p.bc,'x2')}</text>`).join('')}
+    </svg><ul class="notes">${d.sensitivity_notes.map(n=>`<li>${T(n)}</li>`).join('')}</ul></div></section>`;
+
+  // 자료 검토
+  h += `<section aria-labelledby="doch"><div class="sechead"><div><h2 id="doch">긴 자료의 반영 범위</h2><p>전체를 옮기지 않고 아래 부분만 씁니다.</p></div></div>
+    <div class="docs">${d.docs.map(x=>`<div class="doc"><h3>${esc(x.title)}</h3><p>${T(x.lead)}</p><ul>${x.items.map(i=>`<li>${T(i)}</li>`).join('')}</ul></div>`).join('')}</div></section>`;
+
+  // 자동 점검
+  const checks = runChecks(d, counted);
+  const fails = checks.filter(c => !c.ok).length;
+  h += `<section aria-labelledby="ckh"><div class="sechead"><div><h2 id="ckh">입력값 자동 점검</h2><p>data.json의 값이 서로 맞는지 화면이 다시 계산해 봅니다. 허용 오차 0.1%.</p></div>
+    <span class="pill ${fails?'s-no':'s-ok'}">${fails?`${fails}건 불일치`:`${checks.length}건 모두 통과`}</span></div>
+    <div class="checks">${checks.map(c=>`<div class="ck ${c.ok?'pass':'fail'}"><span class="mark">${c.ok?'✓':'✕'}</span><span>${esc(c.name)}</span><span class="x">${esc(c.detail)}</span></div>`).join('')}</div></section>`;
+
+  h += `<footer><p style="margin:0 0 6px">출처: ${esc(M.sources)} 계산 원본은 「${esc(M.workbook)}」 원단위계산 시트입니다. 갱신 방법은 <a href="guide.html">입력 가이드</a>를 보십시오.</p>
+    <ul class="hist">${M.history.map(x=>`<li>${esc(x.version)} (${esc(x.date)}): ${esc(x.change)}</li>`).join('')}</ul></footer>`;
+  app.innerHTML = h;
+  document.title = M.title;
+}
+
+function runChecks(d, counted){
+  const out = [], rel = (a,b) => Math.abs(a-b) <= Math.max(1, Math.abs(b)*1e-3);
+  const eq = (name, got, exp, f='x3') => out.push({name, ok: Number.isFinite(got)&&Number.isFinite(exp)&&rel(got,exp), detail:`입력 ${fmt(got,f)} / 재계산 ${fmt(exp,f)}`});
+  const g = k => val(k);
+  const bad = d.requests.filter(r => !(r.status in STATUS) || ['반영','가정','미반영'].includes(r.status));
+  out.push({name:'요청 자료 상태값이 허용 목록 안에 있음', ok: !bad.length, detail: bad.length ? bad.map(r=>r.id+':'+r.status).join(', ') : `${d.requests.length}건`});
+  const sum = COUNT_ORDER.reduce((a,s)=>a+counted.filter(r=>r.status===s).length,0);
+  out.push({name:'집계 대상 건수 = 상태별 합계', ok: sum===counted.length, detail:`${sum} / ${counted.length}`});
+  const badGot = counted.filter(r => r.got > r.asked);
+  out.push({name:'회신 항목 수 ≤ 요청 항목 수', ok: !badGot.length, detail: badGot.map(r=>r.id).join(', ') || '이상 없음'});
+  const ids = new Set(d.units.map(u=>u.id)), rids = new Set(d.requests.map(r=>r.id));
+  const brk = d.flow.flatMap(f => [...f.reqs.filter(x=>!rids.has(x)), ...f.units.filter(x=>!ids.has(x))]);
+  out.push({name:'흐름도가 가리키는 요청·원단위가 모두 있음', ok: !brk.length, detail: brk.join(', ') || '이상 없음'});
+  eq('r0 = 미이수 재복역 ÷ 미이수 인원', g('r0'), g('e0')/g('n0'), 'pct');
+  eq('r1 = 이수 재복역 ÷ 이수 인원', g('r1'), g('e1')/g('n1'), 'pct');
+  eq('Δr = (r0 − r1) ÷ r0', g('dr'), (g('r0')-g('r1'))/g('r0'), 'pct');
+  eq('r0×Δr = r0 − r1', g('avoid'), g('r0')-g('r1'), 'pct');
+  eq('UC-07 = PG 비용풀 ÷ 이수 인시', g('uc07'), g('pgpool')/g('hours'), 'int');
+  eq('UC-06 평균 = PG 비용풀 ÷ 이수 인원', g('uc06avg'), g('pgpool')/g('comp'), 'int');
+  eq('ΔC = UC-06 + UC-10 + UC-12 + ΔM×UC-02', g('dc'), g('uc06avg')+g('uc10')+g('uc12')+g('dm')*g('uc02'), 'int');
+  const r = g('rate'), s3 = g('s3');
+  eq('D = Σ hₜ/(1+r)^t (1~3년 균등, 4~5년 균등)', g('D'), [1,2,3].reduce((a,t)=>a+s3/3/Math.pow(1+r,t),0)+[4,5].reduce((a,t)=>a+(1-s3)/2/Math.pow(1+r,t),0), 'x3');
+  eq('SCᵣ = 재수용비 + 검찰 단계 비용', g('scr'), g('reinc')+g('prospc'), 'int');
+  eq('재수용비 = 실형기간 × 복역비율 × UC-01', g('reinc'), g('sent')*g('served')*g('uc01y'), 'int');
+  eq('B = r0×Δr × SCᵣ × D', g('B'), g('avoid')*g('scr')*g('D'), 'int');
+  eq('B/C = B ÷ ΔC', g('bc'), g('B')/g('dc'), 'x3');
+  eq('NPV = B − ΔC', g('npv'), g('B')-g('dc'), 'int');
+  eq('ROI = (B − ΔC) ÷ ΔC', g('roi'), (g('B')-g('dc'))/g('dc'), 'pct');
+  eq('Δr* = ΔC ÷ (r0 × SCᵣ × D)', g('drstar'), g('dc')/(g('r0')*g('scr')*g('D')), 'pct');
+  eq('SCᵣ* = ΔC ÷ (r0×Δr × D)', g('scrstar'), g('dc')/(g('avoid')*g('D')), 'int');
+  eq('전체 증분비용 = ΔC × 이수 인원', g('totc'), g('dc')*g('comp'), 'eok');
+  [1,2,3,4].forEach(i => eq(`민감도 ${i}: B/C = r0×Δr×SCᵣ×D ÷ ΔC`, g('sens'+i+'_bc'), g('r0')*g('sens'+i+'_dr')*g('scr')*g('D')/g('dc'), 'x3'));
+  eq('민감도 기본값의 Δr = 현재 Δr', g('sens2_dr'), g('dr'), 'pct');
+  if (d.sc_tree) {
+    const bad=[]; const walk=n=>{ const leaf=!n.children||!n.children.length; if(leaf && !['반영','부분','미반영','가정','문헌대체'].includes(n.status)) bad.push(n.label+':'+n.status); (n.children||[]).forEach(walk); }; walk(d.sc_tree.root);
+    out.push({name:'사회적 비용 나무의 말단 상태값이 허용 목록 안에 있음', ok:!bad.length, detail: bad.join(', ')||'이상 없음'});
+    eq('N* = 검거 인원 × 암수율 λ', g('nstar'), g('arrest_drug')*g('lambda'), 'int');
+  }
+  out.push({name:'문구 속 {값} 자리표시가 모두 data.json values에 있음', ok: unresolved.size===0, detail: unresolved.size ? [...unresolved].join(', ') : '이상 없음'});
+  return out;
+}
+
+// 내용은 build_page.py가 아래 자리에 data.json 사본으로 넣습니다. 이 파일은 외부 파일을 불러오지 않습니다.
+const EMBEDDED = /*DATA-BEGIN*/null/*DATA-END*/;
+Promise.resolve().then(() => { if (!EMBEDDED) throw new Error('내장 데이터가 없습니다. build_page.py로 index.html을 다시 만드십시오.'); return EMBEDDED; })
+  .then(render)
+  .catch(e => { app.innerHTML = `<div class="err"><b>진행판을 그리지 못했습니다.</b><br>${esc(e.message)}</div>`; });
+})();
+</script>

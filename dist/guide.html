@@ -22,7 +22,7 @@
   --ok:#7fd3a3; --ok-bg:#183326; --part:#f0c26a; --part-bg:#33290f; --no:#f19a92; --no-bg:#3a1c1a; --alt:#8fb6e8; --alt-bg:#1b2738; --code:#232a37; color-scheme:dark}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-sans);font-size:14px;line-height:1.65}
-.wrap{max-width:980px;margin:0 auto;padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:22px}
+.wrap{max-width:980px;margin:0 auto;padding-block:28px 56px;padding-left:max(clamp(20px,5vw,56px),env(safe-area-inset-left,0px));padding-right:max(clamp(20px,5vw,56px),env(safe-area-inset-right,0px));display:grid;gap:22px}
 h1{font-size:1.5rem;margin:0;text-wrap:balance}
 h2{font-size:1.08rem;margin:0;text-wrap:balance}
 h3{font-size:.92rem;margin:0}

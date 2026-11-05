@@ -1,10 +1,10 @@
 {
- "form_version": "구조-v1.2",
- "updated": "2026-11-01",
+ "form_version": "구조-v1.3",
+ "updated": "2026-11-05",
  "files": {
   "locked/index.template.html": "574aab69dbb5ec8b151c57f4538443d506dc9dcbef6d799f565075108aa00238",
   "locked/guide.html": "ff999bc2b8d1560b4a006a0d8c4662f515adc2da6ec6377fd593bd3164352689",
-  "locked/form_lock.json": "c3aa32c09ebf550dfdad4b5cc9d06f67cf245b6b6bf4bb305d51b5fd42548498",
+  "locked/form_lock.json": "13cf869b4e63048f4651fe2aadfbde1aa2d8e3d4f1a542c5372b9526636616cb",
   "config/values_map.json": "078ce29ed33c4e0a98660e78ba174d1d291f4672fb694054b494a295ca82f283",
   "pipeline/common.py": "318da71c608f0ada632e599f0200874e0468798969c867892882ed35c736a6e8",
   "pipeline/lock.py": "b38861497694bf41baeb5699e362295ea4acbc491c3c910eb87c05aae43054ca",

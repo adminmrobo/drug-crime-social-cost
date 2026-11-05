@@ -68,11 +68,16 @@
 
 값이 바뀌어 진행판 문구(예: "미산출", "문헌 대체")를 고쳐야 할 때는 report.md의 「확인할 일」에 나옵니다. **구조도(`cost-map.html`)는 자동 갱신 대상이 아닙니다.** 분류나 값이 바뀌면 손으로 고칩니다(아래 「앞으로 할 일」).
 
+## 기준 원고
+
+- `docs/형사사법비용_원고_2024기준_10.29_1.pdf`: 「마약류 범죄의 형사사법 비용」 최신 원고(2024년 기준). 형사사법비의 최종 기준이다(연구진 확인 2026. 11. 5.). 6개 기관 합계 3,507.9억 원(보호관찰 제외 3,410.9억 원).
+
 ## 폴더
 
 ```
 index.html       첫 화면(페이지 목록)
 cost-map.html    사회적 비용 구조도(단독 페이지)
+docs/            기준 원고(PDF)
 .nojekyll        GitHub Pages가 파일을 그대로 내보내게 함
 data/            입력 — workbook.xlsx(서식·계산·구조 시트), dashboard.json(상태·문구·수기값)
 locked/          잠금 — index.template.html(진행판 틀), guide.html, form_lock.json, manifest.json, CHANGELOG.md

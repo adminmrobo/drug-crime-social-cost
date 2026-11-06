@@ -1,0 +1,127 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>사회적 비용 요약본</title>
+<style>
+@page{size:A4;margin:0}
+:root{--navy:#1F3552;--teal:#1F7A6B;--amber:#B8721A;--red:#9A3B34;--slate:#6B7A90;--mist:#C9D3E0;--ink:#1B2433;--paper:#EEF1F5;--tealBg:#E2F1EE;--navyBg:#E6ECF4;--amberBg:#FBF0DF}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans CJK KR',sans-serif;color:var(--ink);font-size:10pt}
+.page{width:210mm;height:297mm;padding:16mm 15mm 14mm;position:relative;page-break-after:always;overflow:hidden}
+.page:last-child{page-break-after:auto}
+.kicker{font-size:9.5pt;color:var(--slate);font-weight:700}
+h1{font-size:17pt;font-weight:700;margin:3px 0 10px;line-height:1.35;letter-spacing:-.3px}
+h2{font-size:11.5pt;font-weight:700;color:var(--navy);margin:12px 0 5px}
+table{width:100%;border-collapse:collapse;font-size:9.3pt}
+th{background:var(--navy);color:#fff;text-align:left;padding:4px 6px;font-size:9pt}
+td{padding:3px 6px;border-bottom:1px solid var(--mist);line-height:1.35}
+.n{text-align:right;white-space:nowrap}
+tr.hl td{background:var(--tealBg);font-weight:700}
+tr.tot td{background:var(--navyBg);font-weight:700}
+.up{color:var(--red);font-weight:700}
+.hero{display:grid;grid-template-columns:1.25fr 1fr;gap:8px;background:var(--navy);color:#fff;border-radius:6px;padding:12px 14px}
+.hero .big{font-size:26pt;font-weight:700;line-height:1.1}
+.hero .lab{font-size:9pt;color:#C9D3E0}
+.hero .side div{display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.2);padding:4px 0;font-size:9.5pt}
+.seg{display:flex;height:22px;border-radius:3px;overflow:hidden;margin:4px 0 6px}
+.seg div{color:#fff;font-size:8.5pt;font-weight:700;display:flex;align-items:center;justify-content:center;white-space:nowrap}
+.note{font-size:8.5pt;color:var(--slate);line-height:1.5;margin-top:4px}
+.box{border-radius:6px;padding:8px 11px;margin-top:8px}
+ul{padding-left:15px}li{margin:2px 0;line-height:1.5}
+.foot{position:absolute;left:15mm;right:15mm;bottom:8mm;font-size:8pt;color:var(--slate);display:flex;justify-content:space-between}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tg{display:inline-block;font-size:7.3pt;font-weight:700;border-radius:3px;padding:0 4px;color:#fff}.tg.e{background:var(--amber)}.tg.m{background:var(--teal)}.tg.r{background:var(--navy)}table.t td{padding:1.2px 6px}</style></head><body>
+<section class="page">
+  <div class="kicker">중간보고 요약 · 2025년 기준(시산) · 2026. 11. 6.</div>
+  <h1>2025년 기준 마약류 사회적 비용 {{T3}} 원(암수율 10배)<br>2016년 대비 +{{INC}} 원, 검거 인원 증가 기여 {{SH1}}%</h1>
+  <div class="hero">
+    <div><div class="lab">2025년 사회적 비용 · 암수율 λ 10 (기본)</div><div class="big">{{T3}} 원</div>
+      <div style="font-size:9pt;color:#E6ECF4;margin-top:4px">검거 사범 1명당 {{PC}}만 원 × 실질 사용자 234,030명(단속 23,403명 × 10)</div></div>
+    <div class="side"><div><span>암수율 미반영</span><b>{{T1}} 원</b></div><div><span>λ 28.57 (민감도)</span><b>{{T4}} 원</b></div><div><span>2024년 기준 대비</span><b>+{{D24}}(+{{D24P}}%)</b></div></div>
+  </div>
+  <div class="box" style="background:var(--amberBg);margin-top:7px;font-size:8.8pt;line-height:1.5">2025년 실적은 단속 인원, 교정·검찰 결산, 교정 1일 평균 수용 인원만 확보하였다. 나머지는 2024년 확정치를 물가·결산 증가율·단속 증가율로 추계하였다. 금액의 <b>약 22%</b>(교도소·검찰)가 실측 결산에 기반한다. 미수령 자료와 추계 방식은 2쪽에 정리하였다.</div>
+
+  <h2>1. 2016년(선행연구) 대비 2025년</h2>
+  <table>
+    <tr><th>구분</th><th class="n">2016 (박성수, 2018)</th><th class="n">2025 (본 연구, 시산)</th><th class="n">증감</th></tr>
+    <tr><td>검거(단속) 인원</td><td class="n">14,214명</td><td class="n">23,403명</td><td class="n up">+64.6%</td></tr>
+    <tr><td>실질 사용자 (λ 10)</td><td class="n">142,140명</td><td class="n">234,030명</td><td class="n up">+64.6%</td></tr>
+    <tr class="hl"><td>사회적 비용 (λ 10, 명목)</td><td class="n">2조 2,389억 원</td><td class="n">{{T3}} 원</td><td class="n up">{{RATIO}}배</td></tr>
+    <tr><td>소비자물가지수 (2020=100)</td><td class="n">95.8</td><td class="n">{{CPI25}} (추계)</td><td class="n">+{{CIP}}%</td></tr>
+    <tr><td>사범 수·물가 반영 기대값</td><td class="n">{{EXP}} 원</td><td class="n">{{T3}} 원</td><td class="n up">{{EXPR}}배</td></tr>
+    <tr><td>사용자 1명당 (명목)</td><td class="n">{{PC16}}만 원</td><td class="n">{{PC}}만 원</td><td class="n up">+{{PCN}}%</td></tr>
+    <tr><td>사용자 1명당 (2025년 가격)</td><td class="n">{{PC16R}}만 원</td><td class="n">{{PC}}만 원</td><td class="n up">+{{PCR}}%</td></tr>
+  </table>
+  <div class="note">2025년 소비자물가지수 = 2024년 114.2 × 1.021(2025년 상승률 2.1%). 선행연구와 같은 암수율 10배 기준 비교</div>
+
+  <h2>2. 증가분 +{{INC}} 원의 기여 분해</h2>
+  <div class="seg"><div style="width:{{SH0}}%;background:#8A97AA">물가 {{SH0}}%</div><div style="width:{{SH1}}%;background:var(--amber)">검거 인원 증가 {{SH1}}%</div><div style="width:{{SH2}}%;background:var(--navy)">1명당 실질 {{SH2}}%</div></div>
+  <table>
+    <tr><th>기여 요인</th><th class="n">금액</th><th class="n">비중</th><th>산식</th></tr>
+    <tr><td>물가상승 기여분 (추계)</td><td class="n">{{P}} 원</td><td class="n">{{SH0}}%</td><td>2조 2,389억 × ({{CI}} − 1)</td></tr>
+    <tr><td>검거 인원 증가 기여분</td><td class="n">{{A}} 원</td><td class="n">{{SH1}}%</td><td>{{BP}} × ({{O}} − 1)</td></tr>
+    <tr><td>1명당 실질 비용 증가</td><td class="n">{{R}} 원</td><td class="n">{{SH2}}%</td><td>{{T3}} − {{EXP}}</td></tr>
+  </table>
+
+  <h2>3. 부문별 비용 (2025년, λ 10)</h2>
+  <div class="seg">{{SEG}}</div>
+  <table>
+    <tr><th>부문</th><th class="n">2024 (λ 10)</th><th class="n">2025 미반영</th><th class="n">2025 λ 10</th><th class="n">1명당</th><th>주요 세부 (λ 10)</th></tr>
+    {{GROWS}}
+    <tr class="tot"><td>합계</td><td class="n">{{V24}}</td><td class="n">{{T1}}</td><td class="n">{{T3}}</td><td class="n">{{PC}}만</td><td>세부 전체는 부록(3쪽)</td></tr>
+  </table>
+  <div class="foot"><span>마약류범죄와 교정기관 중독재활 체계의 사회적 비용 비교분석 · 2025년 기준 시산</span><span>1</span></div>
+</section>
+
+<section class="page">
+  <div class="kicker">2025년 기준 · 자료 현황</div>
+  <h1>확보 자료, 미수령 자료, 추계 방식</h1>
+  <h2>4. 2025년 확보 자료 (실측)</h2>
+  <table>
+    <tr><th>자료</th><th class="n">2025년 값</th><th>출처</th><th>사용처</th></tr>
+    <tr><td>마약류 단속 인원</td><td class="n">23,403명</td><td>대검찰청(2026)</td><td>N*, 1명당 계수</td></tr>
+    <tr><td>교정본부 결산</td><td class="n">1조 6,992.2억 원</td><td>교정본부 복지과 2차 회신</td><td>교도소</td></tr>
+    <tr><td>교정시설 1일 평균 수용 인원(전체)</td><td class="n">63,680명</td><td>교정본부</td><td>교도소 분모</td></tr>
+    <tr><td>마약류 수용자 연말 현원</td><td class="n">7,429명</td><td>교정본부 빅데이터</td><td>참고(연평균 대체 불가)</td></tr>
+    <tr><td>검찰 결산</td><td class="n">1조 2,879.5억 원</td><td>대검찰청 정보공개</td><td>검찰</td></tr>
+    <tr><td>국립법무병원 마약류 연평균 인원</td><td class="n">24명</td><td>별도요청 2호 회신</td><td>법무병원(분모 미확보)</td></tr>
+    <tr><td>소비자물가 상승률</td><td class="n">2.1%</td><td>통계청</td><td>원단위 환산</td></tr>
+    <tr><td>1인당 GNI · 명목 GDP</td><td class="n">5,241.6만 원 · 2,663.3조 원</td><td>한국은행</td><td>생산성 재산정용(미적용)</td></tr>
+  </table>
+
+  <h2>5. 미수령 자료와 현재 대체값</h2>
+  <table>
+    <tr><th>미수령 자료</th><th>요청처</th><th>현재 대체(추계)</th></tr>
+    <tr><td>경찰 결산, 전체·마약류 검거 인원</td><td>경찰청</td><td>2024 경찰 비용 × 1.037 × 1.0165</td></tr>
+    <tr><td>검찰 전체 처리 인원</td><td>대검찰청(검찰연감)</td><td>2024년 1,405,185명 적용</td></tr>
+    <tr><td>법원 형사소송 예산, 마약류·전체 형사 사건</td><td>법원행정처(사법연감)</td><td>2024 법원 비용 × 1.037 × 1.0165</td></tr>
+    <tr><td>마약류 수용자 1일 평균 인원</td><td>교정본부</td><td>3,608명 = 63,680 × 5.67%(2024 비율)</td></tr>
+    <tr><td>보호관찰소 결산, 마약류·전체 접수</td><td>범죄예방정책국</td><td>2024 보호관찰 비용 × 1.037 × 1.0165</td></tr>
+    <tr><td>국립법무병원 결산, 전체 1일 평균</td><td>국립법무병원</td><td>2024 법무병원 비용 × 1.037 × 1.0165</td></tr>
+    <tr><td>마약류 중독 진료 인원·진료비</td><td>건강보험심사평가원</td><td>2024 의료비 × 1.021 × 1.0165</td></tr>
+    <tr><td>중독 사망자(X40–X44 등)</td><td>통계청 사망원인통계</td><td>2024년 58명 × 1.0165</td></tr>
+    <tr><td>치료보호 인원</td><td>대검찰청·보건복지부</td><td>875명 × 1.0165</td></tr>
+    <tr><td>고통비용 원단위 2025년 기준</td><td>한국교통연구원</td><td>2024년 9.7억·1.1억 × 1.021</td></tr>
+    <tr><td>임금·고용(미취업·조기사망)</td><td>고용노동부·통계청</td><td>2024 생산성 × 1.021 × 1.0165</td></tr>
+  </table>
+
+  <h2>6. 추계 계수</h2>
+  <div class="box" style="background:var(--navyBg);margin-top:2px"><ul>
+    <li><b>1.0165</b>(단속 증가): 23,403 ÷ 23,022명. 1명당 비용이 같다면 총비용은 사범 수에 비례한다는 가정</li>
+    <li><b>1.037</b>(결산 증가 가정): 형사사법 기관 결산의 연간 증가율 가정. 실측 교정 결산 증가율은 1.5%(1조 6,741.3억 → 1조 6,992.2억), 검찰은 5.9%(1조 2,162.6억 → 1조 2,879.5억)</li>
+    <li><b>1.021</b>(물가): 의료·생산성·고통비용 원단위의 2025년 가격 환산</li>
+    <li><b>검찰</b>: 2025 결산(실측) × 23,403 ÷ 1,405,185명. 분모는 2024년 처리 인원 대용</li>
+    <li><b>교도소</b>: 2025 결산(실측) × 3,608 ÷ 63,680명. 분자는 2024년 마약류 비율로 추계</li>
+  </ul></div>
+  <div class="note">미수령 자료가 들어오면 해당 항목만 실측으로 교체한다. 경찰(27.1%)과 교도소 분자(18.4%)가 총액에 미치는 영향이 가장 크다.</div>
+  <div class="foot"><span>마약류범죄와 교정기관 중독재활 체계의 사회적 비용 비교분석 · 2025년 기준 시산</span><span>2</span></div>
+</section>
+
+<section class="page">
+  <div class="kicker">부록 · 2025년 기준</div>
+  <h1>암수율별 항목 비용표 (단위: 억 원)</h1>
+  <h2>부록 1. 암수율 10배 (기본)</h2>
+  {{APX10}}
+  <h2>부록 2. 암수율 28.57배 (민감도, 박성수·백민석, 2019)</h2>
+  {{APX28}}
+  <div class="note">1명당 = 항목 비용 ÷ 단속 23,403명. <span class="tg m">실측+추계</span> 2025 결산 실측에 분자·분모 일부 추계. <span class="tg e">추계</span> 2024년 확정치 환산</div>
+  <div class="foot"><span>마약류범죄와 교정기관 중독재활 체계의 사회적 비용 비교분석 · 2025년 기준 시산</span><span>3</span></div>
+</section>
+</body></html>

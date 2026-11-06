@@ -20,9 +20,18 @@ def sct(src):
 B=d['sc']['B 기준|가중 기본']; BI=d['inmate']['B 기준|가중 기본']
 comp_order=['건강·생산성','사망','사건','수용']
 def comprow(lab,v):
-    tot=sum(v[5][c] for c in comp_order)
-    return f'<tr><td>{lab}</td>'+''.join(f'<td class="n">{e(v[5][c])} ({v[5][c]/tot*100:.0f}%)</td>' for c in comp_order)+f'<td class="n"><b>{e(tot)}</b></td></tr>'
-sens=''.join(f'<tr><td>{k}</td><td class="n">{e(v[0])}</td><td class="n">{e(v[1])}</td></tr>' for k,v in d['sens'].items())
+    r=''
+    for i,(m,ml) in enumerate([('fixed','총 누계 · 2025년 가격'),('nom','총 누계 · 명목'),('pv','현재가치 4.5%')]):
+        dd=v[5][m]; tot=sum(dd[c] for c in comp_order); cls=' class="hl"' if m=='nom' else ''
+        r+=f'<tr{cls}><td>{lab if i==0 else ""}</td><td>{ml}</td>'+''.join(f'<td class="n">{e(dd[c])} ({dd[c]/tot*100:.0f}%)</td>' for c in comp_order)+f'<td class="n"><b>{hit(tot)}</b></td></tr>'
+    return r
+base_a=[B[0],B[1],B[3]]; base_i=[BI[0],BI[1],BI[3]]
+sens=f'<tr class="hl"><td>기준값</td>'+''.join(f'<td class="n{" gl" if j==0 else ""}">{e(x)}</td>' for j,x in enumerate(base_a))+''.join(f'<td class="n{" gl" if j==0 else ""}">{e(x)}</td>' for j,x in enumerate(base_i))+'</tr>'
+pairs=[('재범 위험 5%','재범 위험 5%'),('재범 위험 15%','재범 위험 15%'),('재범 시 실형 20%','재범 시 실형 30%'),('재범 시 실형 50%','재범 시 실형 70%'),('실질 증가 0%','실질 증가 0%'),('실질 증가 1%','실질 증가 1%')]
+for a,b in pairs:
+    lab=a if a==b else f'재범 시 실형 낮음/높음 ({a[-3:]} · {b[-3:]})'
+    sens+=f'<tr><td>{lab}</td>'+''.join(f'<td class="n{" gl" if j==0 else ""}">{e(x)}</td>' for j,x in enumerate(d['sens'][a]))+''.join(f'<td class="n{" gl" if j==0 else ""}">{e(x)}</td>' for j,x in enumerate(d['sens_in'][b]))+'</tr>'
+
 foot=lambda n:f'<div class="foot"><span>마약류범죄와 교정기관 중독재활 체계의 사회적 비용 비교분석 · 별지 생애비용(2025년 기준)</span><span>{n}</span></div>'
 html=f'''<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>생애 사회적 비용</title><style>{css}</style></head><body>
 <section class="page">
@@ -56,19 +65,20 @@ html=f'''<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>생�
 
 <section class="page">
 <div class="kicker">별지 · 2025년 기준</div>
-<h1>비용 구성, 민감도, 이전 계산과의 비교</h1>
-<h2>6. B 기준(가중 기본) 현재가치 구성 (4.5%, 억 원)</h2>
-<table class="c"><tr><th>집단</th><th class="n">건강·생산성</th><th class="n">사망</th><th class="n">사건</th><th class="n">수용</th><th class="n">합계</th></tr>
+<h1>비용 구성, 민감도, 이전 계산과의 비교 (총 누계·현재가치)</h1>
+<h2>6. B 기준(가중 기본) 생애비용 구성: 총 누계와 현재가치 (억 원)</h2>
+<table class="c"><tr><th>집단</th><th>기준</th><th class="n">건강·생산성</th><th class="n">사망</th><th class="n">사건</th><th class="n">수용</th><th class="n">합계</th></tr>
 {comprow('검거 사범 평균',B)}{comprow('수형자 경로',BI)}</table>
-<div class="note">수형자 경로에서는 수용 비용이 가장 큰 단일 항목이 된다. 장기 수용은 실형을 받은 사람에게 집중되므로 검거 사범 평균에서는 비중이 작다.</div>
-<h2>7. 민감도 (검거 사범 평균, B 기준, 가중 기본)</h2>
-<table class="c"><tr><th>변경 가정</th><th class="n">현재가치 4.5%</th><th class="n">명목 누계</th></tr>
-<tr class="hl"><td>기준값 (h 10%, 재범 시 실형 30%, 실질 증가 1.7%)</td><td class="n">{e(B[3])}</td><td class="n">{e(B[1])}</td></tr>{sens}</table>
+<div class="note">총 누계 2025년 가격 = 증가·할인 없이 연도별 비용을 더한 값. 명목 = 물가 2.1%·실질 증가 1.7% 반영. 수형자 경로에서는 수용 비용이 가장 큰 단일 항목이 된다. 장기 수용은 실형을 받은 사람에게 집중되므로 검거 사범 평균에서는 비중이 작다.</div>
+<h2>7. 민감도 (B 기준, 가중 기본, 억 원)</h2>
+<table class="c" style="font-size:8.4pt"><tr><th rowspan="2">변경 가정</th><th colspan="3" class="g">검거 사범 평균</th><th colspan="3" class="g">수형자 경로</th></tr>
+<tr><th class="n">누계 2025 가격</th><th class="n">누계 명목</th><th class="n">현재가치 4.5%</th><th class="n">누계 2025 가격</th><th class="n">누계 명목</th><th class="n">현재가치 4.5%</th></tr>{sens}</table>
+<div class="note">기준값: 재범 위험 h 연 10%, 재범 시 실형 30%(검거 사범 평균)·50%(수형자), 실질 증가 1.7%. 재범 시 실형 민감도는 검거 사범 평균 20%·50%, 수형자 30%·70%. 실질 증가율을 바꿔도 2025년 가격 고정 누계는 변하지 않는다.</div>
 <h2>8. 이전 계산(연간 비용 매년 반복)과의 비교 (B 기준, 가중 기본)</h2>
-<table class="c"><tr><th>방식</th><th class="n">현재가치 4.5%</th><th class="n">명목 누계</th></tr>
-<tr><td>이전: 2,231.5만 원 전체 매년 반복</td><td class="n">2.69</td><td class="n">5.80</td></tr>
-<tr class="hl"><td>수정: 성격별 분해 (검거 사범 평균)</td><td class="n">{e(B[3])}</td><td class="n">{e(B[1])}</td></tr>
-<tr class="hl"><td>수정: 성격별 분해 (수형자 경로)</td><td class="n">{e(BI[3])}</td><td class="n">{e(BI[1])}</td></tr></table>
+<table class="c"><tr><th>방식</th><th class="n">누계 2025 가격</th><th class="n">누계 명목</th><th class="n">현재가치 4.5%</th></tr>
+<tr><td>이전: 2,231.5만 원 전체 매년 반복</td><td class="n">2.79</td><td class="n">5.80</td><td class="n">2.69</td></tr>
+<tr class="hl"><td>수정: 성격별 분해 (검거 사범 평균)</td><td class="n">{e(B[0])}</td><td class="n">{e(B[1])}</td><td class="n">{e(B[3])}</td></tr>
+<tr class="hl"><td>수정: 성격별 분해 (수형자 경로)</td><td class="n">{e(BI[0])}</td><td class="n">{e(BI[1])}</td><td class="n">{e(BI[3])}</td></tr></table>
 <div class="note">이전 계산은 경찰·검찰·법원 비용(788.1만 원)이 매년 반복되어 과대였다. 수정 후 사건 비용은 검거 때만, 수용 비용은 실형 시 형기 동안 발생한다.</div>
 <h2>9. 1인당 생애비용 10억 원 도달 여부</h2>
 <div class="box" style="background:var(--navyBg);margin-top:2px"><ul>

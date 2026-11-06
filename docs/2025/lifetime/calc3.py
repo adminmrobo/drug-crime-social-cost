@@ -23,13 +23,14 @@ def flows(T,k,h=None,p2=None):
     return f
 def agg(T,k,**a):
     f=flows(T,k,**a); g,pi=P['g'],P['pi']
-    comp={}; nom=0; pv={0.03:0,0.045:0,0.05:0}; fixed=0
+    comp={}; cf={}; cn={}; nom=0; pv={0.03:0,0.045:0,0.05:0}; fixed=0
     for t,d in f.items():
         for c,v in d.items():
             real=v*(1+g)**(t-1); fixed+=v; nom+=real*(1+pi)**t
             for r in pv: pv[r]+=real/(1+r)**t
             comp[c]=comp.get(c,0)+real/(1.045)**t
-    return dict(fixed=fixed,nom=nom,pv3=pv[0.03],pv45=pv[0.045],pv5=pv[0.05],comp=comp)
+            cf[c]=cf.get(c,0)+v; cn[c]=cn.get(c,0)+real*(1+pi)**t
+    return dict(fixed=fixed,nom=nom,pv3=pv[0.03],pv45=pv[0.045],pv5=pv[0.05],comp={'pv':comp,'fixed':cf,'nom':cn})
 br=[('5년 이하',5),('5~10년',10),('10~15년',15),('15년 이상',30)]
 sc={'A 조기회복':[50,30,15,5],'B 기준':[30,35,20,15],'C 만성화':[15,25,25,35]}
 out={'param':dict(EV=EV,REP=REP,DTH=DTH,UC01=UC01,SERVE=SERVE,PRI=PRI,p1=p1,**P),'br':{},'sc':{},'sens':{}}
@@ -40,11 +41,12 @@ for k in W:
         v=[sum(x/100*b[2+i] for x,b in zip(ws,out['br'][k])) for i in range(5)]
         comp={}
         for x,b in zip(ws,out['br'][k]):
-            for c,vv in b[7].items(): comp[c]=comp.get(c,0)+x/100*vv
+            for m,dd in b[7].items():
+                for c,vv in dd.items(): comp.setdefault(m,{}); comp[m][c]=comp[m].get(c,0)+x/100*vv
         out['sc'][s+'|'+k]=v+[comp]
 # 민감도: B 기준, 가중 기본
 def scen(s,k,**a):
-    return sum(x/100*agg(T,k,**a)['pv45'] for x,(_,T) in zip(sc[s],br)), sum(x/100*agg(T,k,**a)['nom'] for x,(_,T) in zip(sc[s],br))
+    return [sum(x/100*agg(T,k,**a)[m] for x,(_,T) in zip(sc[s],br)) for m in ('fixed','nom','pv45')]
 for lab,a in [('재범 위험 5%',dict(h=0.05)),('재범 위험 15%',dict(h=0.15)),('재범 시 실형 20%',dict(p2=0.20)),('재범 시 실형 50%',dict(p2=0.50))]:
     out['sens'][lab]=scen('B 기준','가중 기본',**a)
 for lab,gg in [('실질 증가 0%',0.0),('실질 증가 1%',0.01)]:
@@ -53,7 +55,7 @@ json.dump(out,open('life3.json','w'),ensure_ascii=False,indent=1)
 print('EV',EV,'REP',REP,'DTH',DTH,'PRI',PRI,'p1',p1)
 for k in W:
     print(k)
-    for b in out['br'][k]: print(' ',b[0],[round(x/1e4,2) for x in b[2:7]],{c:round(v/1e4,2) for c,v in b[7].items()})
+    for b in out['br'][k]: pass
 for s,v in out['sc'].items(): print(s,[round(x/1e4,2) for x in v[:5]])
 for s,v in out['sens'].items(): print(s,[round(x/1e4,2) for x in v])
 # 수형자(실형 선고자) 경로: 첫 검거 실형 확정, 재범 시 실형 50%
@@ -67,11 +69,22 @@ for k in W:
         v=[sum(x/100*b[2+i] for x,b in zip(ws,out['inmate'][k])) for i in range(5)]
         comp={}
         for x,b in zip(ws,out['inmate'][k]):
-            for c,vv in b[7].items(): comp[c]=comp.get(c,0)+x/100*vv
+            for m,dd in b[7].items():
+                for c,vv in dd.items(): comp.setdefault(m,{}); comp[m][c]=comp[m].get(c,0)+x/100*vv
         out['inmate'][s+'|'+k]=v+[comp]
 p1=p1_save
 json.dump(out,open('life3.json','w'),ensure_ascii=False,indent=1)
 print('--inmate')
-for b in out['inmate']['가중 기본']: print(b[0],[round(x/1e4,2) for x in b[2:7]],{c:round(v/1e4,2) for c,v in b[7].items()})
+pass
 for s in sc:
   for k in W: print(s,k,[round(x/1e4,2) for x in out['inmate'][s+'|'+k][:5]])
+
+p1=1.0
+out['sens_in']={}
+for lab,a in [('재범 위험 5%',dict(h=0.05,p2=0.5)),('재범 위험 15%',dict(h=0.15,p2=0.5)),('재범 시 실형 30%',dict(p2=0.30)),('재범 시 실형 70%',dict(p2=0.70))]:
+    out['sens_in'][lab]=scen('B 기준','가중 기본',**a)
+for lab,gg in [('실질 증가 0%',0.0),('실질 증가 1%',0.01)]:
+    P['g']=gg; out['sens_in'][lab]=scen('B 기준','가중 기본',p2=0.5); P['g']=0.017
+p1=p1_save
+json.dump(out,open('life3.json','w'),ensure_ascii=False,indent=1)
+for k,v in out['sens_in'].items(): print('in',k,[round(x/1e4,2) for x in v])

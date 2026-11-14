@@ -192,6 +192,20 @@ for rr in range(r0+1,r0+8):
     for j in range(1,7): ws.cell(rr,j).fill=SEC
 ws.cell(r0+3,1).font=BF
 style(ws,[14,26,16,16,16,56])
+r1=ws.max_row+2
+ws.cell(r1,1,'기대여명 근거와 한계').font=BF
+NOTES=[('일반인 기대여명','통계청(2025. 12. 3.) 「2024년 생명표」 40세(남 41.9, 여 47.4년)·60세(남 23.7, 여 28.4년). 남녀 평균(44.65, 26.05년)에 맞춘 Gompertz 사망률 곡선'),
+('중독자 기대여명','직접 계산: 일반인 사망률 + 초과 사망률(활동 중독 Stockings et al., 2019; 회복 후 가정 0.1~0.3%), 중독기간 Dennis et al.(2005). 단축 A 3.9, B 6.3, C 10.2년'),
+('검증','Lewer et al.(2020): 호주 아편류 의존자 기대여명이 일반인보다 남 14.7년, 여 15.8년 짧음. 필로폰 중심 국내는 이보다 작은 격차가 타당'),
+('한계 ①','생명표 값은 보도 자료에서 옮김. KOSIS 생명표 원표 확인 필요'),
+('한계 ②','남녀 평균 사용. 사범은 남성 비중이 높아 일반인 기대여명이 다소 길게 잡혔을 수 있음. 2025 범죄백서 성별 인원으로 가중하면 더 정확'),
+('한계 ③','회복 후 초과 사망률은 근거 없는 가정'),
+('한계 ④','국내 마약류 사용자 사망률·기대여명 연구는 확인되지 않음. 국내 자료가 생기면 가장 먼저 바꿀 모수'),
+('한계 ⑤','Lewer et al.(2020) 권·쪽수 미확인'),
+('참고문헌','통계청(2025. 12. 3.). 2024년 생명표. / Stockings, E., et al.(2019). Addiction, 114(10). doi:10.1111/add.14706 / Dennis, M. L., et al.(2005). Journal of Substance Abuse Treatment, 28(Suppl. 1), S51–S62. / Lewer, D., et al.(2020). Journal of Psychiatric Research.')]
+for i,(a,b) in enumerate(NOTES,1):
+    ws.cell(r1+i,1,'기대여명'); ws.cell(r1+i,2,a); ws.cell(r1+i,3,b); ws.merge_cells(start_row=r1+i,start_column=3,end_row=r1+i,end_column=6)
+    ws.cell(r1+i,3).alignment=Alignment(wrap_text=True,vertical='center'); ws.row_dimensions[r1+i].height=30
 # ---------------- 6.미수령·추정
 ws=wb.create_sheet('6.미수령·추정 자료')
 ws.append(['순위','자료','현재 처리','관련 항목','금액(억 원)'])

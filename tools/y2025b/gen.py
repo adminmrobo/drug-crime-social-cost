@@ -91,6 +91,12 @@ p4=f'''<section class="page">
 <tr><td>연간 노동가치</td><td>제3장 원고 &lt;표 3-14&gt;(월임금 × 12 × 고용률, 20~64세)</td></tr>
 <tr><td>반복 비용</td><td>중독자 PGS·의료·복지·이환·2차 범죄·가족·운전의 1명당 값. 미취업·조기사망·예방예산은 1년차에만 넣고 이후는 노동능력·초과 사망 항목으로 대신함(중복 방지)</td></tr>
 <tr><td>재검거</td><td>마약류 재범률 34.5%(서울신문, 2025. 6. 27.)와 11. 9. 생애 별지의 연 10%를 기준으로 둠</td></tr></table>
+<h2>8-1. 기대여명 근거와 한계</h2>
+<table class="c sm"><tr><th>구분</th><th>내용</th></tr>
+<tr><td style="white-space:nowrap">일반인 기대여명</td><td>통계청(2025. 12. 3.) 「2024년 생명표」의 40세(남 41.9, 여 47.4년)·60세(남 23.7, 여 28.4년) 기대여명. 남녀 평균(40세 44.65년, 60세 26.05년)에 맞춘 Gompertz 사망률 곡선을 일반인 사망률로 썼다.</td></tr>
+<tr><td style="white-space:nowrap">중독자 기대여명</td><td>문헌 값을 그대로 쓰지 않고 계산하였다. 일반인 사망률 + 초과 사망률(활동 중독: Stockings et al., 2019; 회복 후: 가정 연 0.1~0.3%), 중독기간(Dennis et al., 2005). 단축 결과는 A 3.9년, B 6.3년, C 10.2년이다.</td></tr>
+<tr><td>검증</td><td>호주 아편류 의존자의 기대여명은 일반인보다 남 14.7년, 여 15.8년 짧았다(Lewer et al., 2020). 필로폰 중심인 국내 사범은 이보다 작은 격차가 타당하다고 보았다.</td></tr>
+<tr><td>한계</td><td>① 생명표 값은 보도 자료에서 옮겼다. KOSIS 생명표 원표로 확인할 필요가 있다. ② 남녀 평균을 썼다. 사범은 남성 비중이 높아 일반인 기대여명이 다소 길게 잡혔을 수 있다. 2025 범죄백서의 성별 인원으로 가중하면 더 정확하다. ③ 회복 후 초과 사망률은 근거가 없는 가정이다. ④ 국내 마약류 사용자의 사망률·기대여명을 다룬 연구는 확인되지 않는다. 국내 자료가 생기면 가장 먼저 바꿀 모수이다. ⑤ Lewer et al.(2020)은 권·쪽수를 확인하지 못하였다.</td></tr></table>
 {foot(4)}</section>'''
 def cell(k,m): return L['w'][k+'|'+m]['tot']/1e8
 def clip(v): return min(max(v,P['FLOOR']/1e8),16)
@@ -117,7 +123,7 @@ p5=f'''<section class="page">
 <li>가장 큰 몫은 초과 사망의 고통(PGS)과 노동능력 상실이다. 사망 PGS 원단위(교통사고 9.7억 원)와 노동능력 상실 비율이 결과를 가장 크게 움직인다.</li>
 <li>16억 원 상한은 C(만성화)의 명목 누계에서만 닿는다. 현재가치로 16억 원이 되려면 활동 중독이 사실상 평생 이어지고 할인율이 0에 가까워야 한다.</li>
 <li>참고: 2025년 검거 사범 전원에 B를 곱하면 {23403*B/1e4:,.1f}조 원, λ 10이면 {234030*B/1e4:,.1f}조 원이다. 해마다 새로 생기는 사범의 생애 부담이므로 연간 사회적 비용과 더하지 않는다.</li></ul></div>
-<div class="note" style="margin-top:4px"><b>참고문헌</b> 대검찰청(2026). 2025 마약류 범죄백서. · 박성수(2018). 마약류 사용의 사회적 비용 추계. · 통계청(2025. 12. 3.). 2024년 생명표. · 한국교통연구원(2025. 7. 28.). 교통 사망사고 고통 비용 보도자료. · Dennis, M. L., Scott, C. K., Funk, R., &amp; Foss, M. A.(2005). The duration and correlates of addiction and treatment careers. <i>Journal of Substance Abuse Treatment</i>, 28(Suppl. 1), S51–S62. · Stockings, E., et al.(2019). Mortality among people with regular or problematic use of amphetamines: A systematic review and meta-analysis. <i>Addiction</i>, 114(10). doi:10.1111/add.14706. · Lewer, D., Jones, N. R., Hickman, M., Nielsen, S., &amp; Degenhardt, L.(2020). Life expectancy of people who are dependent on opioids: A cohort study in New South Wales, Australia. <i>Journal of Psychiatric Research</i>(2020 게재).</div>
+<div class="note" style="margin-top:4px"><b>참고문헌</b> 대검찰청(2026). 2025 마약류 범죄백서. · 박성수(2018). 마약류 사용의 사회적 비용 추계. · 통계청(2025. 12. 3.). 2024년 생명표(보도 기준, KOSIS 원표 확인 필요). · 한국교통연구원(2025. 7. 28.). 교통 사망사고 고통 비용 보도자료. · Dennis, M. L., Scott, C. K., Funk, R., &amp; Foss, M. A.(2005). The duration and correlates of addiction and treatment careers. <i>Journal of Substance Abuse Treatment</i>, 28(Suppl. 1), S51–S62. · Stockings, E., et al.(2019). Mortality among people with regular or problematic use of amphetamines: A systematic review and meta-analysis. <i>Addiction</i>, 114(10). doi:10.1111/add.14706. · Lewer, D., Jones, N. R., Hickman, M., Nielsen, S., &amp; Degenhardt, L.(2020). Life expectancy of people who are dependent on opioids: A cohort study in New South Wales, Australia. <i>Journal of Psychiatric Research</i>(2020 게재).</div>
 {foot(5)}</section>'''
 html=f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>2025 원고 반영 재산정</title><style>{css}</style></head><body>{p1}{p2}{p3}{p4}{p5}</body></html>'
 open('rep.html','w').write(html)

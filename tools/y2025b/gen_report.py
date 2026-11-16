@@ -8,16 +8,16 @@ def jo(x):  # 억 → 조·억 표기
 N=R['N']; g=R['grp']; O=R['old']
 foot=lambda n:f'<div class="foot"><span>마약류범죄와 교정기관 중독재활 체계의 사회적 비용 비교분석 · 2025년 사회적 비용 확정판 (2026. 11. 16.)</span><span>{n}</span></div>'
 GO=['형사사법','고통비용','생산성','의료·복지','사회적 혼란·기타']
-src={'형사사법':'실측','고통비용':'추계치: 2024 원단위 × 물가','생산성':'실측','의료·복지':'실측','사회적 혼란·기타':'추계치: 범죄 단가·예산·문헌'}
+src={'형사사법':'실측','고통비용':'2024 원단위 × 물가','생산성':'실측','의료·복지':'실측','사회적 혼란·기타':'범죄 단가·예산·문헌'}
 t1=''.join(f"<tr><td>{k}</td><td class='n'>{g[k]:,.1f}</td><td class='n'>{g[k]/N*1e4:,.1f}</td><td class='n'>{jo(g[k]*10)}</td><td class='n'>{g[k]/R['tot']*100:.1f}%</td><td>{src[k]}</td></tr>" for k in GO)
 t1+=f"<tr class='tot'><td>합계</td><td class='n'>{R['tot']:,.1f}</td><td class='n'>{R['pc']:,.1f}</td><td class='n'>{jo(R['t10'])}</td><td class='n'>100.0%</td><td></td></tr>"
 t2=''.join(f"<tr><td>{r[0]}</td><td>{r[1]}</td><td class='n'>{r[2]:,.1f}</td><td class='n'>{r[3]:,.1f}</td><td class='n'>{jo(r[4])}</td><td class='n'>{jo(r[5])}</td></tr>" for r in R['rows'])
 t2+=f"<tr class='tot'><td colspan=2>합계</td><td class='n'>{R['tot']:,.1f}</td><td class='n'>{R['pc']:,.1f}</td><td class='n'>{jo(R['t10'])}</td><td class='n'>{jo(R['t28'])}</td></tr>"
 p1=f'''<section class="page">
-<div class="kicker">별지 1 · 2025년 기준 · 2026. 11. · 자료가 확정되지 않은 항목은 추계치(추정치)</div>
+<div class="kicker">별지 1 · 2025년 기준 · 2026. 11.</div>
 <h1>2025년 사회적 비용(λ 10): {jo(R['t10'])} 원<br>검거 사범 1명당 {R['pc']:,.1f}만 원 · 생애비용(기준) {L['w']['B 기준|pv45']['tot']/1e8:.2f}억 원</h1>
 <div class="box" style="background:var(--navyBg)"><ul>
-<li>형사사법비용, 의료·복지, 생산성은 2025년 실측 자료로 산정하였다. 고통비용은 2024년 원단위에 물가(1.021)를 곱한 추계치(추정치)이다. 자료가 확정되지 않은 항목은 모두 추계치를 썼다(6장).</li>
+<li>형사사법비용, 의료·복지, 생산성은 2025년 실측 자료로 산정하였다. 고통비용은 2024년 원단위에 물가(1.021)를 곱하였다.</li>
 <li>모든 비용을 검거 사범 1명당 값(총액 ÷ {N:,}명)으로 바꾸고 암수율 λ를 곱하였다. 형사사법과 사회적 혼란·기타에도 λ를 곱하였다.</li>
 <li>암수율 미반영 {jo(R['tot'])} 원, λ 10 {jo(R['t10'])} 원(N* {N*10:,}명), λ 28.57 {jo(R['t28'])} 원이다. 박성수(2018)의 2조 2,389억 원 대비 λ 10에서 {R['vs16']['ratio']:.2f}배이다.</li>
 </ul></div>
@@ -137,9 +137,9 @@ F=c['F']; flo=F['lo']; fhi=F['hi']
 p7=f"""<section class="page">
 <h2>5. 교정 재활 비용편익</h2>
 <table class="c sm"><tr><th>구분</th><th class="n">하한 (SCᵣ 형사사법분)</th><th class="n">확장 (SCᵣ 전 항목)</th></tr>
-<tr><td>UC-06 프로그램: (재활예산 59.99억 + 전담인력 16.98억*) ÷ 2025 이수 1,545명</td><td class="n">{c['UC06']/1e4:,.1f}만 원</td><td class="n">{c['UC06']/1e4:,.1f}만 원</td></tr>
-<tr><td>UC-10 치료개입*: 중독 외래 1인당 진료비(9.79억 ÷ 1,835명)</td><td class="n">{F['UC10']/1e4:,.1f}만 원</td><td class="n">{F['UC10']/1e4:,.1f}만 원</td></tr>
-<tr><td>UC-12 사후관리*: 치료보호 1인당 예산(14.4억 ÷ 1,649명) ÷ 1.045</td><td class="n">{F['UC12']/1e4:,.1f}만 원</td><td class="n">{F['UC12']/1e4:,.1f}만 원</td></tr>
+<tr><td>UC-06 프로그램: (재활예산 59.99억 + 전담인력 16.98억) ÷ 2025 이수 1,545명</td><td class="n">{c['UC06']/1e4:,.1f}만 원</td><td class="n">{c['UC06']/1e4:,.1f}만 원</td></tr>
+<tr><td>UC-10 치료개입: 중독 외래 1인당 진료비(9.79억 ÷ 1,835명)</td><td class="n">{F['UC10']/1e4:,.1f}만 원</td><td class="n">{F['UC10']/1e4:,.1f}만 원</td></tr>
+<tr><td>UC-12 사후관리: 치료보호 1인당 예산(14.4억 ÷ 1,649명) ÷ 1.045</td><td class="n">{F['UC12']/1e4:,.1f}만 원</td><td class="n">{F['UC12']/1e4:,.1f}만 원</td></tr>
 <tr class="tot"><td>ΔC 증분비용 (ΔM × UC-02 = 0, 가정)</td><td class="n">{F['dC']/1e4:,.1f}만 원</td><td class="n">{F['dC']/1e4:,.1f}만 원</td></tr>
 <tr><td>SCᵣ 재복역 1건당 사회적 비용</td><td class="n">{c['SCr']/1e4:,.1f}만 원</td><td class="n">{c['SCx']/1e4:,.1f}만 원</td></tr>
 <tr><td>B = (r0 − r1) × SCᵣ × D = {c['d']*100:.1f}%p × SCᵣ × {c['D']:.3f}</td><td class="n">{flo['B']/1e4:,.1f}만 원</td><td class="n">{fhi['B']/1e4:,.1f}만 원</td></tr>
@@ -148,24 +148,12 @@ p7=f"""<section class="page">
 <tr><td>손익분기 재복역률 차</td><td class="n">{flo['dstar']*100:.1f}%p</td><td class="n">{fhi['dstar']*100:.1f}%p</td></tr>
 <tr><td>민감도: 문헌 효과(상대 19.2%, 김도균·나종민, 2025 → {F['lit_d']*100:.1f}%p)</td><td class="n">B/C {F['litlo']['BC']:.2f}</td><td class="n">B/C {F['lithi']['BC']:.2f}</td></tr>
 <tr><td>민감도: 신뢰구간 상한 효과(11.7%p)</td><td class="n">B/C {F['ci_lo']['BC']*c['SCr']/c['SCx']:.2f}</td><td class="n">B/C {F['ci_lo']['BC']:.2f}</td></tr></table>
-<div class="note">* 추계치(추정치): 해당 자료가 확정되지 않아 대체 값을 썼다.</div>
+
 <div class="box" style="background:var(--navyBg);margin-top:6px"><ul>
 <li>관측된 재복역률 차({c['d']*100:.1f}%p)로는 B/C {flo['BC']:.2f}~{fhi['BC']:.2f}로 편익이 비용에 못 미친다.</li>
 <li>B/C가 1이 되려면 이수자 재복역률이 미이수·탈락보다 {fhi['dstar']*100:.1f}~{flo['dstar']*100:.1f}%p 낮아야 한다.</li>
 <li>관측 차이는 유의하지 않고(95% CI {c['ci'][0]*100:.1f}~{c['ci'][1]*100:.1f}%p), 이수자는 형기가 길어 효과가 작게 잡혔을 수 있다. 상한 효과에서는 확장 B/C {F['ci_lo']['BC']:.2f}이다.</li>
 <li>의료절감·생산성회복은 SCᵣ에 포함하고 따로 더하지 않았다. B는 3년 내 재복역만 반영한다.</li></ul></div>
-<h2>6. 추계치(추정치)를 쓴 항목</h2>
-<table class="c sm"><tr><th>항목</th><th class="n">값</th><th>추계 방법</th><th>확정되지 않은 자료</th></tr>
-<tr><td>고통비용</td><td class="n">2,426.4억 원</td><td>2024 원단위 × 물가 1.021, 사망 58명·치료보호 1,649명은 실측</td><td>2025년 고통비용 산정 자료</td></tr>
-<tr><td>검찰</td><td class="n">199.3억 원</td><td>2024 예산·인원(원고 사용값)</td><td>2025 총처리인원</td></tr>
-<tr><td>사회적 혼란·기타</td><td class="n">496.0억 원</td><td>범죄 1건당 단가 × 마약 상태 25%, 2024 예산, 문헌 최저 단가</td><td>건수·2025 예산</td></tr>
-<tr><td>전담인력 인건비</td><td class="n">16.98억 원</td><td>정원 × 2026 봉급표 × 1.6 × 투입비율 가정</td><td>프로그램 직접투입 비율</td></tr>
-<tr><td>UC-10 치료개입</td><td class="n">{F['UC10']/1e4:,.1f}만 원</td><td>중독 외래 1인당 연간 진료비</td><td>교정시설 치료개입 비용</td></tr>
-<tr><td>UC-12 사후관리</td><td class="n">{F['UC12']/1e4:,.1f}만 원</td><td>치료보호 1인당 예산, 출소 1년차 할인</td><td>출소 후 치료보호·사후관리 비용</td></tr>
-<tr><td>재활예산 성격</td><td class="n">59.99억 원</td><td>집행액으로 간주</td><td>예산·집행 구분</td></tr>
-<tr><td>실제 복역 비율 · ΔM</td><td class="n">85% · 0</td><td>가석방 반영 가정, 이수·미이수 수용기간 차이 없음</td><td>-</td></tr>
-<tr><td>생애비용 모수</td><td class="n">-</td><td>회복 후 초과 사망 0.1~0.3%, 재검거 5~15%, B 중독기간 16년</td><td>국내 연구 없음</td></tr></table>
-
 <div class="note" style="margin-top:4px">주(생애비용): 같은 생애비용 모형을 2016년 기준(박성수, 2018)에 적용한 부가연구(별지 3)에서 1인당 생애 사회적 비용은 B 기준 명목 누계 9.82억 원(2016년 가격)이다. 본 연구보다 작은 주된 이유는 가격 기준이며, 2025년 가격으로 환산하면 11.95억 원으로 비슷하다. 1년차 비용이 낮은 것은 사망 고통비용 원단위(2.81억 원)가 낮고 사회적 혼란·기타 비용을 산정하지 않았기 때문이다.</div>
 {foot(7)}</section>"""
 

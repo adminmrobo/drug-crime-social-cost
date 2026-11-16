@@ -96,3 +96,12 @@ s=re.sub(r"교정본부 자료(?:\(2026\. 11\.\))?(?:[ ,·]*교정본부 자료(
 open('build_report.js','w').write(s)
 s=s.replace("교정본부 자료~2022 출소 합계","교정본부 자료, 2019~2022 출소 합계").replace("{ text: '현재 처리  ', options: { bold: true } },","{ text: '기준  ', options: { bold: true } },")
 open('build_report.js','w').write(s)
+a="""    { text: '참고: 2025년 검거 전원 × B = 9.3조 원(λ 10 92.9조 원). 연간 사회적 비용과 더하지 않음', options: { bullet: true } },"""
+b="""    { text: '참고: 2025년 검거 전원 × B = 9.3조 원(λ 10 92.9조 원). 연간 사회적 비용과 더하지 않음', options: { bullet: true, breakLine: true } },
+    { text: '주: 2016년 기준(별지 3)은 B 명목 누계 9.82억 원(2016년 가격). 2025년 가격으로 11.95억 원이라 본 연구와 비슷함. 차이는 가격 기준과 1년차 원단위(사망 고통 2.81억 원, 사회적 혼란 미산정)', options: { bullet: true, fontSize: 9.5, color: HEX.slate } },"""
+assert a in s; s=s.replace(a,b)
+a2="], { x: X + 0.12, y: 4.4, w: TW - 0.24, h: 2.1, fontSize: 11, valign: 'middle', paraSpaceAfter: 4 });"
+assert a2 in s; s=s.replace(a2,"], { x: X + 0.12, y: 4.4, w: TW - 0.24, h: 2.1, fontSize: 10, valign: 'middle', paraSpaceAfter: 3 });")
+a3="연간 총비용과는 기준이 달라 더하지 않음.');"
+assert a3 in s; s=s.replace(a3,"연간 총비용과는 기준이 달라 더하지 않음. 같은 모형을 2016년 기준에 적용한 부가연구(별지 3)는 9.82억 원(2016년 가격)으로, 2025년 가격으로 바꾸면 11.95억 원이라 본 연구와 비슷함.');")
+open('build_report.js','w').write(s)

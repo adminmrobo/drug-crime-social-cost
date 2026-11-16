@@ -94,7 +94,7 @@ p4=f'''<section class="page">
 <h2>8-1. 기대여명 근거와 한계</h2>
 <table class="c sm"><tr><th>구분</th><th>내용</th></tr>
 <tr><td style="white-space:nowrap">일반인 기대여명</td><td>통계청(2025. 12. 3.) 「2024년 생명표」의 40세(남 41.9, 여 47.4년)·60세(남 23.7, 여 28.4년) 기대여명. 남녀 평균(40세 44.65년, 60세 26.05년)에 맞춘 Gompertz 사망률 곡선을 일반인 사망률로 썼다.</td></tr>
-<tr><td style="white-space:nowrap">중독자 기대여명</td><td>문헌 값을 그대로 쓰지 않고 계산하였다. 일반인 사망률 + 초과 사망률(활동 중독: Stockings et al., 2019; 회복 후: 가정 연 0.1~0.3%), 중독기간(Dennis et al., 2005). 단축 결과는 A 3.9년, B 7.5년, C 10.2년이다.</td></tr>
+<tr><td style="white-space:nowrap">중독자 기대여명</td><td>문헌 값을 그대로 쓰지 않고 계산하였다. 일반인 사망률 + 초과 사망률(활동 중독: Stockings et al., 2019; 회복 후: 가정 연 0.1~0.3%), 중독기간(Dennis et al., 2005). 단축 결과는 A 4.0년, B 7.5년, C 10.3년이다.</td></tr>
 <tr><td>검증</td><td>호주 아편류 의존자의 기대여명은 일반인보다 남 14.7년, 여 15.8년 짧았다(Lewer et al., 2020). 필로폰 중심인 국내 사범은 이보다 작은 격차가 타당하다고 보았다.</td></tr>
 <tr><td>한계</td><td>① 생명표 값은 보도 자료에서 옮겼다. KOSIS 생명표 원표로 확인할 필요가 있다. ② 남녀 평균을 썼다. 사범은 남성 비중이 높아 일반인 기대여명이 다소 길게 잡혔을 수 있다. 2025 범죄백서의 성별 인원으로 가중하면 더 정확하다. ③ 회복 후 초과 사망률은 근거가 없는 가정이다. ④ 국내 마약류 사용자의 사망률·기대여명을 다룬 연구는 확인되지 않는다. 국내 자료가 생기면 가장 먼저 바꿀 모수이다. ⑤ Lewer et al.(2020)은 권·쪽수를 확인하지 못하였다.</td></tr></table>
 {foot(4)}</section>'''
@@ -161,7 +161,7 @@ p7=f"""<section class="page">
 <tr><td>손익분기 재복역률 차</td><td class="n">{flo['dstar']*100:.1f}%p</td><td class="n">{fhi['dstar']*100:.1f}%p</td></tr>
 <tr><td>민감도: 문헌 효과(상대 19.2%, 김도균·나종민, 2025 → {F['lit_d']*100:.1f}%p)</td><td class="n">B/C {F['litlo']['BC']:.2f}</td><td class="n">B/C {F['lithi']['BC']:.2f}</td></tr>
 <tr><td>민감도: 신뢰구간 상한 효과(11.7%p)</td><td class="n">B/C {F['ci_lo']['BC']*c['SCr']/c['SCx']:.2f}</td><td class="n">B/C {F['ci_lo']['BC']:.2f}</td></tr></table>
-<div class="note">* 추계치(추정치): 해당 자료가 회신되지 않아 대체 값을 썼다.</div>
+<div class="note">* 추계치(추정치): 해당 자료가 확정되지 않아 대체 값을 썼다.</div>
 <div class="box" style="background:var(--navyBg);margin-top:6px"><ul>
 <li>관측된 재복역률 차({c['d']*100:.1f}%p)로는 B/C {flo['BC']:.2f}~{fhi['BC']:.2f}로 편익이 비용에 못 미친다.</li>
 <li>B/C가 1이 되려면 이수자 재복역률이 미이수·탈락보다 {fhi['dstar']*100:.1f}~{flo['dstar']*100:.1f}%p 낮아야 한다.</li>

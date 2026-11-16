@@ -80,7 +80,7 @@ p4=f'''<section class="page">
 <h2>3. 기대여명 근거와 한계</h2>
 <table class="c sm"><tr><th>구분</th><th>내용</th></tr>
 <tr><td style="white-space:nowrap">일반인 기대여명</td><td>통계청(2025. 12. 3.) 「2024년 생명표」의 40세(남 41.9, 여 47.4년)·60세(남 23.7, 여 28.4년) 기대여명. 남녀 평균(40세 44.65년, 60세 26.05년)에 맞춘 Gompertz 사망률 곡선을 일반인 사망률로 썼다.</td></tr>
-<tr><td style="white-space:nowrap">중독자 기대여명</td><td>문헌 값을 그대로 쓰지 않고 계산하였다. 일반인 사망률 + 초과 사망률(활동 중독: Stockings et al., 2019; 회복 후: 가정 연 0.1~0.3%), 중독기간(Dennis et al., 2005). 단축 결과는 A 3.9년, B 7.5년, C 10.2년이다.</td></tr>
+<tr><td style="white-space:nowrap">중독자 기대여명</td><td>문헌 값을 그대로 쓰지 않고 계산하였다. 일반인 사망률 + 초과 사망률(활동 중독: Stockings et al., 2019; 회복 후: 가정 연 0.1~0.3%), 중독기간(Dennis et al., 2005). 단축 결과는 A 4.0년, B 7.5년, C 10.3년이다.</td></tr>
 <tr><td>검증</td><td>호주 아편류 의존자의 기대여명은 일반인보다 남 14.7년, 여 15.8년 짧았다(Lewer et al., 2020). 필로폰 중심인 국내 사범은 이보다 작은 격차가 타당하다고 보았다.</td></tr>
 <tr><td>한계</td><td>① 생명표 값은 보도 자료에서 옮겼다. KOSIS 생명표 원표로 확인할 필요가 있다. ② 남녀 평균을 썼다. 사범은 남성 비중이 높아 일반인 기대여명이 다소 길게 잡혔을 수 있다. 2025 범죄백서의 성별 인원으로 가중하면 더 정확하다. ③ 회복 후 초과 사망률은 근거가 없는 가정이다. ④ 국내 마약류 사용자의 사망률·기대여명을 다룬 연구는 확인되지 않는다. 국내 자료가 생기면 가장 먼저 바꿀 모수이다. ⑤ Lewer et al.(2020)은 권·쪽수를 확인하지 못하였다.</td></tr></table>
 {foot(4)}</section>'''
@@ -99,6 +99,7 @@ p5=f'''<section class="page">
 <table class="c"><tr><th>시나리오</th><th class="n">현재가치 3%</th><th class="n">4%</th><th class="n">4.5%(기본)</th><th class="n">5%</th><th class="n">총 누계(명목)</th><th class="n">범위 적용(현재가치/누계)</th></tr>{t5}</table>
 <div class="note">범위 적용 = 하한 {P['FLOOR']/1e8:.2f}억 원, 상한 16억 원으로 자른 값. C의 명목 총 누계 {cell('C 만성화','nom'):.2f}억 원은 상한을 넘어 16억 원으로 둔다. 현재가치는 세 시나리오 모두 범위 안이다.</div>
 <table class="c sm" style="margin-top:6px"><tr><th>시나리오</th><th class="n">일반인 잔여 기대여명</th><th class="n">중독자 잔여 기대여명</th><th class="n">단축</th><th class="n">활동 중독 기간(기대)</th></tr>{t6}</table>
+<div class="note" style="margin-top:4px">주: 같은 생애비용 모형을 2016년 기준(박성수, 2018)에 적용한 부가연구(별지 3)에서 1인당 생애 사회적 비용은 B 기준 명목 누계 9.82억 원(2016년 가격)이다. 본 연구보다 작은 주된 이유는 가격 기준이며, 2025년 가격으로 환산하면 11.95억 원으로 비슷하다. 1년차 비용이 낮은 것은 사망 고통비용 원단위(2.81억 원)가 낮고 사회적 혼란·기타 비용을 산정하지 않았기 때문이다.</div>
 <h2>5. 구성 (4.5% 현재가치, B는 명목 총 누계 병기)</h2>
 <table class="c sm"><tr><th>구성</th><th class="n">A</th><th class="n">B</th><th class="n">C</th><th class="n">B 총 누계</th></tr>{t7}
 <tr class="tot"><td>합계</td>{''.join(f"<td class='n'>{cell(s,'pv45'):.2f}</td>" for s in SN)}<td class='n'>{cell('B 기준','nom'):.2f}</td></tr></table>
@@ -165,6 +166,7 @@ p7=f"""<section class="page">
 <tr><td>실제 복역 비율 · ΔM</td><td class="n">85% · 0</td><td>가석방 반영 가정, 이수·미이수 수용기간 차이 없음</td><td>-</td></tr>
 <tr><td>생애비용 모수</td><td class="n">-</td><td>회복 후 초과 사망 0.1~0.3%, 재검거 5~15%, B 중독기간 16년</td><td>국내 연구 없음</td></tr></table>
 
+<div class="note" style="margin-top:4px">주(생애비용): 같은 생애비용 모형을 2016년 기준(박성수, 2018)에 적용한 부가연구(별지 3)에서 1인당 생애 사회적 비용은 B 기준 명목 누계 9.82억 원(2016년 가격)이다. 본 연구보다 작은 주된 이유는 가격 기준이며, 2025년 가격으로 환산하면 11.95억 원으로 비슷하다. 1년차 비용이 낮은 것은 사망 고통비용 원단위(2.81억 원)가 낮고 사회적 혼란·기타 비용을 산정하지 않았기 때문이다.</div>
 {foot(7)}</section>"""
 
 
@@ -177,7 +179,7 @@ def fix(x,label):
 import re
 for n in range(1,8): globals()['f%d'%n]=None
 h1=fix(f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>별지 1 사회적 비용</title><style>{css}</style></head><body>{p1.replace(foot(1)+'</section>','')+p2.replace('<section class="page">','',1)}{p6}{p7}</body></html>',"별지 1 · 2025년 마약류 사회적 비용과 교정 재활 비용편익")
-h2=fix(f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>별지 2 생애비용</title><style>{css}</style></head><body>{p4}{p5}</body></html>',"별지 2 · 마약사범(중독자) 1인당 생애 사회적 비용")
+h2=fix(f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>별지 2 생애비용</title><style>{css} table.c td,table.c th{{padding:1.5px 6px}} .note{{font-size:7.6pt}}</style></head><body>{p4}{p5}</body></html>',"별지 2 · 마약사범(중독자) 1인당 생애 사회적 비용")
 # 쪽 번호 다시 매김
 def renum(h):
     k=[0]

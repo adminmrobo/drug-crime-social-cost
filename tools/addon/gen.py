@@ -5,7 +5,7 @@ css+="table.c td,table.c th{padding:3px 6px}.sm{font-size:8.6pt}"
 e=lambda x:f"{x/1e8:.2f}"
 SN=['A 조기회복','B 기준','C 만성화']
 B=R['B 기준|nom']['tot']; Bp=R['B 기준|pv45']['tot']
-foot=lambda n:f'<div class="foot"><span>부가연구 · 2016년 기준 마약사범(중독자) 1인당 생애 사회적 비용</span><span>{n}</span></div>'
+foot=lambda n:f'<div class="foot"><span>별지 3 · 부가연구: 2016년 기준 마약사범(중독자) 1인당 생애 사회적 비용</span><span>{n}</span></div>'
 t1=f"""<tr><td>1년차 비용</td><td>2조 2,389억 원 ÷ 실질 사용자 142,140명(14,214명 × 10)</td><td class='n'>{U['Y1']/1e4:,.1f}만 원</td><td>그대로 사용</td></tr>
 <tr><td>의료·복지</td><td>1인당 진료비(입원 749.5만 + 외래 71.9만)</td><td class='n'>821.4만 원</td><td><b>가정:</b> 활동 중독자의 30%가 해마다 진료</td></tr>
 <tr><td>중독 고통(PGS)</td><td>교통사고 중상자 평균 PGS(심재익 외, 2016)</td><td class='n'>7,362.7만 원</td><td><b>가정:</b> 활동 중독 1년마다 8% (약 12.5년에 걸쳐 나눔)</td></tr>
@@ -21,7 +21,7 @@ CK=list(R['B 기준|nom']['comp'].keys())
 t4=''.join(f"<tr><td>{k}</td><td class='n'>{e(R['B 기준|pv45']['comp'][k])}</td><td class='n'>{e(R['B 기준|nom']['comp'][k])}</td><td class='n'>{R['B 기준|nom']['comp'][k]/B*100:.1f}%</td></tr>" for k in CK)
 t5=''.join(f"<tr><td>{a[0]}세</td><td class='n'>{a[1]:,}</td><td class='n'>{e(a[2])}</td><td class='n'>{e(a[3])}</td></tr>" for a in A['age']['B 기준'])
 p1=f"""<section class="page">
-<div class="kicker">부가연구 · 2016년 기준 · 2026. 11.</div>
+<div class="kicker">별지 3 · 부가연구 · 2016년 기준 · 2026. 11.</div>
 <h1>2016년 기준 마약사범(중독자) 1인당 생애 사회적 비용<br><span style="font-size:15pt;color:#1d6b3a">B 기준 명목 누계 {e(B)}억 원 (현재가치 4.5% {e(Bp)}억 원, 2016년 가격)</span></h1>
 <div class="box" style="background:var(--navyBg)"><ul>
 <li><b>목적:</b> 박성수(2018)는 2016년 기준 마약류 사회적 비용을 연간 단위로 추계하였다(암수율 10배, 2조 2,389억 원). 1인당 생애 사회적 비용은 산정하지 않았다. 이 부가연구는 본 연구 별지 2의 생애비용 모형을 2016년 연구의 원단위에 적용하여 대략값을 구한다.</li>
@@ -43,7 +43,7 @@ p2=f"""<section class="page">
 <tr class="tot"><td>합계</td><td class="n">{e(Bp)}</td><td class="n">{e(B)}</td><td class="n">100%</td></tr></table>
 <h2>5. 검거 연령별 (B 기준)</h2>
 <table class="c sm"><tr><th>검거 연령(대표)</th><th class="n">사범 수(2025 분포)</th><th class="n">현재가치 4.5%</th><th class="n">명목 누계</th></tr>{t5}</table>
-<h2>6. 본 연구(2025년 기준)와 비교</h2>
+<h2>6. 본 연구(별지 2, 2025년 기준)와 비교</h2>
 <table class="c sm"><tr><th>구분</th><th class="n">1년차 1인당</th><th class="n">B 현재가치</th><th class="n">B 명목 누계</th></tr>
 <tr><td>부가연구: 2016년 기준(2016년 가격)</td><td class="n">{A['U']['Y1']/1e4:,.1f}만 원</td><td class="n">{e(Bp)}억 원</td><td class="n">{e(B)}억 원</td></tr>
 <tr><td>본 연구 별지 2: 2025년 기준(2025년 가격)</td><td class="n">3,194.7만 원</td><td class="n">3.97억 원</td><td class="n">12.28억 원</td></tr></table>

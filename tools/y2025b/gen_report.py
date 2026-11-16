@@ -15,7 +15,7 @@ t2=''.join(f"<tr><td>{r[0]}</td><td>{r[1]}</td><td class='n'>{r[2]:,.1f}</td><td
 t2+=f"<tr class='tot'><td colspan=2>합계</td><td class='n'>{R['tot']:,.1f}</td><td class='n'>{R['pc']:,.1f}</td><td class='n'>{jo(R['t10'])}</td><td class='n'>{jo(R['t28'])}</td></tr>"
 p1=f'''<section class="page">
 <div class="kicker">별지 1 · 2025년 기준 · 2026. 11.</div>
-<h1>2025년 사회적 비용(λ 10): {jo(R['t10'])} 원<br>검거 사범 1명당 {R['pc']:,.1f}만 원 · 생애비용(기준) {L['w']['B 기준|pv45']['tot']/1e8:.2f}억 원</h1>
+<h1>2025년 사회적 비용(λ 10): {jo(R['t10'])} 원<br>검거 사범 1명당 {R['pc']:,.1f}만 원 · 생애비용(누적 기준, B) {L['w']['B 기준|nom']['tot']/1e8:.2f}억 원</h1>
 <div class="box" style="background:var(--navyBg)"><ul>
 <li>형사사법비용, 의료·복지, 생산성은 2025년 실측 자료로 산정하였다. 고통비용은 2024년 원단위에 물가(1.021)를 곱하였다.</li>
 <li>모든 비용을 검거 사범 1명당 값(총액 ÷ {N:,}명)으로 바꾸고 암수율 λ를 곱하였다. 형사사법과 사회적 혼란·기타에도 λ를 곱하였다.</li>
@@ -58,7 +58,7 @@ P=L['param']; S=P['SC']
 def sc_row(lab,k): s=S[k]; return f"<tr><td>{lab}</td><td class='n'>{s['med']}년</td><td class='n'>{s['L']*100:.1f}%</td><td class='n'>{s['rho']*100:.0f}%</td><td class='n'>{s['ea']*100:.2f}%</td><td class='n'>{s['er']*100:.1f}%</td><td class='n'>{s['re']*100:.0f}%</td></tr>"
 p4=f'''<section class="page">
 <div class="kicker">별지 2 · 2025년 기준 · 2026. 11.</div>
-<h1>마약사범(중독자) 1인당 생애 사회적 비용<br><span style="font-size:15pt;color:var(--teal,#1d6b3a)">B 기준 명목 누계 {L['w']['B 기준|nom']['tot']/1e8:.2f}억 원 (현재가치 4.5% {L['w']['B 기준|pv45']['tot']/1e8:.2f}억 원)</span></h1>
+<h1>마약사범(중독자) 1인당 생애 사회적 비용<br><span style="font-size:15pt;color:var(--teal,#1d6b3a)">누적 기준(B) {L['w']['B 기준|nom']['tot']/1e8:.2f}억 원 (현재가치 4.5% {L['w']['B 기준|pv45']['tot']/1e8:.2f}억 원)</span></h1>
 <h2>1. 모형</h2>
 <div class="box" style="background:var(--navyBg)"><ul>
 <li><b>범위:</b> 하한은 이 연구의 1년차 1명당 비용 {P['FLOOR']/1e4:,.1f}만 원(2차 범죄 하한 기준)이다. 상한은 16억 원이다.</li>
@@ -99,14 +99,14 @@ p5=f'''<section class="page">
 <table class="c"><tr><th>시나리오</th><th class="n">현재가치 3%</th><th class="n">4%</th><th class="n">4.5%(기본)</th><th class="n">5%</th><th class="n">총 누계(명목)</th><th class="n">범위 적용(현재가치/누계)</th></tr>{t5}</table>
 <div class="note">범위 적용 = 하한 {P['FLOOR']/1e8:.2f}억 원, 상한 16억 원으로 자른 값. C의 명목 총 누계 {cell('C 만성화','nom'):.2f}억 원은 상한을 넘어 16억 원으로 둔다. 현재가치는 세 시나리오 모두 범위 안이다.</div>
 <table class="c sm" style="margin-top:6px"><tr><th>시나리오</th><th class="n">일반인 잔여 기대여명</th><th class="n">중독자 잔여 기대여명</th><th class="n">단축</th><th class="n">활동 중독 기간(기대)</th></tr>{t6}</table>
-<div class="note" style="margin-top:4px">주: 같은 생애비용 모형을 2016년 기준(박성수, 2018)에 적용한 부가연구(별지 3)에서 1인당 생애 사회적 비용은 B 기준 명목 누계 9.82억 원(2016년 가격)이다. 본 연구보다 작은 주된 이유는 가격 기준이며, 2025년 가격으로 환산하면 11.95억 원으로 비슷하다. 1년차 비용이 낮은 것은 사망 고통비용 원단위(2.81억 원)가 낮고 사회적 혼란·기타 비용을 산정하지 않았기 때문이다.</div>
+<div class="note" style="margin-top:4px">주: 같은 생애비용 모형을 2016년 기준(박성수, 2018)에 적용한 부가연구(별지 3)에서 1인당 생애 사회적 비용은 누적 기준(B) 9.82억 원(2016년 가격)이다. 본 연구보다 작은 주된 이유는 가격 기준이며, 2025년 가격으로 환산하면 11.95억 원으로 비슷하다. 1년차 비용이 낮은 것은 사망 고통비용 원단위(2.81억 원)가 낮고 사회적 혼란·기타 비용을 산정하지 않았기 때문이다.</div>
 <h2>5. 구성 (4.5% 현재가치, B는 명목 총 누계 병기)</h2>
 <table class="c sm"><tr><th>구성</th><th class="n">A</th><th class="n">B</th><th class="n">C</th><th class="n">B 총 누계</th></tr>{t7}
 <tr class="tot"><td>합계</td>{''.join(f"<td class='n'>{cell(s,'pv45'):.2f}</td>" for s in SN)}<td class='n'>{cell('B 기준','nom'):.2f}</td></tr></table>
 <h2>6. 검거 연령별 (B 기준)</h2>
 <table class="c sm"><tr><th>검거 연령(대표)</th><th class="n">사범 수</th><th class="n">현재가치 4.5%</th><th class="n">총 누계</th><th class="n">잔여 기대여명(일반 → 중독)</th></tr>{t8}</table>
 <div class="box" style="background:var(--navyBg);margin-top:6px"><ul>
-<li>기준(B) 1명당 생애비용은 현재가치 {B:.2f}억 원, 명목 총 누계 {cell('B 기준','nom'):.2f}억 원이다. 1년차 비용의 {B/(P['FLOOR']/1e8):.1f}배이다.</li>
+<li>생애비용은 누적 기준(B)으로 본다. 기준(B) 1명당 생애비용은 누적 기준 {cell('B 기준','nom'):.2f}억 원(현재가치 {B:.2f}억 원)이다. 1년차 비용의 {cell('B 기준','nom')/(P['FLOOR']/1e8):.1f}배이다.</li>
 <li>가장 큰 몫은 초과 사망의 고통(PGS)과 노동능력 상실이다. 사망 PGS 원단위(교통사고 9.7억 원)와 노동능력 상실 비율이 결과를 가장 크게 움직인다.</li>
 <li>16억 원 상한은 C(만성화)의 명목 누계에서만 닿는다. 현재가치로 16억 원이 되려면 활동 중독이 사실상 평생 이어지고 할인율이 0에 가까워야 한다.</li>
 <li>참고: 2025년 검거 사범 전원에 B를 곱하면 {23403*B/1e4:,.1f}조 원, λ 10이면 {234030*B/1e4:,.1f}조 원이다. 해마다 새로 생기는 사범의 생애 부담이므로 연간 사회적 비용과 더하지 않는다.</li></ul></div>
@@ -154,7 +154,7 @@ p7=f"""<section class="page">
 <li>B/C가 1이 되려면 이수자 재복역률이 미이수·탈락보다 {fhi['dstar']*100:.1f}~{flo['dstar']*100:.1f}%p 낮아야 한다.</li>
 <li>관측 차이는 유의하지 않고(95% CI {c['ci'][0]*100:.1f}~{c['ci'][1]*100:.1f}%p), 이수자는 형기가 길어 효과가 작게 잡혔을 수 있다. 상한 효과에서는 확장 B/C {F['ci_lo']['BC']:.2f}이다.</li>
 <li>의료절감·생산성회복은 SCᵣ에 포함하고 따로 더하지 않았다. B는 3년 내 재복역만 반영한다.</li></ul></div>
-<div class="note" style="margin-top:4px">주(생애비용): 같은 생애비용 모형을 2016년 기준(박성수, 2018)에 적용한 부가연구(별지 3)에서 1인당 생애 사회적 비용은 B 기준 명목 누계 9.82억 원(2016년 가격)이다. 본 연구보다 작은 주된 이유는 가격 기준이며, 2025년 가격으로 환산하면 11.95억 원으로 비슷하다. 1년차 비용이 낮은 것은 사망 고통비용 원단위(2.81억 원)가 낮고 사회적 혼란·기타 비용을 산정하지 않았기 때문이다.</div>
+<div class="note" style="margin-top:4px">주(생애비용): 같은 생애비용 모형을 2016년 기준(박성수, 2018)에 적용한 부가연구(별지 3)에서 1인당 생애 사회적 비용은 누적 기준(B) 9.82억 원(2016년 가격)이다. 본 연구보다 작은 주된 이유는 가격 기준이며, 2025년 가격으로 환산하면 11.95억 원으로 비슷하다. 1년차 비용이 낮은 것은 사망 고통비용 원단위(2.81억 원)가 낮고 사회적 혼란·기타 비용을 산정하지 않았기 때문이다.</div>
 {foot(7)}</section>"""
 
 

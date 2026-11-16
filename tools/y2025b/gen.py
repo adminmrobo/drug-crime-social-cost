@@ -6,7 +6,7 @@ def jo(x):  # 억 → 조·억 표기
     if abs(x)>=10000: return f"{int(x//10000)}조 {x%10000:,.1f}억"
     return f"{x:,.1f}억"
 N=R['N']; g=R['grp']; O=R['old']
-foot=lambda n:f'<div class="foot"><span>마약류범죄와 교정기관 중독재활 체계의 사회적 비용 비교분석 · 별지 2025년 원고 반영 재산정·방침 점검·1인당 생애비용 (2026. 11. 14.)</span><span>{n}</span></div>'
+foot=lambda n:f'<div class="foot"><span>마약류범죄와 교정기관 중독재활 체계의 사회적 비용 비교분석 · 별지 2025년 원고 반영 재산정·방침 점검·1인당 생애비용·교정본부 회신 (2026. 11. 16.)</span><span>{n}</span></div>'
 GO=['형사사법','고통비용','생산성','의료·복지','사회적 혼란·기타']
 src={'형사사법':'원고 11.08 실측','고통비용':'2024 원단위×물가(원고 미수령)','생산성':'원고 11.06 실측','의료·복지':'원고 11.06 실측','사회적 혼란·기타':'별지 추계(11. 9.)'}
 t1=''.join(f"<tr><td>{k}</td><td class='n'>{g[k]:,.1f}</td><td class='n'>{g[k]/N*1e4:,.1f}</td><td class='n'>{jo(g[k]*10)}</td><td class='n'>{g[k]/R['tot']*100:.1f}%</td><td class='n'>{g[k]-O[k]:+,.1f}</td><td>{src[k]}</td></tr>" for k in GO)
@@ -84,7 +84,7 @@ p4=f'''<section class="page">
 {sc_row('A 조기회복','A 조기회복')}{sc_row('B 기준','B 기준')}{sc_row('C 만성화','C 만성화')}</table>
 <table class="c sm" style="margin-top:6px"><tr><th>모수</th><th>근거</th></tr>
 <tr><td>일반인 사망률</td><td>통계청 2024년 생명표 40세 기대여명(남 41.9, 여 47.4년)과 60세(남 23.7, 여 28.4년)의 남녀 평균에 맞춘 Gompertz 곡선</td></tr>
-<tr><td>중독기간</td><td>첫 치료부터 1년 이상 단약까지 중앙값 9년, 첫 사용부터 중앙값 27년(Dennis et al., 2005). A는 5년으로 가정</td></tr>
+<tr><td>중독기간</td><td>첫 치료부터 1년 이상 단약까지 중앙값 9년, 첫 사용부터 중앙값 27년(Dennis et al., 2005). C는 27년, A는 5년으로 가정. B(기준)는 A와 C의 중간값 16년</td></tr>
 <tr><td>초과 사망</td><td>암페타민류 사용자 조사망률 연 1.14%(95% CI 0.92~1.42), 표준화사망비 6.83(Stockings et al., 2019). 초과분 = 조사망률 × (1 − 1/6.83). 회복 후 값은 가정</td></tr>
 <tr><td>기대수명 검증</td><td>아편류 의존자의 18세 기대여명은 일반인보다 남 14.7년, 여 15.8년 짧다(Lewer et al., 2020). 필로폰 중심인 국내에서는 이보다 짧은 격차를 기대한다</td></tr>
 <tr><td>노동능력 상실</td><td>2025년 마약류 사범 무직 7,268명(31.1%)(대검찰청, 2026). B는 박성수(2018)의 조정비율 50%를 적용한 15.6%, A는 박성수(2018) 실직률 25% × 50% = 12.5%</td></tr>
@@ -94,7 +94,7 @@ p4=f'''<section class="page">
 <h2>8-1. 기대여명 근거와 한계</h2>
 <table class="c sm"><tr><th>구분</th><th>내용</th></tr>
 <tr><td style="white-space:nowrap">일반인 기대여명</td><td>통계청(2025. 12. 3.) 「2024년 생명표」의 40세(남 41.9, 여 47.4년)·60세(남 23.7, 여 28.4년) 기대여명. 남녀 평균(40세 44.65년, 60세 26.05년)에 맞춘 Gompertz 사망률 곡선을 일반인 사망률로 썼다.</td></tr>
-<tr><td style="white-space:nowrap">중독자 기대여명</td><td>문헌 값을 그대로 쓰지 않고 계산하였다. 일반인 사망률 + 초과 사망률(활동 중독: Stockings et al., 2019; 회복 후: 가정 연 0.1~0.3%), 중독기간(Dennis et al., 2005). 단축 결과는 A 3.9년, B 6.3년, C 10.2년이다.</td></tr>
+<tr><td style="white-space:nowrap">중독자 기대여명</td><td>문헌 값을 그대로 쓰지 않고 계산하였다. 일반인 사망률 + 초과 사망률(활동 중독: Stockings et al., 2019; 회복 후: 가정 연 0.1~0.3%), 중독기간(Dennis et al., 2005). 단축 결과는 A 3.9년, B 7.5년, C 10.2년이다.</td></tr>
 <tr><td>검증</td><td>호주 아편류 의존자의 기대여명은 일반인보다 남 14.7년, 여 15.8년 짧았다(Lewer et al., 2020). 필로폰 중심인 국내 사범은 이보다 작은 격차가 타당하다고 보았다.</td></tr>
 <tr><td>한계</td><td>① 생명표 값은 보도 자료에서 옮겼다. KOSIS 생명표 원표로 확인할 필요가 있다. ② 남녀 평균을 썼다. 사범은 남성 비중이 높아 일반인 기대여명이 다소 길게 잡혔을 수 있다. 2025 범죄백서의 성별 인원으로 가중하면 더 정확하다. ③ 회복 후 초과 사망률은 근거가 없는 가정이다. ④ 국내 마약류 사용자의 사망률·기대여명을 다룬 연구는 확인되지 않는다. 국내 자료가 생기면 가장 먼저 바꿀 모수이다. ⑤ Lewer et al.(2020)은 권·쪽수를 확인하지 못하였다.</td></tr></table>
 {foot(4)}</section>'''
@@ -125,5 +125,39 @@ p5=f'''<section class="page">
 <li>참고: 2025년 검거 사범 전원에 B를 곱하면 {23403*B/1e4:,.1f}조 원, λ 10이면 {234030*B/1e4:,.1f}조 원이다. 해마다 새로 생기는 사범의 생애 부담이므로 연간 사회적 비용과 더하지 않는다.</li></ul></div>
 <div class="note" style="margin-top:4px"><b>참고문헌</b> 대검찰청(2026). 2025 마약류 범죄백서. · 박성수(2018). 마약류 사용의 사회적 비용 추계. · 통계청(2025. 12. 3.). 2024년 생명표(보도 기준, KOSIS 원표 확인 필요). · 한국교통연구원(2025. 7. 28.). 교통 사망사고 고통 비용 보도자료. · Dennis, M. L., Scott, C. K., Funk, R., &amp; Foss, M. A.(2005). The duration and correlates of addiction and treatment careers. <i>Journal of Substance Abuse Treatment</i>, 28(Suppl. 1), S51–S62. · Stockings, E., et al.(2019). Mortality among people with regular or problematic use of amphetamines: A systematic review and meta-analysis. <i>Addiction</i>, 114(10). doi:10.1111/add.14706. · Lewer, D., Jones, N. R., Hickman, M., Nielsen, S., &amp; Degenhardt, L.(2020). Life expectancy of people who are dependent on opioids: A cohort study in New South Wales, Australia. <i>Journal of Psychiatric Research</i>(2020 게재).</div>
 {foot(5)}</section>'''
-html=f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>2025 원고 반영 재산정</title><style>{css}</style></head><body>{p1}{p2}{p3}{p4}{p5}</body></html>'
+
+CB=json.load(open('/home/claude/x5/cb.json'))
+c=CB; lo=c['lo']; hi=c['hi']
+s8=''.join(f"<tr><td>{y}년</td><td class='n'>{v[0]:,}</td><td class='n'>{v[1]:,}</td><td class='n'>{v[1]/v[0]*100:.1f}%</td></tr>" for y,v in {2019:(1605,512),2020:(1602,515),2021:(1386,415),2022:(1384,413)}.items())
+p6=f"""<section class="page">
+<h2>12. 교정본부 회신(2026. 11. 16.) 반영</h2>
+<div class="box" style="background:var(--navyBg)"><ul>
+<li><b>교도소 인원:</b> 교정통계연보 3,477명(2024)·4,188명(2025)은 연말 기결수(대표죄명 마약류)이고 1일 평균이 아니다(교정본부, 2026). 원고의 7,429명(12. 31. 전체 수용자)과의 차이 3,241명이 미결이다. 교도소 결산은 미결 수용 비용을 포함하므로 미결 포함 기준(7,429 ÷ 64,626명)을 유지한다. 교도소 1,953.3억 원 = 기결분 {c['prison']['gi']:,.1f}억 + 미결분 {c['prison']['mi']:,.1f}억 원이다.</li>
+<li><b>사회적 비용 총액은 바뀌지 않는다.</b> 기결수만 쓰려면 분모도 전국 연말 기결수여야 하나, 서식 2(전체 수용인원)는 회신되지 않았다.</li></ul></div>
+<h2>13. 재복역 자료 (서식 8·9·10)</h2>
+<table class="c sm"><tr><th>출소연도</th><th class="n">마약류 출소</th><th class="n">3년 내 재복역</th><th class="n">재복역률</th></tr>{s8}
+<tr class="tot"><td>2019~2022</td><td class="n">{c['n']:,}</td><td class="n">{c['r3']:,}</td><td class="n">{c['r0all']*100:.1f}%</td></tr></table>
+<div class="note">3년 내 재복역자 중 1년 내 {c['sh'][0]*100:.1f}%, 1~2년 {c['sh'][1]*100:.1f}%, 2~3년 {c['sh'][2]*100:.1f}%. 이 분포로 할인계수 D = {c['D']:.3f}(4.5%)이다. 기존 가정 0.897을 대체한다.</div>
+<table class="c sm" style="margin-top:6px"><tr><th>구분 (2019~2022 출소 합계)</th><th class="n">출소</th><th class="n">재복역</th><th class="n">재복역률</th><th>평균 연령·형기·전과(서식 10)</th></tr>
+<tr><td>이수</td><td class="n">{c['n1']:,}</td><td class="n">{c['x1']}</td><td class="n">{c['p1']*100:.1f}%</td><td>46~48세 · 26~31개월 · 3~4범</td></tr>
+<tr><td>미이수</td><td class="n">{c['nm']}</td><td class="n">{c['xm']}</td><td class="n">{c['xm']/c['nm']*100:.1f}%</td><td>45~49세 · 17~26개월 · 3~6범</td></tr>
+<tr><td>중도탈락</td><td class="n">{c['nd']}</td><td class="n">{c['xd']}</td><td class="n">{c['xd']/c['nd']*100:.1f}%</td><td>33~48세 · 20~31개월 · 2~5범</td></tr>
+<tr class="tot"><td>미이수 + 중도탈락 (r0)</td><td class="n">{c['n0']}</td><td class="n">{c['x0']}</td><td class="n">{c['p0']*100:.1f}%</td><td>이수와의 차 {c['d']*100:.1f}%p (95% CI {c['ci'][0]*100:.1f}~{c['ci'][1]*100:.1f}%p)</td></tr>
+<tr><td>참고: 교육 미지정 출소자(서식 8 − 서식 9)</td><td class="n">{c['nu']:,}</td><td class="n">{c['xu']:,}</td><td class="n">{c['pu']*100:.1f}%</td><td>모수 정의가 달라 참고만</td></tr></table>
+<div class="note">과정별 이수자 재복역률: 기본 {c['cr']['기본'][2]*100:.1f}%, 집중 {c['cr']['집중'][2]*100:.1f}%, 심화 {c['cr']['심화'][2]*100:.1f}%. 고강도 과정에 위험이 높은 사람이 배정된 것으로 보인다. 서식 9의 모수는 "특이수용 지정자"가 아니라 "교육이 지정된 마약류사범"으로 정정되었다(교정본부, 2026).</div>
+<h2>14. 교정 재활 비용편익 (잠정)</h2>
+<table class="c sm"><tr><th>구분</th><th class="n">하한 (SCᵣ 형사사법분)</th><th class="n">확장 (SCᵣ + 비형사사법 1명당)</th></tr>
+<tr><td>ΔC 이수자 1인당 (재활예산 + 전담인력) ÷ 2025 이수 1,545명</td><td class="n">{c['UC06']/1e4:,.1f}만 원</td><td class="n">{c['UC06']/1e4:,.1f}만 원</td></tr>
+<tr><td>SCᵣ 재복역 1건당 사회적 비용</td><td class="n">{c['SCr']/1e4:,.1f}만 원</td><td class="n">{c['SCx']/1e4:,.1f}만 원</td></tr>
+<tr><td>B = (r0 − r1) × SCᵣ × D</td><td class="n">{lo['B']/1e4:,.1f}만 원</td><td class="n">{hi['B']/1e4:,.1f}만 원</td></tr>
+<tr class="tot"><td>B/C</td><td class="n">{lo['BC']:.2f}</td><td class="n">{hi['BC']:.2f}</td></tr>
+<tr><td>NPV = B − ΔC</td><td class="n">{lo['NPV']/1e4:,.1f}만 원</td><td class="n">{hi['NPV']/1e4:,.1f}만 원</td></tr>
+<tr><td>손익분기 재복역률 차 (r0 − r1)*</td><td class="n">{lo['dstar']*100:.1f}%p</td><td class="n">{hi['dstar']*100:.1f}%p</td></tr></table>
+<div class="box" style="background:var(--navyBg);margin-top:6px"><ul>
+<li>이수자 재복역률({c['p1']*100:.1f}%)은 미이수·중도탈락({c['p0']*100:.1f}%)보다 {c['d']*100:.1f}%p 낮다. 그러나 비교 집단이 {c['n0']}명으로 작아 차이는 통계적으로 유의하지 않다(z = {c['z']:.2f}).</li>
+<li>잠정 B/C는 {lo['BC']:.2f}~{hi['BC']:.2f}이다. 손익분기에 이르려면 재복역률 차가 {hi['dstar']*100:.1f}~{lo['dstar']*100:.1f}%p여야 한다.</li>
+<li>이 값은 효과가 작다는 뜻이 아니라 현재 자료로는 효과를 판별하기 어렵다는 뜻이다. 이수자는 형기가 길고(26~31개월 vs 17~26개월) 미이수 집단이 작다. 형기·전과를 보정한 비교와 같은 정의의 교육 미지정 비교군이 필요하다.</li>
+<li>ΔC는 치료개입(서식 7)·사후관리(별도요청)를 0으로 둔 하한이다. 3년 이후 재복역은 관측되지 않는다.</li></ul></div>
+{foot(6)}</section>"""
+html=f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>2025 원고 반영 재산정</title><style>{css}</style></head><body>{p1}{p2}{p3}{p4}{p5}{p6}</body></html>'
 open('rep.html','w').write(html)

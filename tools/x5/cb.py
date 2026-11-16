@@ -32,3 +32,15 @@ print(f"미지정 {xu}/{nu}={xu/nu:.4f}", {k:f"{a}/{b}={c:.3f}" for k,(a,b,c) in
 print('D',round(D,4),'sh',[round(x,3) for x in sh],'UC06',round(UC06/1e4,1))
 for k in ('lo','hi'): print(k,{a:round(b/1e4,1) if a in('B','NPV') else round(b,3) for a,b in R[k].items()})
 print(R['prison'],R['mig'])
+# ---- 확정판: 미회신 항목 추계치 ----
+UC10=9.79e8/1835          # 서식7 미회신: 마약류 중독 외래 1인당 연간 진료비(제3장 원고) 대용
+UC12=14.4e8/1649/1.045    # 별도요청 미회신: 치료보호 지원 1인당 예산, 출소 1년차 할인
+dC=UC06+UC10+UC12
+def bc2(sc,dd): B=dd*sc*D; return dict(B=B,BC=B/dC,NPV=B-dC,dstar=dC/(sc*D))
+lit=p0*0.192   # 김도균·나종민(2025) 상대 감소율 19.2%를 실측 r0에 적용
+F=dict(UC10=UC10,UC12=UC12,dC=dC,lo=bc2(SCr,d),hi=bc2(SCx,d),lit_d=lit,litlo=bc2(SCr,lit),lithi=bc2(SCx,lit),
+       ci_lo=bc2(SCx,max(R['ci'][1],0)))
+R['F']=F; json.dump(R,open('cb.json','w'),ensure_ascii=False,indent=1)
+print('UC10',round(UC10/1e4,1),'UC12',round(UC12/1e4,1),'dC',round(dC/1e4,1))
+for k in ('lo','hi','litlo','lithi','ci_lo'): print(k,{a:round(b/1e4,1) if a in('B','NPV') else round(b,3) for a,b in F[k].items()})
+print('lit d',round(lit*100,2))

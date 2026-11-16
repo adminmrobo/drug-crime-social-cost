@@ -31,11 +31,11 @@ def wavg(s,**kw):
         for k,v in run(a,SC[s],U,**kw).items(): comp[k]=comp.get(k,0)+v*n/tot
     return comp
 import itertools
-for ms,ps in [(1,1),(0.5,0.1),(0.3,0.1),(0.5,0.15),(0.4,0.1)]:
+for ms,ps in [(0.3,0.08)]:
     for s in ['B 기준']:
         cn=wavg(s,nominal=True,share_pgs=ps,med_share=ms); cp=wavg(s,share_pgs=ps,med_share=ms)
         print(ms,ps,s,'nom',round(sum(cn.values())/1e8,2),'pv',round(sum(cp.values())/1e8,2),{k:round(v/1e8,2) for k,v in cn.items()})
-MS,PS=0.5,0.1
+MS,PS=0.3,0.08
 OUT={'U':U,'MS':MS,'PS':PS,'W':W,'res':{},'age':{}}
 for s in SC:
     for key,kw in [('pv3',dict(r=0.03)),('pv4',dict(r=0.04)),('pv45',{}),('pv5',dict(r=0.05)),('nom',dict(nominal=True))]:

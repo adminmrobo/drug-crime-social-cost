@@ -66,7 +66,7 @@ T(s, [
   { text: '박성수(2018) 2조 2,389억 원 대비 «ratio»배. 같은 4개 분야 범위로는 «b4ratio»배(물가 «s_cpi»%, 검거 인원 «s_arr»%, 1명당 실질 «s_real»%)', options: { bullet: true, breakLine: true } },
   { text: '암수율 28.57배(민감도) «t28» 원. 교도소는 원고 기준(12. 31. 전체 수용자, 7,429 ÷ 64,626명). 연평균 추정이면 λ 10에서 «pr_diffl» 원(부록 4)', options: { bullet: true, breakLine: true } },
   { text: '방침 점검: 사회적 혼란·기타를 λ 없이 더하던 것을 1명당 «gp_사회적 혼란·기타»만 원 × N*로 바로잡음(+4,464.4억 원)', options: { bullet: true, breakLine: true } },
-  { text: '중독자 1명당 생애 사회적 비용: 누적 기준(B) «lf_B_nom»억 원(현재가치 «lf_B_pv45»억 원). 하한 «floor»만 원, 상한 16억 원', options: { bullet: true } },
+  { text: '중독자 1명당 생애 사회적 비용: 누적 기준(B) «lf_B_nom»억 원(현재가치 «lf_B_pv45»억 원). 1년차 비용 «floor»만 원', options: { bullet: true } },
 ], { x: M, y: 4.5, w: W - 2 * M, h: 2.3, fontSize: 14, paraSpaceAfter: 5 });
 s.addNotes('2025년 사회적 비용은 암수율 10배 기준 «t10» 원. 모든 항목을 검거 사범 1명당 값(합계 «pc»만 원)으로 바꾸고 실질 사용자 234,030명을 곱함. 형사사법과 사회적 혼란·기타에도 λ를 곱함. 미반영 «tot»억, 28.57배 «t28». 11. 9. 시산 대비 증가는 대부분 교도소 인원 기준(원고의 12. 31. 전체 수용자) 때문. 생애비용은 누적 기준(B) «lf_B_nom»억 원(현재가치 «lf_B_pv45»억 원).');
 ''')
@@ -355,7 +355,7 @@ source(s, '형사사법 원고(2026. 11. 8.), 제3장 제1·2절 원고(2026. 11
 s.addNotes('원고 반영 시 확인할 점. 교도소 기준은 교정본부 회신 대기. 검찰 연도 차이와 1인당 값의 이름은 원고 수정 권고.');
 
 // ── 1명당 생애 사회적 비용: 모형 ──
-s = content('Ⅴ. 집계 비용', 'Ⅴ. 집계 비용 — 1명당 생애 사회적 비용 (모형)', '중독자 1명 생애비용: 하한 «floor»만~상한 16억 원');
+s = content('Ⅴ. 집계 비용', 'Ⅴ. 집계 비용 — 1명당 생애 사회적 비용 (모형)', '중독자 1명의 생애 사회적 비용을 누적 기준으로 산정');
 {
   RR(s, { x: M, y: 1.5, w: W - 2 * M, h: 0.75, fill: { color: HEX.navy } });
   T(s, [
@@ -381,7 +381,7 @@ s = content('Ⅴ. 집계 비용', 'Ⅴ. 집계 비용 — 1명당 생애 사회�
     T(s, r[1], { x: M + 1.8, y, w: W - 2 * M - 1.9, h: 0.4, fontSize: 11, color: C.accent5, valign: 'middle' });
   });
   source(s, '2025년 검거 연령 분포 가중 평균. 2025년 불변가격, 실질 단가 증가 1.7%, 할인율 4.5%(3~5%), 총 누계는 물가 2.1% 반영·할인 없음. 한계: 생명표 보도 자료 인용(KOSIS 원표 확인 필요), 남녀 평균, 회복 후 초과 사망 가정, 국내 연구 없음');
-  s.addNotes('1명당 생애비용 모형. 검거 해에 1년차 비용(하한 «floor»만 원)을 내고, 이후 사망 시까지 활동 중독 기간의 반복 비용과 재검거, 노동능력 상실, 초과 사망 비용을 더한다. 기대여명은 통계청 생명표에 초과 사망률(Stockings et al., 2019)을 더해 계산했고 Lewer et al.(2020)과 비교해 검증했다. 국내 마약류 사용자 사망률 연구는 확인되지 않아 국내 자료가 생기면 가장 먼저 바꿀 모수.');
+  s.addNotes('1명당 생애비용 모형. 검거 해에 1년차 비용(«floor»만 원)을 내고, 이후 사망 시까지 활동 중독 기간의 반복 비용과 재검거, 노동능력 상실, 초과 사망 비용을 더한다. 기대여명은 통계청 생명표에 초과 사망률(Stockings et al., 2019)을 더해 계산했고 Lewer et al.(2020)과 비교해 검증했다. 국내 마약류 사용자 사망률 연구는 확인되지 않아 국내 자료가 생기면 가장 먼저 바꿀 모수.');
 }
 
 // ── 1명당 생애 사회적 비용: 결과 ──
@@ -391,12 +391,12 @@ s = content('Ⅴ. 집계 비용', 'Ⅴ. 집계 비용 — 1명당 생애 사회�
   const rows = [
     ['A 조기회복', '«lf_A_pv3»', '«lf_A_pv4»', '«lf_A_pv45»', '«lf_A_pv5»', '«lf_A_nom»', '@LEA@년'],
     ['B 기준', '«lf_B_pv3»', '«lf_B_pv4»', '«lf_B_pv45»', '«lf_B_pv5»', '«lf_B_nom»', '@LEB@년'],
-    ['C 만성화', '«lf_C_pv3»', '«lf_C_pv4»', '«lf_C_pv45»', '«lf_C_pv5»', '«lf_C_nom» → 16.00', '@LEC@년'],
+    ['C 만성화', '«lf_C_pv3»', '«lf_C_pv4»', '«lf_C_pv45»', '«lf_C_pv5»', '«lf_C_nom»', '@LEC@년'],
   ];
   const tr = [hd.map((h, j) => ({ text: h, options: { bold: true, color: HEX.white, fill: { color: HEX.navy }, fontSize: 12, align: j ? 'right' : 'left' } }))].concat(
     rows.map((r, i) => r.map((c, j) => ({ text: c, options: { fontSize: 13, bold: i === 1 || j === 3, color: j === 3 ? HEX.teal : HEX.ink, fill: { color: i === 1 ? HEX.tealBg : HEX.white }, align: j ? 'right' : 'left' } }))));
   s.addTable(tr, { x: M, y: 1.5, w: 7.4, colW: [1.5, 0.9, 0.9, 1.0, 0.9, 1.25, 0.95], rowH: 0.48, border: { type: 'solid', color: HEX.mist, pt: 0.5 }, fontFace: '맑은 고딕', valign: 'middle', margin: [0.03, 0.08, 0.03, 0.08] });
-  T(s, '단위 억 원/명. 하한 «floor_e»억 원·상한 16억 원 범위 적용. 현재가치는 모두 범위 안', { x: M, y: 3.5, w: 7.4, h: 0.3, fontSize: 10.5, color: C.accent5 });
+  T(s, '단위 억 원/명. 생애비용은 누적 기준(명목 누계)으로 봄', { x: M, y: 3.5, w: 7.4, h: 0.3, fontSize: 10.5, color: C.accent5 });
   const comp = @COMP@;
   T(s, '구성 (B, 현재가치 4.5%, 억 원)', { x: M, y: 3.9, w: 7.4, h: 0.32, fontSize: 13, bold: true });
   const MXc = Math.max(...comp.map(c => c[1]));
@@ -415,11 +415,10 @@ s = content('Ⅴ. 집계 비용', 'Ⅴ. 집계 비용 — 1명당 생애 사회�
   RR(s, { x: X, y: 4.4, w: TW, h: 2.1, fill: { color: HEX.navyBg } });
   T(s, [
     { text: '초과 사망 고통(PGS)과 노동능력 상실이 가장 크게 움직임', options: { bullet: true, breakLine: true } },
-    { text: '16억 원 상한은 C의 명목 누계에서만 닿음', options: { bullet: true, breakLine: true } },
     { text: '참고: 2025년 검거 전원 × B = «cohort»조 원(λ 10 «cohortl»조 원). 연간 사회적 비용과 더하지 않음', options: { bullet: true } },
   ], { x: X + 0.12, y: 4.4, w: TW - 0.24, h: 2.1, fontSize: 11, valign: 'middle', paraSpaceAfter: 4 });
   source(s, '통계청(2025), Stockings et al.(2019), Dennis et al.(2005), Lewer et al.(2020), 대검찰청(2026), 박성수(2018), 연구진 계산');
-  s.addNotes('생애비용은 누적 기준(B)으로 본다. 기준 시나리오 B의 1명당 생애 사회적 비용은 누적 기준 «lf_B_nom»억 원(현재가치 4.5% «lf_B_pv45»억 원). A «lf_A_pv45»억, C «lf_C_pv45»억 원. C의 명목 누계 «lf_C_nom»억 원은 상한 16억 원으로 자름. 연간 총비용과는 기준이 달라 더하지 않음.');
+  s.addNotes('생애비용은 누적 기준(B)으로 본다. 기준 시나리오 B의 1명당 생애 사회적 비용은 누적 기준 «lf_B_nom»억 원(현재가치 4.5% «lf_B_pv45»억 원). A «lf_A_pv45»억, C «lf_C_pv45»억 원. 연간 총비용과는 기준이 달라 더하지 않음.');
 }
 ''')
 LE={k:V['le_'+k][2] for k in 'ABC'}

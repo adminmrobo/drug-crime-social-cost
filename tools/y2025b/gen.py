@@ -75,7 +75,7 @@ def sc_row(lab,k): s=S[k]; return f"<tr><td>{lab}</td><td class='n'>{s['med']}�
 p4=f'''<section class="page">
 <h2>7. 마약사범(중독자) 1명당 생애 사회적 비용: 모형</h2>
 <div class="box" style="background:var(--navyBg)"><ul>
-<li><b>범위:</b> 하한은 이 연구의 1년차 1명당 비용 {P['FLOOR']/1e4:,.1f}만 원(2차 범죄 하한 기준)이다. 상한은 16억 원이다.</li>
+<li><b>출발점:</b> 이 연구의 1년차 1명당 비용 {P['FLOOR']/1e4:,.1f}만 원(2차 범죄 하한 기준)에서 시작한다.</li>
 <li><b>대상:</b> 2025년 검거 사범의 연령 분포(10대 674, 20대 6,913, 30대 6,986, 40대 3,925, 50대 2,428, 60세 이상 1,990명)로 가중 평균한다(대검찰청, 2026).</li>
 <li><b>시점:</b> 검거 해에 1년차 비용을 내고, 다음 해부터 사망할 때까지 매년 비용을 더한다. 2025년 불변가격, 실질 단가 증가 1.7%, 할인율 4.5%(민감도 3·4·5%)이다. 총 누계는 물가 2.1%를 더하고 할인하지 않은 명목 합계이다.</li></ul></div>
 <div class="note" style="margin:4px 0"><b>생애비용</b> = 1년차 비용 + Σ<sub>t</sub> [ 활동 중독 확률 × (반복 비용 {P['REC']/1e4:,.0f}만 원 + 재검거 확률 × 형사사법 {P['CJ1']/1e4:,.0f}만 원) + (활동 + 회복 후 잔존) × 노동능력 상실 비율 × 연간 노동가치 + 초과 사망 확률 × (사망 PGS {P['DPGS']/1e8:.2f}억 원 + 잔여 근로소득) ] × 단가 증가 ÷ 할인</div>
@@ -99,9 +99,8 @@ p4=f'''<section class="page">
 <tr><td>한계</td><td>① 생명표 값은 보도 자료에서 옮겼다. KOSIS 생명표 원표로 확인할 필요가 있다. ② 남녀 평균을 썼다. 사범은 남성 비중이 높아 일반인 기대여명이 다소 길게 잡혔을 수 있다. 2025 범죄백서의 성별 인원으로 가중하면 더 정확하다. ③ 회복 후 초과 사망률은 근거가 없는 가정이다. ④ 국내 마약류 사용자의 사망률·기대여명을 다룬 연구는 확인되지 않는다. 국내 자료가 생기면 가장 먼저 바꿀 모수이다. ⑤ Lewer et al.(2020)은 권·쪽수를 확인하지 못하였다.</td></tr></table>
 {foot(4)}</section>'''
 def cell(k,m): return L['w'][k+'|'+m]['tot']/1e8
-def clip(v): return min(max(v,P['FLOOR']/1e8),16)
 SN=['A 조기회복','B 기준','C 만성화']
-t5=''.join(f"<tr><td>{s}</td>"+''.join(f"<td class='n'>{cell(s,m):.2f}</td>" for m in ['pv3','pv4','pv45','pv5'])+f"<td class='n'>{cell(s,'nom'):.2f}</td><td class='n'><b>{clip(cell(s,'pv45')):.2f}</b> / {clip(cell(s,'nom')):.2f}</td></tr>" for s in SN)
+t5=''.join(f"<tr><td>{s}</td>"+''.join(f"<td class='n'>{cell(s,m):.2f}</td>" for m in ['pv3','pv4','pv45','pv5'])+f"<td class='n'>{cell(s,'nom'):.2f}</td></tr>" for s in SN)
 def le(s): w=L['w'][s+'|pv45']; return w['e_gen'],w['e_add'],w['act']
 t6=''.join(f"<tr><td>{s}</td><td class='n'>{le(s)[0]:.1f}년</td><td class='n'>{le(s)[1]:.1f}년</td><td class='n'>{le(s)[0]-le(s)[1]:.1f}년</td><td class='n'>{le(s)[2]:.1f}년</td></tr>" for s in SN)
 CK=list(L['w']['B 기준|pv45']['comp'].keys())
@@ -110,8 +109,8 @@ t8=''.join(f"<tr><td>{a[0]}세</td><td class='n'>{a[1]:,}</td><td class='n'>{a[2
 B=cell('B 기준','pv45')
 p5=f'''<section class="page">
 <h2>9. 결과: 1명당 생애 사회적 비용 (단위: 억 원)</h2>
-<table class="c"><tr><th>시나리오</th><th class="n">현재가치 3%</th><th class="n">4%</th><th class="n">4.5%(기본)</th><th class="n">5%</th><th class="n">총 누계(명목)</th><th class="n">범위 적용(현재가치/누계)</th></tr>{t5}</table>
-<div class="note">범위 적용 = 하한 {P['FLOOR']/1e8:.2f}억 원, 상한 16억 원으로 자른 값. C의 명목 총 누계 {cell('C 만성화','nom'):.2f}억 원은 상한을 넘어 16억 원으로 둔다. 현재가치는 세 시나리오 모두 범위 안이다.</div>
+<table class="c"><tr><th>시나리오</th><th class="n">현재가치 3%</th><th class="n">4%</th><th class="n">4.5%(기본)</th><th class="n">5%</th><th class="n">누적 기준(명목 누계)</th></tr>{t5}</table>
+
 <table class="c sm" style="margin-top:6px"><tr><th>시나리오</th><th class="n">일반인 잔여 기대여명</th><th class="n">중독자 잔여 기대여명</th><th class="n">단축</th><th class="n">활동 중독 기간(기대)</th></tr>{t6}</table>
 <h2>10. 구성 (4.5% 현재가치, B는 명목 총 누계 병기)</h2>
 <table class="c sm"><tr><th>구성</th><th class="n">A</th><th class="n">B</th><th class="n">C</th><th class="n">B 총 누계</th></tr>{t7}
@@ -121,7 +120,7 @@ p5=f'''<section class="page">
 <div class="box" style="background:var(--navyBg);margin-top:6px"><ul>
 <li>생애비용은 누적 기준(B)으로 본다. 기준(B) 1명당 생애비용은 누적 기준 {cell('B 기준','nom'):.2f}억 원(현재가치 {B:.2f}억 원)이다. 1년차 비용의 {cell('B 기준','nom')/(P['FLOOR']/1e8):.1f}배이다.</li>
 <li>가장 큰 몫은 초과 사망의 고통(PGS)과 노동능력 상실이다. 사망 PGS 원단위(교통사고 9.7억 원)와 노동능력 상실 비율이 결과를 가장 크게 움직인다.</li>
-<li>16억 원 상한은 C(만성화)의 명목 누계에서만 닿는다. 현재가치로 16억 원이 되려면 활동 중독이 사실상 평생 이어지고 할인율이 0에 가까워야 한다.</li>
+
 <li>참고: 2025년 검거 사범 전원에 B를 곱하면 {23403*B/1e4:,.1f}조 원, λ 10이면 {234030*B/1e4:,.1f}조 원이다. 해마다 새로 생기는 사범의 생애 부담이므로 연간 사회적 비용과 더하지 않는다.</li></ul></div>
 <div class="note" style="margin-top:4px"><b>참고문헌</b> 대검찰청(2026). 2025 마약류 범죄백서. · 박성수(2018). 마약류 사용의 사회적 비용 추계. · 통계청(2025. 12. 3.). 2024년 생명표(보도 기준, KOSIS 원표 확인 필요). · 한국교통연구원(2025. 7. 28.). 교통 사망사고 고통 비용 보도자료. · Dennis, M. L., Scott, C. K., Funk, R., &amp; Foss, M. A.(2005). The duration and correlates of addiction and treatment careers. <i>Journal of Substance Abuse Treatment</i>, 28(Suppl. 1), S51–S62. · Stockings, E., et al.(2019). Mortality among people with regular or problematic use of amphetamines: A systematic review and meta-analysis. <i>Addiction</i>, 114(10). doi:10.1111/add.14706. · Lewer, D., Jones, N. R., Hickman, M., Nielsen, S., &amp; Degenhardt, L.(2020). Life expectancy of people who are dependent on opioids: A cohort study in New South Wales, Australia. <i>Journal of Psychiatric Research</i>(2020 게재).</div>
 {foot(5)}</section>'''

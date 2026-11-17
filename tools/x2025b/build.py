@@ -162,17 +162,14 @@ prm=[('모수','잔여 중독기간 중앙값(년)','med','Dennis et al.(2005) �
 ('모수','회복 후 노동능력 상실 잔존','rho','가정'),('모수','초과 사망률(활동 중독, 연)','ea','Stockings et al.(2019) 조사망률 0.92~1.42% × (1 − 1/6.83)'),
 ('모수','초과 사망률(회복 후, 연)','er','가정'),('모수','연 재검거 확률','re','재범률 34.5%(서울신문, 2025. 6. 27.); 11. 9. 별지 10%')]
 for a,b,k,c in prm: ws.append([a,b]+[SC[s][k] for s in SN]+[c])
-ws.append(['공통','1년차 비용(하한, 원)',pr['FLOOR'],pr['FLOOR'],pr['FLOOR'],'2025 1명당, 2차 범죄 하한 기준'])
-ws.append(['공통','상한(원)',pr['CAP'],pr['CAP'],pr['CAP'],'연구진 제시'])
+ws.append(['공통','1년차 비용(원)',pr['FLOOR'],pr['FLOOR'],pr['FLOOR'],'2025 1명당, 2차 범죄 하한 기준'])
 ws.append(['공통','반복 비용(활동 중독 1년, 원)',pr['REC'],pr['REC'],pr['REC'],'중독자 PGS·의료·복지·이환·2차 범죄·가족·운전의 1명당 값'])
 ws.append(['공통','재검거 1회 형사사법(원)',pr['CJ1'],pr['CJ1'],pr['CJ1'],'형사사법 1명당'])
 ws.append(['공통','사망 PGS(원)',pr['DPGS'],pr['DPGS'],pr['DPGS'],'9.7억 원 × 1.021'])
 ws.append(['공통','할인율·단가 증가·물가','4.5%(3·4·5%)','실질 1.7%','물가 2.1%','총 누계는 물가 반영, 할인 없음'])
 r0=ws.max_row
-for m,lab in [('pv3','현재가치 3%'),('pv4','현재가치 4%'),('pv45','현재가치 4.5%(기본)'),('pv5','현재가치 5%'),('nom','명목 총 누계')]:
+for m,lab in [('pv3','현재가치 3%'),('pv4','현재가치 4%'),('pv45','현재가치 4.5%'),('pv5','현재가치 5%'),('nom','누적 기준(명목 누계, 기본)')]:
     ws.append(['결과(원)',lab]+[L['w'][s+'|'+m]['tot'] for s in SN]+['연령 분포 가중 평균'])
-ws.append(['결과(원)','범위 적용(4.5%)']+[min(max(L['w'][s+'|pv45']['tot'],pr['FLOOR']),pr['CAP']) for s in SN]+['하한·상한으로 자름'])
-ws.append(['결과(원)','범위 적용(총 누계)']+[min(max(L['w'][s+'|nom']['tot'],pr['FLOOR']),pr['CAP']) for s in SN]+['C는 상한 16억 원'])
 for c in L['w']['B 기준|pv45']['comp']:
     ws.append(['구성(4.5%, 원)',c]+[L['w'][s+'|pv45']['comp'][c] for s in SN]+[''])
 ws.append(['기대여명','일반인 잔여(년)']+[L['w'][s+'|pv45']['e_gen'] for s in SN]+['통계청 2024 생명표 남녀 평균 Gompertz'])
@@ -188,7 +185,7 @@ for rr in range(2,ws.max_row+1):
         if isinstance(c.value,float) and c.value<1: c.number_format='0.00%' if rr<=7 else '0.0'
         elif isinstance(c.value,(int,float)): c.number_format='#,##0' if c.value>1000 else '0.0'
         c.font=BL if rr<=r0 else NF
-for rr in range(r0+1,r0+8):
+for rr in range(r0+1,r0+6):
     for j in range(1,7): ws.cell(rr,j).fill=SEC
 ws.cell(r0+3,1).font=BF
 style(ws,[14,26,16,16,16,56])

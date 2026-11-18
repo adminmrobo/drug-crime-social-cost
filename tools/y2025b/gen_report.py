@@ -156,6 +156,8 @@ p7=f"""<section class="page">
 <div class="note" style="margin-top:4px">주(생애비용): 박성수(2018)는 1인당 생애비용 산정을 목적으로 한 연구가 아니어서, 같은 모형으로 2016년 기준 값을 추계해 연구의 연속선상에서 비교하였다(부가연구, 별지 3). 그 결과 1인당 생애 사회적 비용은 누적 기준(B) 9.82억 원(2016년 가격)이다. 본 연구보다 작은 주된 이유는 가격 기준이며, 2025년 가격으로 환산하면 11.95억 원으로 비슷하다. 1년차 비용이 낮은 것은 사망 고통비용 원단위(2.81억 원)가 낮고 사회적 혼란·기타 비용을 산정하지 않았기 때문이다.</div>
 {foot(7)}</section>"""
 
+import sys; sys.path.insert(0,'/home/claude/cba'); from sec import pages
+p8,p9=pages(6,7,foot(8),foot(9))
 
 def fix(x,label):
     x=x.replace("2025년 사회적 비용 확정판 (2026. 11. 16.)",label)
@@ -165,7 +167,7 @@ def fix(x,label):
     return x
 import re
 for n in range(1,8): globals()['f%d'%n]=None
-h1=fix(f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>별지 1 사회적 비용</title><style>{css}</style></head><body>{p1.replace(foot(1)+'</section>','')+p2.replace('<section class="page">','',1)}{p6}{p7}</body></html>',"별지 1 · 2025년 마약류 사회적 비용과 교정 재활 비용편익")
+h1=fix(f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>별지 1 사회적 비용</title><style>{css}</style></head><body>{p1.replace(foot(1)+'</section>','')+p2.replace('<section class="page">','',1)}{p6}{p7}{p8}{p9}</body></html>',"별지 1 · 2025년 마약류 사회적 비용과 교정 재활 비용편익")
 h2=fix(f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>별지 2 생애비용</title><style>{css} table.c td,table.c th{{padding:1.5px 6px}} .note{{font-size:7.6pt}}</style></head><body>{p4}{p5}</body></html>',"별지 2 · 마약사범(중독자) 1인당 생애 사회적 비용")
 # 쪽 번호 다시 매김
 def renum(h):

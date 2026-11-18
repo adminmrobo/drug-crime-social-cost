@@ -180,5 +180,7 @@ p7=f"""<section class="page">
 <div class="note">자료가 오면 엑셀 내역서의 입력값만 바꿔 다시 계산한다.</div>
 {foot(7)}</section>"""
 
-html=f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>2025 사회적 비용 확정판</title><style>{css}</style></head><body>{p1}{p2}{p3}{p4}{p5}{p6}{p7}</body></html>'
+import sys; sys.path.insert(0,'/home/claude/cba'); from sec import pages
+p8,p9=pages(16,17,foot(8),foot(9))
+html=f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>2025 사회적 비용 확정판</title><style>{css}</style></head><body>{p1}{p2}{p3}{p4}{p5}{p6}{p7}{p8}{p9}</body></html>'
 open('rep.html','w').write(html)

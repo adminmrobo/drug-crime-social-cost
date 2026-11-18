@@ -260,5 +260,51 @@ for rr in range(2,ws.max_row+1):
     if rr in (29,30): 
         for j in range(1,6): ws.cell(rr,j).fill=SEC
 style(ws,[10,34,20,8,70])
+
+# ---------------- 8.생애가치 비용편익
+ws=wb.create_sheet('8.생애가치 비용편익')
+CBA=json.load(open('/home/claude/cba/cba.json')); RS=CBA['res']; EF=CBA['EFF']; EK=list(EF)
+ws.append(['구분','항목','관측(교정본부 자료)','국내 문헌','국외 메타분석','단위','근거·비고'])
+ws.append(['입력','ΔC 증분비용(이수자 1인당)',CBA['DC'],CBA['DC'],CBA['DC'],'원','UC-06 498.2만 + UC-10 53.4만 + UC-12 83.6만(시트 7)'])
+ws.append(['입력','e 재활 효과(상대 감소)']+[EF[k] for k in EK]+['비율','관측 2.87%p ÷ 34.5%(유의하지 않음) / 김도균·나종민(2025) / Mitchell·Wilson·MacKenzie(2006) OR 1.37, 35%→28%'])
+r=4
+PNS=['3년 한정','5년 반감','평생 유지']
+for b,bl in [('nom','누적 기준'),('pv','현재가치 4.5%'),('pv3','현재가치 3%'),('pv5','현재가치 5%')]:
+    for pn in PNS:
+        S=RS[f'B 기준|{b}|{pn}|{EK[0]}']['B']/EF[EK[0]]
+        ws.append(['미래비용',f'Σ w(t)·C(t) [{bl}, {pn}]',S,S,S,'원','B 시나리오 1년차 이후 생애비용 × 효과 지속 w(t), 연령 가중 평균'])
+        ws.append(['편익',f'B = e × Σ [{bl}, {pn}]',f'=C3*C{r}',f'=D3*D{r}',f'=E3*E{r}','원',''])
+        ws.append(['판정',f'B/C [{bl}, {pn}]',f'=C{r+1}/C2',f'=D{r+1}/D2',f'=E{r+1}/E2','배','기준: 5년 반감' if pn=='5년 반감' else ''])
+        ws.append(['판정',f'NPV = B − ΔC [{bl}, {pn}]',f'=C{r+1}-C2',f'=D{r+1}-D2',f'=E{r+1}-E2','원',''])
+        ws.append(['판정',f'손익분기 효과 e* [{bl}, {pn}]',f'=C2/C{r}',None,None,'비율','e* = ΔC ÷ Σ'])
+        if pn=='5년 반감' and b in ('nom','pv'):
+            for j in range(1,8): ws.cell(r+2,j).fill=SEC
+        r+=5
+for s in ['A 조기회복','C 만성화']:
+    ws.append(['민감도',f'B/C {s} [현재가치 4.5%, 5년 반감]']+[RS[f'{s}|pv|5년 반감|{k}']['BC'] for k in EK]+['배','같은 모형, 시나리오만 변경'])
+    ws.append(['민감도',f'B/C {s} [누적 기준, 5년 반감]']+[RS[f'{s}|nom|5년 반감|{k}']['BC'] for k in EK]+['배',''])
+for b,bl in [('nom','누적 기준'),('pv','현재가치 4.5%')]:
+    i=[x for x in range(2,ws.max_row+1) if ws.cell(x,2).value==f'NPV = B − ΔC [{bl}, 5년 반감]'][0]
+    ws.append(['코호트',f'2025 이수 1,545명 순편익 [{bl}, 5년 반감]',f'=C{i}*1545/100000000',f'=D{i}*1545/100000000',f'=E{i}*1545/100000000','억 원',''])
+for rr in range(2,ws.max_row+1):
+    u=ws.cell(rr,6).value
+    for j in (3,4,5):
+        c=ws.cell(rr,j); c.number_format={'비율':'0.0%','배':'0.00','억 원':'#,##0.0'}.get(u,'#,##0')
+        if ws.cell(rr,1).value in ('입력','미래비용','민감도'): c.font=BL
+style(ws,[10,40,18,16,16,7,60])
+r1=ws.max_row+2
+ws.cell(r1,1,'선행연구·기준').font=BF
+LIT=[('Cohen & Piquero(2009)','중증 약물사용자 1명의 생애 외부비용 84만~110만 달러(14세 시점 현재가치). Journal of Quantitative Criminology, 25(1), 25–49'),
+('Mitchell·Wilson·MacKenzie(2006)','교정시설 약물치료 메타분석, 재범 OR 1.37(35%→28%). Campbell Systematic Reviews, 2006:11'),
+('김도균·나종민(2025)','국내 마약류사범 재범 감소 효과 상대 19.2%. 형사정책연구, 36(1), 65–99'),
+('Inciardi·Martin·Butzin(2004)','교정 치료공동체와 출소 후 사후관리 5년 추적. Crime & Delinquency, 50(1), 88–107'),
+('WSIPP(2023)','교정시설 치료공동체 B/C 9.56(2023년 달러)'),
+('Ettner 외(2006)','치료비 1,583달러 대비 편익 11,487달러(약 7:1). Health Services Research, 41(1), 192–213'),
+('NIDA(2006)','치료 1달러당 범죄 관련 비용 4~7달러 절감, 치료 연속성 강조'),
+('기획재정부(2017. 8. 11.)','예비타당성조사 사회적 할인율 4.5%'),
+('전제와 한계','관측 효과는 통계적으로 유의하지 않다. 효과가 모든 중독 관련 비용에 같은 비율로 미친다고 가정하였다. 판정은 현재가치 기준으로 한다.')]
+for i,(a,b) in enumerate(LIT,1):
+    ws.cell(r1+i,1,'문헌'); ws.cell(r1+i,2,a); ws.cell(r1+i,3,b); ws.merge_cells(start_row=r1+i,start_column=3,end_row=r1+i,end_column=7)
+    ws.cell(r1+i,3).alignment=Alignment(wrap_text=True,vertical='center'); ws.row_dimensions[r1+i].height=24
 out='/home/claude/x2025b/비용항목_2025_확정판.xlsx'
 wb.save(out); print(out)

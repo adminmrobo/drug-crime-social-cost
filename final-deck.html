@@ -306,7 +306,8 @@ const D = {"items": [{"f": "형사사법", "i": "경찰", "how": "결산 × 마�
 const CLC = {'형사사법':'#1240e0','고통비용':'#c2185b','생산성':'#2e7d32','의료·복지':'#00838f','사회적 혼란·기타':'#ef6c00'};
 const N = 23403, TOT = D.items.reduce((a, b) => a + b.v, 0);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const won = v => { const a = Math.abs(v), s = v < 0 ? '−' : '';
+const r1 = v => Math.round(v / 1e7) * 1e7;
+const won = v => { const a = Math.abs(v) >= 1e8 ? Math.abs(r1(v)) : Math.abs(v), s = v < 0 ? '−' : '';
   if (a >= 1e12) { const j = Math.floor(a / 1e12), o = Math.round((a - j * 1e12) / 1e7) / 10; return s + j + '조' + (o ? ' ' + o.toLocaleString('ko-KR', {minimumFractionDigits: 1, maximumFractionDigits: 1}) + '억' : '') + ' 원'; }
   if (a >= 1e8) return s + (a / 1e8).toLocaleString('ko-KR', {minimumFractionDigits: 1, maximumFractionDigits: 1}) + '억 원';
   if (a >= 1e4) return s + (a / 1e4).toLocaleString('ko-KR', {maximumFractionDigits: 1}) + '만 원';
@@ -350,8 +351,8 @@ function setLam(v) { lam = Math.round(v * 100) / 100; document.getElementById('l
   document.getElementById('lam-v').textContent = lam.toFixed(lam % 1 ? 2 : 1) + '배';
   document.getElementById('lam-h').textContent = lam === 1 ? '암수율 미반영: 단속된 사람만 계산' : `암수율 ${lam.toLocaleString('ko-KR', {maximumFractionDigits: 2})}배: 단속된 1명 뒤에 숨은 사용자 ${(lam - 1).toLocaleString('ko-KR', {maximumFractionDigits: 2})}명`;
   document.getElementById('lam-sc').textContent = won(TOT * lam);
-  document.getElementById('lam-add').textContent = '+' + won(TOT * (lam - 1));
-  const d10 = TOT * (lam - 10); document.getElementById('lam-d10').textContent = Math.abs(d10) < 1e6 ? '기본값' : (d10 > 0 ? '+' : '') + won(d10);
+  const add = r1(TOT * lam) - r1(TOT); document.getElementById('lam-add').textContent = add > 0 ? '+' + won(add) : '없음';
+  const d10 = r1(TOT * lam) - r1(TOT * 10); document.getElementById('lam-d10').textContent = Math.abs(d10) < 1e6 ? '기본값' : (d10 > 0 ? '+' : '') + won(d10);
   document.getElementById('lam-n').textContent = Math.round(N * lam).toLocaleString('ko-KR') + '명';
   document.getElementById('k-sc').textContent = won(TOT * lam);
   document.getElementById('k-sc2').textContent = lam === 10 ? '암수율 10배(기본) 적용' : `암수율 ${lt} 적용 · 기본 10배는 7조 5,441.7억 원`;

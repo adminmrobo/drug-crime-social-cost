@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>집계 경로 3D 점검</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: 감사(監査) 도구. 차분하고 정확하게, 숫자와 출처가 먼저.
+   IDEA: 원자료 장부에서 최종 지표까지 쌓아 올린 '집계 탑'. 층 = 단계, 바닥 구역 = 비용 항목.
+   PICTURE: 회전되는 3D 탑(바닥 6구역이 위로 갈수록 중심으로 모임), 점검 대상은 붉은 고리.
+   COLOUR and TYPE: 흰 바탕, 코발트 제목띠, 구역별 7색, 경고는 붉은색 하나. Space Grotesk 숫자 + Noto Sans KR.
+   LAYOUT: 제목띠와 점검 수치 → 탑(왼쪽)과 상세(오른쪽) → 점검표 → 대사표. 600px 아래에서는 세로로 쌓음. */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#0a0d18);--ink:light-dark(#111522,#e8ebf5);--mute:light-dark(#5b6275,#9aa3b8);--line:light-dark(#d9deea,#262c40);--zone:light-dark(#eef2ff,#141a2e);--strip:#1240e0;--warn:#d7263d;--ok:#1b8a5a}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Noto Sans KR",system-ui,sans-serif;overflow-x:clip}
+.band{padding:clamp(20px,3vw,40px) max(4vw,16px)}
+.strip{background:var(--strip);color:#fff}
+.strip h1{font:600 clamp(26px,3.6vw,40px)/1.1 "Space Grotesk","Noto Sans KR",sans-serif;margin:0 0 6px;text-wrap:balance}
+.strip p{margin:0;max-width:70ch;opacity:.92}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:18px}
+.kpi{background:rgba(255,255,255,.12);border-radius:8px;padding:10px 12px}
+.kpi b{display:block;font:600 26px/1.1 "Space Grotesk",sans-serif}
+.kpi span{font-size:13px;opacity:.9}
+.main{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px}
+@media(max-width:900px){.main{grid-template-columns:minmax(0,1fr)}}
+.stage-wrap{position:relative;height:min(72vh,680px);min-height:380px;background:var(--zone);border-radius:10px;overflow:hidden}
+#c3d{position:absolute;inset:0;width:100%;height:100%;display:block}
+#labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+#labels div{position:absolute;transform:translate(-50%,-140%);font-size:12px;white-space:nowrap;background:var(--bg);border:1px solid var(--line);padding:1px 6px;border-radius:4px;color:var(--ink)}
+#labels div.st{transform:translate(0,-50%);background:none;border:0;font:600 13px "Space Grotesk","Noto Sans KR";color:var(--mute)}
+#svg2d{position:absolute;inset:0;width:100%;height:100%;display:none}
+.tools{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
+.tools button,.legend button{min-height:40px;padding:6px 12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:20px;font:inherit;font-size:14px;cursor:pointer}
+.tools button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.legend button{display:flex;align-items:center;gap:6px;font-size:13px;min-height:34px}
+.legend i{width:12px;height:12px;border-radius:50%;display:inline-block}
+.legend button[aria-pressed=false]{opacity:.35}
+.edgekey{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--mute);margin-top:8px}
+.edgekey svg{vertical-align:middle}
+aside{border:1px solid var(--line);border-radius:10px;padding:16px;align-self:start}
+aside h2{font-size:18px;margin:0 0 4px;line-height:1.3}
+aside .val{font:600 24px/1.2 "Space Grotesk","Noto Sans KR";margin:6px 0}
+aside dl{display:grid;grid-template-columns:5.5em minmax(0,1fr);gap:4px 8px;font-size:14px;margin:10px 0}
+aside dt{color:var(--mute)}aside dd{margin:0;overflow-wrap:anywhere}
+aside ul{padding-left:18px;margin:4px 0 10px;font-size:14px}
+aside li button{background:none;border:0;padding:2px 0;color:var(--strip);font:inherit;cursor:pointer;text-align:left}
+:root[data-theme=dark] aside li button{color:#8ea8ff}
+.flag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:10px;margin:2px 4px 2px 0;border:1px solid var(--warn);color:var(--warn)}
+.flag.ref{border-color:var(--mute);color:var(--mute)}
+h2.sec{font-size:22px;margin:0 0 6px}
+.sub{color:var(--mute);margin:0 0 12px;max-width:80ch}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;color:var(--mute);font-size:13px}
+td.num{text-align:right;white-space:nowrap;font-family:"Space Grotesk","Noto Sans KR"}
+tr.click{cursor:pointer}tr.click:hover{background:var(--zone)}
+.lv{white-space:nowrap;font-size:12px;padding:1px 8px;border-radius:10px}
+.lv.확인{background:var(--warn);color:#fff}.lv.참고{background:var(--zone);color:var(--mute);border:1px solid var(--line)}
+.okc{color:var(--ok);font-weight:600}.ngc{color:var(--warn);font-weight:600}
+.note{font-size:13px;color:var(--mute);margin-top:8px}
+.scroll{overflow-x:auto}
+@media(max-width:600px){table{font-size:13px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px}.stack td{display:flow-root;border:0;padding:3px 0;padding-inline-start:7em;text-align:start}.stack td::before{content:attr(data-l);float:inline-start;width:6.5em;margin-inline-start:-7em;color:var(--mute)}.stack td:empty{display:none}.stage-wrap{height:62vh}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+.embed header.strip{display:none}.embed .band{padding:10px 14px}.embed .stage-wrap{height:calc(100vh - 80px);min-height:300px}
+</style>
+<script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
+<script>if(/[?&]embed/.test(location.search))document.documentElement.classList.add("embed")</script>
+</head>
+<body>
+<header class="band strip">
+<h1>원자료 59개에서 최종 지표까지, 집계 경로를 층별로 점검</h1>
+<p>2025년 기준 집계 엑셀(시트 0~7)의 수식을 따라 원자료가 어느 비용으로 올라가는지 이었다. 바닥 구역은 비용 항목, 높이는 계산 단계이다. 붉은 고리는 확인이 필요한 곳이다.</p>
+<div class="kpis" id="kpis"></div>
+</header>
+
+<section class="band">
+<div class="tools" role="group" aria-label="보기 설정">
+<button id="b3d" aria-pressed="true">3D 탑</button>
+<button id="b2d" aria-pressed="false">2D 층별 흐름</button>
+<button id="bcol" aria-pressed="false">색: 출처별</button>
+<button id="bflag" aria-pressed="false">점검 대상만 강조</button>
+<button id="brot" aria-pressed="true">자동 회전</button>
+<button id="breset">처음 위치</button>
+</div>
+<div class="main">
+<div>
+<div class="stage-wrap" id="wrap">
+<canvas id="c3d" aria-label="집계 경로 3D 탑"></canvas>
+<div id="labels"></div>
+<svg id="svg2d" role="img" aria-label="집계 경로 2D 층별 흐름"></svg>
+</div>
+<div class="legend" id="legend"></div>
+<div class="edgekey">
+<span><svg width="34" height="8"><line x1="0" y1="4" x2="34" y2="4" stroke="#8a93a8" stroke-width="2"/></svg> 엑셀 수식으로 연결</span>
+<span><svg width="34" height="8"><line x1="0" y1="4" x2="34" y2="4" stroke="#e08a00" stroke-width="2" stroke-dasharray="5 4"/></svg> 값을 옮겨 적음(연결 없음)</span>
+<span><svg width="34" height="8"><line x1="0" y1="4" x2="34" y2="4" stroke="#7a4cc2" stroke-width="2" stroke-dasharray="1 4"/></svg> 엑셀 밖 모형 계산</span>
+</div>
+</div>
+<aside id="panel" aria-live="polite"></aside>
+</div>
+</section>
+
+<section class="band" style="padding-top:0">
+<h2 class="sec">점검표</h2>
+<p class="sub">누락은 위로 이어지지 않는 원자료, 공백은 엑셀 안에 근거 셀이 없는 값, 중복은 같은 원자료가 연간 합계 안 두 항목으로 들어가는 경우, 대사는 옮겨 적은 값의 차이, 연결은 다른 셀에 있는 값을 수식에 숫자로 직접 적은 경우이다. 행을 누르면 탑에서 해당 위치를 보여준다.</p>
+<div class="filters" id="kfilter" role="group" aria-label="점검 종류"></div>
+<div class="scroll"><table class="stack" id="ctable"><thead><tr><th>종류</th><th>수준</th><th>내용</th><th>설명</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<section class="band" style="padding-top:0">
+<h2 class="sec">대사표</h2>
+<p class="sub">합계가 맞는지, 옮겨 적은 값이 원래 값과 같은지 다시 계산하였다.</p>
+<div class="scroll"><table class="stack" id="rtable"><thead><tr><th>점검</th><th>엑셀 값</th><th>다시 계산한 값</th><th>차이</th><th>결과</th></tr></thead><tbody></tbody></table></div>
+<p class="note">자료: 2025년 기준 집계 엑셀(2026. 11. 19. 수령) 시트 0~7의 수식과 값. 노드 125개, 연결 151개. 생산성·정신건강 항목의 세부 산식과 생애비용 모형은 엑셀 밖 추계 파일에 있다.</p>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+{
+const DATA = /*DATA*/null;
+const N = DATA.nodes, E = DATA.edges, C = DATA.checks, S = DATA.summary;
+const byId = Object.fromEntries(N.map(n => [n.id, n]));
+const CL = ['형사사법','고통비용','생산성','의료·복지','사회적 혼란·기타','생애비용','재활 비용편익','공통','총괄'];
+const CLC = {'형사사법':'#1240e0','고통비용':'#c2185b','생산성':'#2e7d32','의료·복지':'#00838f','사회적 혼란·기타':'#ef6c00','생애비용':'#6a1b9a','재활 비용편익':'#5d4037','공통':'#546e7a','총괄':'#111522'};
+const SRC = ['실측','2024 대용','추정·문헌','가정','추계치','엑셀 밖 근거','계산'];
+const SRCC = {'실측':'#1b8a5a','2024 대용':'#c79100','추정·문헌':'#ef6c00','가정':'#8e24aa','추계치':'#c79100','엑셀 밖 근거':'#d7263d','계산':'#78849e'};
+const STAGES = ['0 원자료','1 원단위·배분','2 세부 비용 항목','3 분야 소계·편익','4 총액·1명당·B/C','5 최종 지표'];
+const KIND_FLAG = {'누락':'orphan','공백':'nobase','중복':'shared','대사':'mismatch','연결':'hard'};
+const issue = new Set(); C.forEach(c => { if (c.level === '확인') c.nodes.forEach(i => issue.add(i)); });
+const noteSet = new Set(); C.forEach(c => c.nodes.forEach(i => noteSet.add(i)));
+const up = {}, down = {}; E.forEach(e => { (up[e.t] = up[e.t] || []).push(e); (down[e.s] = down[e.s] || []).push(e); });
+const fmt = n => {
+  const v = n.value, u = n.unit;
+  if (v === null || v === undefined) return '—';
+  if (u === '원') { const a = Math.abs(v);
+    if (a >= 1e12) { const jo = Math.floor(v / 1e12), ok = (v - jo * 1e12) / 1e8; return jo + '조 ' + ok.toLocaleString('ko-KR', {maximumFractionDigits: 1}) + '억 원'; }
+    if (a >= 1e8) return (v / 1e8).toLocaleString('ko-KR', {maximumFractionDigits: 1}) + '억 원';
+    if (a >= 1e4) return (v / 1e4).toLocaleString('ko-KR', {maximumFractionDigits: 1}) + '만 원';
+    return v.toLocaleString('ko-KR', {maximumFractionDigits: 0}) + '원'; }
+  if (u === '비율') return (v * 100).toLocaleString('ko-KR', {maximumFractionDigits: 2}) + '%';
+  if (u === '명' || u === '건') return v.toLocaleString('ko-KR', {maximumFractionDigits: 2}) + u;
+  return v.toLocaleString('ko-KR', {maximumFractionDigits: 4}) + (u ? ' ' + u : '');
+};
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- KPI ---------- */
+const K = S.kinds;
+const kp = [['노드', S.nodes], ['원자료', S.raw], ['누락', K['누락']], ['공백', K['공백']], ['중복', K['중복']], ['대사 차이', K['대사']], ['연결 끊김', K['연결']]];
+document.getElementById('kpis').innerHTML = kp.map(([a, b]) => `<div class="kpi"><b>${b}</b><span>${a}</span></div>`).join('');
+
+/* ---------- 좌표 ---------- */
+const sectorOf = {}; const SEC = ['형사사법','고통비용','생산성','의료·복지','사회적 혼란·기타','재활 비용편익','생애비용'];
+SEC.forEach((c, i) => sectorOf[c] = i);
+const pos = {};
+const groups = {};
+N.forEach(n => { const k = n.cl + '|' + n.stage; (groups[k] = groups[k] || []).push(n); });
+const H = 7.2;
+Object.values(groups).forEach(g => {
+  g.forEach((n, i) => {
+    const y = n.stage * H;
+    if (n.cl === '공통' || n.cl === '총괄') {
+      const a = (i / Math.max(g.length, 1)) * Math.PI * 2 + (n.cl === '공통' ? 0.3 : 0);
+      const r = n.cl === '공통' ? 4 : (g.length > 1 ? 4.5 : 0);
+      pos[n.id] = [Math.cos(a) * r, y, Math.sin(a) * r]; return;
+    }
+    const sec = sectorOf[n.cl], span = (Math.PI * 2) / SEC.length;
+    const R = Math.max(30 - n.stage * 5.2, 5);
+    const cols = Math.max(1, Math.ceil(Math.sqrt(g.length * 1.6)));
+    const row = Math.floor(i / cols), col = i % cols, ncol = Math.min(cols, g.length - row * cols);
+    const a0 = sec * span + span / 2 + ((col - (ncol - 1) / 2) / Math.max(cols, 1)) * span * 0.8;
+    const rr = R - row * 3.2;
+    pos[n.id] = [Math.cos(a0) * rr, y, Math.sin(a0) * rr];
+  });
+});
+
+/* ---------- 상태 ---------- */
+let colorMode = 'cl', flagOnly = false, sel = null, hidden = new Set(), mode = '3d';
+const colorOf = n => colorMode === 'cl' ? CLC[n.cl] : SRCC[n.src] || '#78849e';
+const visible = n => !hidden.has(n.cl);
+const related = id => { const s = new Set([id]);
+  const walk = (i, dir) => ((dir ? up[i] : down[i]) || []).forEach(e => { const j = dir ? e.s : e.t; if (!s.has(j)) { s.add(j); walk(j, dir); } });
+  walk(id, true); walk(id, false); return s; };
+
+/* ---------- 패널 ---------- */
+const panel = document.getElementById('panel');
+const flagName = {orphan:'누락', nobase:'공백', shared:'중복', mismatch:'대사 차이', hard:'연결 끊김', ref:'참고용'};
+function showPanel(id) {
+  if (!id) { panel.innerHTML = `<h2>노드를 눌러 경로를 확인</h2><p class="sub" style="margin:6px 0 0">탑의 점이나 아래 점검표 행을 누르면 그 값이 어디서 와서 어디로 가는지 보여준다.</p>
+    <dl><dt>층</dt><dd>${STAGES.join('<br>')}</dd></dl>`; return; }
+  const n = byId[id];
+  const ins = (up[id] || []).map(e => [e, byId[e.s]]), outs = (down[id] || []).map(e => [e, byId[e.t]]);
+  const kindTxt = {link:'', copy:' (옮겨 적음)', model:' (엑셀 밖)'};
+  const li = arr => arr.length ? arr.map(([e, m]) => `<li><button data-id="${m.id}">${esc(m.label)}</button>${kindTxt[e.kind]}${e.note ? ' — ' + esc(e.note) : ''}</li>`).join('') : '<li>없음</li>';
+  const fl = n.flags.map(f => `<span class="flag ${f === 'ref' || (!issue.has(id) && f !== 'ref') ? 'ref' : ''}">${flagName[f] || f}</span>`).join('');
+  const cs = C.filter(c => c.nodes.includes(id)).map(c => `<li><b>${c.kind}</b> · ${esc(c.title)}<br><span style="color:var(--mute)">${esc(c.detail)}</span></li>`).join('');
+  panel.innerHTML = `<h2>${esc(n.label)}</h2>${fl}<div class="val">${fmt(n)}</div>
+  <dl><dt>층</dt><dd>${STAGES[n.stage]}</dd><dt>구역</dt><dd>${esc(n.cl)}</dd><dt>출처</dt><dd>${esc(n.src)}</dd>
+  <dt>위치</dt><dd>${esc(n.cell || '—')}</dd>${n.note ? `<dt>비고</dt><dd>${esc(n.note)}</dd>` : ''}</dl>
+  <b>들어오는 값</b><ul>${li(ins)}</ul><b>올라가는 곳</b><ul>${li(outs)}</ul>${cs ? `<b>점검</b><ul>${cs}</ul>` : ''}`;
+}
+panel.addEventListener('click', ev => { const b = ev.target.closest('button[data-id]'); if (b) select(b.dataset.id); });
+
+/* ---------- 범례 ---------- */
+const legend = document.getElementById('legend');
+function drawLegend() {
+  if (colorMode === 'cl') legend.innerHTML = CL.map(c => `<button data-cl="${c}" aria-pressed="${!hidden.has(c)}"><i style="background:${CLC[c]}"></i>${c}</button>`).join('');
+  else legend.innerHTML = SRC.filter(s => N.some(n => n.src === s)).map(s => `<button disabled aria-pressed="true"><i style="background:${SRCC[s]}"></i>${s}</button>`).join('');
+}
+legend.addEventListener('click', ev => { const b = ev.target.closest('button[data-cl]'); if (!b) return;
+  const c = b.dataset.cl; hidden.has(c) ? hidden.delete(c) : hidden.add(c); drawLegend(); refresh(); });
+
+/* ---------- 3D ---------- */
+const wrap = document.getElementById('wrap'), canvas = document.getElementById('c3d'), labelsEl = document.getElementById('labels');
+let three = null;
+function init3d() {
+  if (!window.THREE || !THREE.OrbitControls) return false;
+  let renderer; try { renderer = new THREE.WebGLRenderer({canvas, antialias: true, alpha: true}); } catch (e) { return false; }
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  const scene = new THREE.Scene();
+  const cam = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+  const home = [62, 52, 62];
+  cam.position.set(...home);
+  const ctl = new THREE.OrbitControls(cam, canvas); ctl.target.set(0, 17, 0); ctl.enableDamping = true; ctl.autoRotate = !matchMedia('(prefers-reduced-motion: reduce)').matches; ctl.autoRotateSpeed = 0.6;
+  scene.add(new THREE.AmbientLight(0xffffff, 0.75)); const dl = new THREE.DirectionalLight(0xffffff, 0.6); dl.position.set(40, 80, 30); scene.add(dl);
+  // 층 판
+  for (let s = 0; s < 6; s++) {
+    const r = Math.max(30 - s * 5.2, 5) + 6;
+    const g = new THREE.CircleGeometry(r, 64); const m = new THREE.MeshBasicMaterial({color: 0x1240e0, transparent: true, opacity: 0.045, side: THREE.DoubleSide, depthWrite: false});
+    const disk = new THREE.Mesh(g, m); disk.rotation.x = -Math.PI / 2; disk.position.y = s * H; scene.add(disk);
+    const ring = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(new THREE.EllipseCurve(0, 0, r, r).getPoints(96).map(p => new THREE.Vector3(p.x, s * H, p.y))), new THREE.LineBasicMaterial({color: 0x9fb0e8, transparent: true, opacity: 0.5}));
+    scene.add(ring);
+  }
+  // 구역 경계선(바닥)
+  SEC.forEach((c, i) => { const a = i * (Math.PI * 2) / SEC.length;
+    const l = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(Math.cos(a) * 6, 0, Math.sin(a) * 6), new THREE.Vector3(Math.cos(a) * 36, 0, Math.sin(a) * 36)]), new THREE.LineBasicMaterial({color: 0xb8c3e6}));
+    scene.add(l); });
+  const geo = new THREE.SphereGeometry(1, 20, 14);
+  const meshes = {};
+  N.forEach(n => { const m = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({color: colorOf(n), transparent: true}));
+    const sz = 0.55 + n.stage * 0.14 + (n.cl === '총괄' ? 0.4 : 0); m.scale.setScalar(sz); m.position.set(...pos[n.id]); m.userData.id = n.id; scene.add(m); meshes[n.id] = m;
+    if (n.flags.length) { const ring = new THREE.Mesh(new THREE.TorusGeometry(sz * 1.7, 0.13, 8, 32), new THREE.MeshBasicMaterial({color: issue.has(n.id) ? 0xd7263d : 0x9aa3b8, transparent: true}));
+      ring.position.copy(m.position); ring.rotation.x = Math.PI / 2; scene.add(ring); m.userData.ring = ring; } });
+  const lines = E.map(e => { const a = pos[e.s], b = pos[e.t];
+    const mat = e.kind === 'link' ? new THREE.LineBasicMaterial({color: 0x8a93a8, transparent: true, opacity: 0.55})
+      : new THREE.LineDashedMaterial({color: e.kind === 'copy' ? 0xe08a00 : 0x7a4cc2, dashSize: e.kind === 'copy' ? 0.9 : 0.25, gapSize: 0.7, transparent: true, opacity: 0.85});
+    const l = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...a), new THREE.Vector3(...b)]), mat);
+    if (e.kind !== 'link') l.computeLineDistances(); l.userData = e; scene.add(l); return l; });
+  const ray = new THREE.Raycaster(), mouse = new THREE.Vector2();
+  let downXY = null;
+  canvas.addEventListener('pointerdown', ev => downXY = [ev.clientX, ev.clientY]);
+  canvas.addEventListener('pointerup', ev => { if (!downXY || Math.hypot(ev.clientX - downXY[0], ev.clientY - downXY[1]) > 6) return;
+    const r = canvas.getBoundingClientRect(); mouse.set(((ev.clientX - r.left) / r.width) * 2 - 1, -((ev.clientY - r.top) / r.height) * 2 + 1);
+    ray.setFromCamera(mouse, cam); const hit = ray.intersectObjects(Object.values(meshes).filter(m => m.visible));
+    select(hit.length ? hit[0].object.userData.id : null); });
+  function resize() { const w = wrap.clientWidth, h = wrap.clientHeight; renderer.setSize(w, h, false); cam.aspect = w / h; cam.fov = w < 600 ? 62 : 45; cam.updateProjectionMatrix(); }
+  const ro = new ResizeObserver(resize); ro.observe(wrap); resize();
+  const v = new THREE.Vector3();
+  function labelFor(id, txt, cls) { return `<div class="${cls || ''}" data-p="${id}">${esc(txt)}</div>`; }
+  function tick() {
+    ctl.update(); renderer.render(scene, cam);
+    if (mode === '3d') {
+      const w = wrap.clientWidth, h = wrap.clientHeight, rel = sel ? related(sel) : null; let html = '';
+      for (let s = 0; s < 6; s++) { v.set(Math.max(30 - s * 5.2, 5) + 6, s * H, 0).project(cam);
+        if (v.z < 1) html += `<div class="st" style="left:${(v.x + 1) / 2 * w}px;top:${(1 - v.y) / 2 * h}px">${STAGES[s]}</div>`; }
+      N.forEach(n => { if (!visible(n)) return; const show = rel ? rel.has(n.id) && (n.stage >= 2 || n.id === sel || n.stage >= 0 && rel.size < 26) : (n.stage >= 5 || (n.stage === 3 && n.id.startsWith('f_')) || n.id === 'total');
+        if (!show) return; v.set(...pos[n.id]).project(cam); if (v.z > 1) return;
+        html += `<div style="left:${(v.x + 1) / 2 * w}px;top:${(1 - v.y) / 2 * h}px;${n.id === sel ? 'font-weight:700;border-color:var(--ink)' : ''}">${esc(n.label)}</div>`; });
+      labelsEl.innerHTML = html;
+    }
+    requestAnimationFrame(tick);
+  }
+  three = {ctl, cam, meshes, lines, home, refresh() {
+    const rel = sel ? related(sel) : null;
+    N.forEach(n => { const m = meshes[n.id]; m.visible = visible(n); m.material.color.set(colorOf(n));
+      const dim = (rel && !rel.has(n.id)) || (flagOnly && !noteSet.has(n.id));
+      m.material.opacity = dim ? 0.12 : 1; if (m.userData.ring) { m.userData.ring.visible = m.visible; m.userData.ring.material.opacity = dim ? 0.1 : 1; } });
+    lines.forEach(l => { const e = l.userData; const ok = visible(byId[e.s]) && visible(byId[e.t]); l.visible = ok;
+      const on = rel ? rel.has(e.s) && rel.has(e.t) : !flagOnly || e.kind !== 'link';
+      l.material.opacity = on ? (e.kind === 'link' ? (rel ? 0.95 : 0.5) : 0.9) : 0.06; });
+  }};
+  tick(); return true;
+}
+
+/* ---------- 2D ---------- */
+const svg = document.getElementById('svg2d');
+function draw2d() {
+  const W = svg.clientWidth, Hh = svg.clientHeight; if (!W) return;
+  const cols = CL.filter(c => !hidden.has(c)), cw = W / cols.length, rh = Hh / 6.4, rel = sel ? related(sel) : null, p = {};
+  cols.forEach((c, ci) => { for (let s = 0; s < 6; s++) { const g = N.filter(n => n.cl === c && n.stage === s);
+    g.forEach((n, i) => { const per = Math.max(1, Math.floor((cw - 10) / 14)); const row = Math.floor(i / per), col = i % per, nc = Math.min(per, g.length - row * per);
+      p[n.id] = [ci * cw + cw / 2 + (col - (nc - 1) / 2) * 14, Hh - (s + 0.7) * rh - row * 12]; }); } });
+  let out = '';
+  for (let s = 0; s < 6; s++) out += `<line x1="0" x2="${W}" y1="${Hh - (s + 0.7) * rh}" y2="${Hh - (s + 0.7) * rh}" stroke="var(--line)"/><text x="6" y="${Hh - (s + 0.7) * rh - 6}" font-size="11" fill="var(--mute)">${STAGES[s]}</text>`;
+  cols.forEach((c, ci) => out += `<text x="${ci * cw + cw / 2}" y="${Hh - 6}" text-anchor="middle" font-size="${W < 520 ? 9 : 11}" fill="${CLC[c]}">${W < 520 ? c.slice(0, 2) : c}</text>`);
+  E.forEach(e => { if (!p[e.s] || !p[e.t]) return; const on = rel ? rel.has(e.s) && rel.has(e.t) : !flagOnly || e.kind !== 'link';
+    const col = e.kind === 'link' ? '#8a93a8' : e.kind === 'copy' ? '#e08a00' : '#7a4cc2', da = e.kind === 'copy' ? '5 4' : e.kind === 'model' ? '1 4' : '';
+    out += `<line x1="${p[e.s][0]}" y1="${p[e.s][1]}" x2="${p[e.t][0]}" y2="${p[e.t][1]}" stroke="${col}" stroke-width="${on && rel ? 1.6 : 1}" stroke-dasharray="${da}" opacity="${on ? 0.8 : 0.08}"/>`; });
+  N.forEach(n => { if (!p[n.id]) return; const dim = (rel && !rel.has(n.id)) || (flagOnly && !noteSet.has(n.id)); const [x, y] = p[n.id];
+    out += `<g data-id="${n.id}" style="cursor:pointer" opacity="${dim ? 0.15 : 1}"><circle cx="${x}" cy="${y}" r="${4 + n.stage * 0.6}" fill="${colorOf(n)}" stroke="${issue.has(n.id) ? '#d7263d' : n.flags.length ? '#9aa3b8' : 'none'}" stroke-width="2.5"><title>${esc(n.label)} · ${fmt(n)}</title></circle>${n.id === sel ? `<text x="${x}" y="${y - 10}" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)">${esc(n.label)}</text>` : ''}</g>`; });
+  svg.innerHTML = out;
+}
+svg.addEventListener('click', ev => { const g = ev.target.closest('g[data-id]'); select(g ? g.dataset.id : null); });
+const ro2 = new ResizeObserver(() => { if (mode === '2d') draw2d(); }); ro2.observe(wrap);
+
+/* ---------- 공통 갱신 ---------- */
+function refresh() { if (three) three.refresh(); if (mode === '2d') draw2d(); }
+function select(id) { sel = id; showPanel(id); refresh();
+  if (id && three && mode === '3d') { three.ctl.autoRotate = false; document.getElementById('brot').setAttribute('aria-pressed', 'false'); three.ctl.target.set(...pos[id]); } }
+function setMode(m) { mode = m; document.getElementById('b3d').setAttribute('aria-pressed', m === '3d'); document.getElementById('b2d').setAttribute('aria-pressed', m === '2d');
+  canvas.style.display = labelsEl.style.display = m === '3d' ? 'block' : 'none'; svg.style.display = m === '2d' ? 'block' : 'none'; if (m === '2d') draw2d(); }
+document.getElementById('b3d').onclick = () => three ? setMode('3d') : null;
+document.getElementById('b2d').onclick = () => setMode('2d');
+document.getElementById('bcol').onclick = ev => { colorMode = colorMode === 'cl' ? 'src' : 'cl'; ev.currentTarget.setAttribute('aria-pressed', colorMode === 'src'); drawLegend(); refresh(); };
+document.getElementById('bflag').onclick = ev => { flagOnly = !flagOnly; ev.currentTarget.setAttribute('aria-pressed', flagOnly); refresh(); };
+document.getElementById('brot').onclick = ev => { if (!three) return; three.ctl.autoRotate = !three.ctl.autoRotate; ev.currentTarget.setAttribute('aria-pressed', three.ctl.autoRotate); };
+document.getElementById('breset').onclick = () => { select(null); if (three) { three.cam.position.set(...three.home); three.ctl.target.set(0, 17, 0); } };
+
+/* ---------- 점검표·대사표 ---------- */
+const kinds = ['전체', '누락', '공백', '중복', '대사', '연결']; let kf = '전체';
+const kfEl = document.getElementById('kfilter');
+function drawChecks() {
+  kfEl.innerHTML = kinds.map(k => `<button data-k="${k}" aria-pressed="${kf === k}" style="min-height:40px;padding:6px 12px;border:1px solid var(--line);border-radius:20px;background:${kf === k ? 'var(--ink)' : 'var(--bg)'};color:${kf === k ? 'var(--bg)' : 'var(--ink)'};font:inherit;font-size:14px;cursor:pointer">${k}${k === '전체' ? ' ' + C.length : ' ' + (K[k] || 0)}</button>`).join('');
+  const rows = C.filter(c => kf === '전체' || c.kind === kf).sort((a, b) => (a.level === '확인' ? 0 : 1) - (b.level === '확인' ? 0 : 1));
+  document.querySelector('#ctable tbody').innerHTML = rows.map(c => `<tr class="${c.nodes.length ? 'click' : ''}" data-id="${c.nodes[0] || ''}"><td>${c.kind}</td><td><span class="lv ${c.level}">${c.level}</span></td><td>${esc(c.title)}</td><td>${esc(c.detail)}</td></tr>`).join('');
+}
+kfEl.addEventListener('click', ev => { const b = ev.target.closest('button[data-k]'); if (b) { kf = b.dataset.k; drawChecks(); } });
+document.querySelector('#ctable tbody').addEventListener('click', ev => { const r = ev.target.closest('tr[data-id]'); if (r && r.dataset.id) { select(r.dataset.id); wrap.scrollIntoView({behavior: 'smooth', block: 'center'}); } });
+const nf = (x, d = 0) => Number(x).toLocaleString('ko-KR', {maximumFractionDigits: d});
+document.querySelector('#rtable tbody').innerHTML = S.recon.map(r => {
+  const small = Math.abs(r.b) < 10; const d = small ? 6 : 0;
+  return `<tr><td>${esc(r.title)}</td><td class="num">${nf(r.a, d)}</td><td class="num">${nf(r.b, d)}</td><td class="num">${small ? nf(r.diff, 6) : nf(r.diff, 0)}</td><td class="${r.ok ? 'okc' : 'ngc'}">${r.ok ? '일치' : '차이 ' + (r.rel !== undefined ? (r.rel * 100).toFixed(3) + '%' : '')}</td></tr>`; }).join('');
+
+drawLegend(); drawChecks(); showPanel(null);
+const ok3d = init3d();
+if (!ok3d) { document.getElementById('b3d').disabled = true; document.getElementById('brot').disabled = true; setMode('2d'); }
+else setMode('3d');
+refresh();
+}
+</script>
+</body>
+</html>

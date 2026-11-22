@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>마약류 사회적 비용 최종 발표</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: 정부 연구 최종 보고. 차분하고 정확하게, 숫자가 먼저.
+   IDEA: 한 장씩 넘기는 보고 슬라이드. 암수율은 모든 장을 관통하는 조절 손잡이.
+   PICTURE: 암수율 조절 시 드러나는 '숨은 사용자' 인물 격자, 중독자 1명의 생애 타임라인.
+   COLOUR and TYPE: 흰 바탕, 코발트 #1240e0 주색, 분야 7색, 추계분은 같은 색의 옅은 빗금. Space Grotesk 숫자 + Noto Sans KR.
+   LAYOUT: 1280×720 무대를 화면에 맞춰 축소. 아래 진행 막대와 넘김 단추. */
+:root{color-scheme:light;--bg:#ffffff;--ink:#111522;--mute:#5b6275;--line:#dfe3ec;--zone:#f1f4fb;--blue:#1240e0;--warn:#d7263d;--ok:#1b8a5a}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;background:#e9ecf3;color:var(--ink);font:16px/1.5 "Noto Sans KR",system-ui,sans-serif;overflow:hidden;word-break:keep-all}
+#viewport{position:fixed;inset:0 0 56px 0;display:flex;align-items:center;justify-content:center}
+#deck{width:1280px;height:720px;position:relative;transform-origin:center center;background:var(--bg);box-shadow:0 10px 40px rgba(17,21,34,.15);border-radius:6px;overflow:hidden}
+.slide{position:absolute;inset:0;padding:44px 56px 40px;display:none;flex-direction:column}
+.slide.on{display:flex}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:18px}
+.top h2{font:700 32px/1.15 "Noto Sans KR";margin:0;text-wrap:balance;max-width:960px}
+.top .kicker{font-size:14px;color:var(--mute);margin-bottom:6px}
+.chip{flex:none;font-size:13px;border:1px solid var(--line);border-radius:16px;padding:4px 12px;color:var(--mute);white-space:nowrap}
+.chip b{color:var(--blue)}
+.foot{position:absolute;left:56px;right:56px;bottom:14px;font-size:12px;color:var(--mute);display:flex;justify-content:space-between}
+.num{font-family:"Space Grotesk","Noto Sans KR";font-weight:600}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;flex:1}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.card{background:var(--zone);border-radius:10px;padding:18px 20px}
+.big{font:600 44px/1.05 "Space Grotesk","Noto Sans KR";color:var(--blue)}
+.mid{font:600 26px/1.15 "Space Grotesk","Noto Sans KR"}
+ul.pts{margin:0;padding-left:20px}ul.pts li{margin:6px 0}
+.small{font-size:13px;color:var(--mute)}
+button.b{min-height:40px;padding:6px 14px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:20px;font:inherit;font-size:14px;cursor:pointer}
+button.b[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+button.b:focus-visible,input:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+/* bars */
+.bar{display:grid;grid-template-columns:150px minmax(0,1fr) 120px;gap:10px;align-items:center;font-size:13px;margin:3px 0}
+.bar .tr{height:16px;background:#f3f5f9;border-radius:3px;position:relative;overflow:hidden}
+.bar .fl{position:absolute;inset:0 auto 0 0;border-radius:3px;transition:width .5s}
+.bar .v{text-align:right;font-family:"Space Grotesk","Noto Sans KR";white-space:nowrap}
+.est{opacity:.55;background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.55) 0 3px,transparent 3px 7px)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--mute)}
+.legend i{display:inline-block;width:22px;height:12px;border-radius:2px;vertical-align:-1px;margin-right:5px}
+/* nav */
+#nav{position:fixed;left:0;right:0;bottom:0;height:56px;background:#fff;border-top:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:0 14px}
+#nav button{min-width:44px;min-height:40px;border:1px solid var(--line);background:#fff;border-radius:20px;font:inherit;cursor:pointer;padding:0 12px}
+#prog{flex:1;height:6px;background:var(--zone);border-radius:3px;overflow:hidden}#prog div{height:100%;background:var(--blue);transition:width .3s}
+#nav .t{font-size:13px;color:var(--mute);white-space:nowrap;max-width:40vw;overflow:hidden;text-overflow:ellipsis}
+/* lambda */
+input[type=range]{width:100%;accent-color:var(--blue);height:32px}
+.pipe{display:grid;gap:4px;margin:6px 0 12px}
+.pipe div{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:6px;padding:4px 10px;font-size:13px;background:#fff;position:relative}
+.pipe div b{font-size:14px}
+.pipe div.hit{border-color:var(--blue);background:#eaf0ff;box-shadow:0 0 0 2px var(--blue) inset}
+.pipe div.hit::before{content:"암수율 영향";position:absolute;left:50%;transform:translateX(-50%);font-size:11px;background:var(--blue);color:#fff;border-radius:8px;padding:0 6px}
+#people{width:100%;height:230px;display:block}
+/* life */
+#life{width:100%;height:250px;display:block}
+.stack{display:flex;height:34px;border-radius:6px;overflow:hidden;margin:8px 0}
+.stack div{transition:flex-grow .6s,opacity .4s;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;overflow:hidden;white-space:nowrap}
+.cmp{display:grid;grid-template-columns:12px minmax(0,1fr) auto;gap:8px;font-size:13px;align-items:center;margin:3px 0;transition:opacity .4s}
+.cmp i{width:12px;height:12px;border-radius:2px}
+table.t{border-collapse:collapse;width:100%;font-size:14px}
+table.t th,table.t td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left}
+table.t td.n{text-align:right;font-family:"Space Grotesk","Noto Sans KR";white-space:nowrap}
+.gauge{position:relative;height:26px;background:#f3f5f9;border-radius:4px;margin:10px 0 22px}
+.gauge .g{position:absolute;inset:0 auto 0 0;background:var(--blue);border-radius:4px;transition:width .5s}
+.gauge .one{position:absolute;top:-6px;bottom:-6px;width:2px;background:var(--warn)}
+.gauge .one span{position:absolute;top:30px;left:-18px;font-size:11px;color:var(--warn);white-space:nowrap}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="viewport"><div id="deck">
+
+<!-- 1 표지 -->
+<section class="slide" data-t="표지" style="background:var(--blue);color:#fff;justify-content:center">
+<div style="font-size:16px;opacity:.85">법무부 연구용역 · 최종 발표 · 2026. 11.</div>
+<h1 style="font:700 52px/1.15 'Noto Sans KR';margin:14px 0 18px;max-width:980px">마약류범죄와 교정기관 중독재활 체계의 사회적 비용 비교분석</h1>
+<div style="font-size:20px;opacity:.92;max-width:900px">2025년 기준 사회적 비용, 중독자 1명의 생애비용, 교정 재활의 비용편익</div>
+<div class="row" style="margin-top:40px;gap:14px;font-size:15px;opacity:.9"><span>← → 키나 아래 단추로 넘김</span><span>·</span><span>암수율은 4장에서 조절(기본 10배)</span></div>
+</section>
+
+<!-- 2 핵심 -->
+<section class="slide" data-t="핵심 결과">
+<div class="top"><div><div class="kicker">핵심 결과</div><h2>한 해 7조 원대, 1명 평생 12억 원, 재활 1원당 1.93원</h2></div><div class="chip">암수율 <b class="lam-t">10배</b></div></div>
+<div class="grid3" style="flex:1">
+<div class="card"><div class="small">2025년 사회적 비용</div><div class="big" id="k-sc">7조 5,441.7억 원</div><div class="small" id="k-sc2" style="margin-top:8px"></div>
+<ul class="pts" style="margin-top:18px;font-size:17px;line-height:1.7"><li>형사사법 49.4%, 고통비용 32.2%</li><li>2016년 2조 2,389억 원의 <span id="k-x">3.37</span>배</li><li>단속 인원 기준(암수율 미반영) 7,544.2억 원</li></ul></div>
+<div class="card"><div class="small">중독자 1명의 생애 사회적 비용</div><div class="big">12.28억 원</div><div class="small" style="margin-top:8px">누적 기준, 현재가치(4.5%) 3.97억 원</div>
+<ul class="pts" style="margin-top:18px;font-size:17px;line-height:1.7"><li>기대여명 7.5년 단축(기준 시나리오)</li><li>범위 4.39억~19.87억 원(조기회복~만성화)</li><li>암수율과 무관한 1인 기준 지표</li></ul></div>
+<div class="card"><div class="small">교정 재활 비용편익(대표값)</div><div class="big">B/C 1.93</div><div class="small" style="margin-top:8px">생애가치 기준, 관측 효과, 현재가치 4.5%</div>
+<ul class="pts" style="margin-top:18px;font-size:17px;line-height:1.7"><li>이수자 1인당 비용 635만 원</li><li>3년 재복역만 보면 0.22~0.28</li><li>손익분기 효과 4.3%</li></ul></div>
+</div>
+<div class="foot"><span>자료: 2025년 기준 집계(2026. 11.), 본 연구 계산</span><span class="pg"></span></div>
+</section>
+
+<!-- 3 구조 -->
+<section class="slide" data-t="분석 구조">
+<div class="top"><div><div class="kicker">분석 구조</div><h2>두 분석은 1인당 비용 원단위 하나로 연결</h2></div></div>
+<svg viewBox="0 0 1168 470" style="flex:1;width:100%" role="img" aria-label="분석 구조도">
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#5b6275"/></marker></defs>
+<g font-family="Noto Sans KR" font-size="15">
+<rect x="0" y="20" width="330" height="410" rx="12" fill="#f1f4fb"/><text x="20" y="52" font-weight="700" font-size="18">① 사회적 비용(제3장)</text>
+<text x="20" y="84" fill="#5b6275">원자료 59개 → 18개 항목 → 5개 분야</text>
+<g font-size="14"><text x="34" y="122">형사사법 · 고통비용 · 생산성</text><text x="34" y="146">의료·복지 · 사회적 혼란·기타</text></g>
+<rect x="20" y="176" width="290" height="62" rx="8" fill="#fff" stroke="#1240e0"/><text x="36" y="203" font-weight="700">검거 사범 1명당 3,223.6만 원</text><text x="36" y="226" font-size="13" fill="#5b6275">총액 7,544.2억 원 ÷ 23,403명</text>
+<rect x="20" y="268" width="290" height="62" rx="8" fill="#fff" stroke="#d9deea"/><text x="36" y="295" font-weight="700">× 실질 사용자(암수율 10배)</text><text x="36" y="318" font-size="13" fill="#5b6275">= 7조 5,441.7억 원</text>
+<rect x="420" y="20" width="330" height="410" rx="12" fill="#f1f4fb"/><text x="440" y="52" font-weight="700" font-size="18">② 1인당 생애비용</text>
+<text x="440" y="84" fill="#5b6275">검거 해부터 사망까지 1명 기준</text>
+<rect x="440" y="176" width="290" height="62" rx="8" fill="#fff" stroke="#6a1b9a"/><text x="456" y="203" font-weight="700">첫해 비용 = 1명당 계수</text><text x="456" y="226" font-size="13" fill="#5b6275">이후 재사용·재검거·노동·사망</text>
+<rect x="440" y="268" width="290" height="62" rx="8" fill="#fff" stroke="#d9deea"/><text x="456" y="295" font-weight="700">12.28억 원(누적 기준)</text><text x="456" y="318" font-size="13" fill="#5b6275">현재가치 3.97억 원</text>
+<rect x="838" y="20" width="330" height="410" rx="12" fill="#f1f4fb"/><text x="858" y="52" font-weight="700" font-size="18">③ 교정 재활 비용편익(제4장)</text>
+<text x="858" y="84" fill="#5b6275">이수자 1인당 비용 635만 원</text>
+<rect x="858" y="176" width="290" height="62" rx="8" fill="#fff" stroke="#5d4037"/><text x="874" y="203" font-weight="700">재복역 1건당 비용 SC<tspan baseline-shift="sub" font-size="11">r</tspan></text><text x="874" y="226" font-size="13" fill="#5b6275">5,035.7만~6,666.3만 원</text>
+<rect x="858" y="268" width="290" height="62" rx="8" fill="#fff" stroke="#d9deea"/><text x="874" y="295" font-weight="700">재활 효과 × 줄어든 비용</text><text x="874" y="318" font-size="13" fill="#5b6275">B/C 0.22~0.28 / 1.93(대표값)</text>
+<path d="M310 207 H440" stroke="#5b6275" stroke-width="2" marker-end="url(#ar)"/><path d="M730 299 H858" stroke="#5b6275" stroke-width="2" marker-end="url(#ar)"/>
+<path d="M165 238 C165 400, 1000 420, 1000 330" stroke="#5b6275" stroke-width="2" fill="none" stroke-dasharray="6 5" marker-end="url(#ar)"/>
+<text x="470" y="408" font-size="13" fill="#5b6275">1명당 계수가 SC<tspan baseline-shift="sub" font-size="11">r</tspan>의 원단위로 쓰임</text>
+<text x="20" y="460" font-size="13" fill="#5b6275">세 결과는 기준이 달라 서로 더하지 않음</text>
+</g></svg>
+<div class="foot"><span>SC<sub>r</sub>: 재복역 1건이 줄 때 회피되는 사회적 비용</span><span class="pg"></span></div>
+</section>
+
+<!-- 3-1 집계 경로 3D -->
+<section class="slide" data-t="집계 경로 3D">
+<div class="top"><div><div class="kicker">집계 경로 점검</div><h2>원자료 59개가 최종 지표에 닿는 경로를 3차원으로 확인</h2></div><a class="chip" href="aggregation-3d.html" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">새 창에서 열기 ↗</a></div>
+<div style="flex:1;position:relative;border:1px solid #d9deea;border-radius:12px;overflow:hidden;background:#fff;margin-bottom:22px">
+<iframe data-src="aggregation-3d.html?embed=1" title="집계 경로 3D 점검" style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>
+</div>
+<div class="foot"><span>바닥 원자료(z=0) → 원단위 → 세부 항목 → 분야 → 총액·지표. 끌어서 돌리고, 점을 누르면 위아래 경로가 표시됨. 자료: 11월 19일 집계 엑셀 시트 0~7</span><span class="pg"></span></div>
+</section>
+
+<!-- 4 암수율 -->
+<section class="slide" data-t="암수율 조절" id="s-lam">
+<div class="top"><div><div class="kicker">암수율 조절</div><h2 id="lam-h">암수율 10배: 단속된 1명 뒤에 숨은 사용자 9명</h2></div><div class="chip">기본 10배</div></div>
+<div class="grid2" style="grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr)">
+<div>
+<div class="row" style="justify-content:space-between"><label for="lam" style="font-weight:700">암수율 <span class="num" id="lam-v" style="color:var(--blue);font-size:22px">10.0배</span></label>
+<div class="row"><button class="b" data-l="1">미반영(1배)</button><button class="b" data-l="10">기본 10배</button><button class="b" data-l="28.57">28.57배</button></div></div>
+<input type="range" id="lam" min="1" max="30" step="0.01" value="10" aria-label="암수율">
+<div class="small" style="margin:-4px 0 8px">암수율은 단속되지 않은 실제 사용자까지 포함하기 위한 배수이다. 실질 사용자 = 검거 사범 23,403명 × 암수율.</div>
+<svg id="people" role="img" aria-label="검거 사범과 숨은 사용자 인물 격자"></svg>
+<div class="legend"><span><i style="background:#1240e0"></i>검거 사범(1명 = 1,000명)</span><span><i style="background:#1240e0;opacity:.22"></i>숨은 사용자(암수)</span></div>
+</div>
+<div>
+<div class="small" style="font-weight:700;color:var(--ink)">암수율이 바꾸는 단계</div>
+<div class="pipe" id="pipe"></div>
+<div class="card" style="padding:14px 16px">
+<div class="small">사회적 비용</div><div class="big" id="lam-sc" style="font-size:38px">7조 5,441.7억 원</div>
+<table class="t" style="margin-top:8px"><tr><td>단속 인원 기준(미반영)</td><td class="n">7,544.2억 원</td></tr>
+<tr><td>암수 반영으로 늘어난 몫</td><td class="n" id="lam-add" style="color:var(--blue)"></td></tr>
+<tr><td>기본(10배) 대비 증감</td><td class="n" id="lam-d10"></td></tr>
+<tr><td>실질 사용자 수</td><td class="n" id="lam-n"></td></tr></table>
+<div class="small" style="margin-top:8px">영향 없음: 1명당 계수, 1인당 생애비용, SC<sub>r</sub>, 재활 B/C</div>
+</div>
+</div>
+</div>
+<div class="foot"><span>모든 항목에 같은 암수율을 곱하므로 분야별 구성비는 변하지 않음</span><span class="pg"></span></div>
+</section>
+
+<!-- 5 구성 -->
+<section class="slide" data-t="비용 구성">
+<div class="top"><div><div class="kicker">사회적 비용 구성</div><h2 id="mix-h">형사사법과 고통비용이 81.6%</h2></div><div class="chip">암수율 <b class="lam-t">10배</b></div></div>
+<div class="grid2" style="grid-template-columns:minmax(0,1.45fr) minmax(0,.55fr)">
+<div id="items"></div>
+<div>
+<div id="fields"></div>
+<div class="legend" style="margin-top:14px;flex-direction:column;gap:6px"><span><i style="background:#1240e0"></i>실측 자료로 산정</span><span><i class="est" style="background:#1240e0"></i>추계분(대체값·원단위 준용 포함)</span></div>
+<p class="small" style="margin-top:12px">추계분: 검찰(2024년 값), 중독자·사망 고통비용(2024 원단위 × 물가), 2차 범죄, 예방 예산(2024년 값), 가족 돌봄, 약물 운전</p>
+</div>
+</div>
+<div class="foot"><span>자료: 2025년 기준 집계 시트 0. 금액은 현재 암수율 적용값</span><span class="pg"></span></div>
+</section>
+
+<!-- 6 2016 비교 -->
+<section class="slide" data-t="2016년 대비">
+<div class="top"><div><div class="kicker">선행연구 대비(4개 분야, 암수율 10배)</div><h2>9년 사이 3.15배: 단속 인원 36.6%, 1명당 실질 비용 53.3%</h2></div></div>
+<div class="grid2" style="grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr)">
+<div id="wf"></div>
+<div class="card"><ul class="pts" style="font-size:15px">
+<li>물가 1.217배(소비자물가 2016년 95.8 → 2025년 116.6)</li>
+<li>검거 인원 14,214명 → 23,403명(1.65배)</li>
+<li>1명당 실질 비용 증가 요인: 교도소 미결 포함 배분, 치료보호 인원 597명 → 1,649명, 사망 고통비용 원단위 2.81억 → 9.7억 원</li>
+<li>사회적 혼란·기타(4,960.4억 원)를 더하면 3.37배</li></ul></div>
+</div>
+<div class="foot"><span>자료: 박성수(2018); 본 연구 계산</span><span class="pg"></span></div>
+</section>
+
+<!-- 7 생애비용 -->
+<section class="slide" data-t="1인당 생애비용">
+<div class="top"><div><div class="kicker">1인당 생애비용</div><h2 id="life-h">검거된 중독자 1명이 평생 남기는 사회적 비용 12.28억 원</h2></div><div class="chip">암수율과 무관</div></div>
+<div class="row" style="margin-bottom:6px"><span class="small" style="margin-right:4px">중독 경과</span>
+<button class="b sc" data-s="0">A 조기회복</button><button class="b sc" data-s="1" aria-pressed="true">B 기준</button><button class="b sc" data-s="2">C 만성화</button>
+<span class="small" style="margin:0 4px 0 16px">검거 나이(B)</span><span id="ages" class="row"></span>
+<button class="b" id="play" style="margin-left:auto">▶ 생애 따라가기</button></div>
+<svg id="life" role="img" aria-label="중독자 1명의 생애 타임라인"></svg>
+<div class="grid2" style="grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:24px;flex:0 0 auto">
+<div><div class="small" id="l-ch">생애비용 구성(현재가치 4.5%) · 타임라인을 따라 쌓임</div><div class="stack" id="lstack"></div><div id="lcmp"></div></div>
+<div class="card" style="padding:12px 16px"><div class="small" id="l-sub">B 기준 · 연령 가중 평균</div>
+<div class="row" style="gap:22px;margin-top:4px"><div><div class="small">누적 기준</div><div class="mid" id="l-cum" style="color:var(--blue)"></div></div><div><div class="small">현재가치 4.5%</div><div class="mid" id="l-pv"></div></div></div>
+<div class="small" style="margin-top:8px" id="l-life"></div></div>
+</div>
+<div class="foot"><span>인물은 2025년 검거 사범의 평균적 경로를 나타낸 그림이며 특정인이 아님. 연도별 금액이 아니라 단계별 합계를 표시</span><span class="pg"></span></div>
+</section>
+
+<!-- 8 총액 vs 생애 -->
+<section class="slide" data-t="두 지표의 차이">
+<div class="top"><div><div class="kicker">2차 보고 질의</div><h2>총액은 3배인데 1인당 생애비용은 비슷한 이유</h2></div></div>
+<div class="grid2">
+<div><svg viewBox="0 0 520 300" style="width:100%" role="img" aria-label="생애비용 중 첫해 비중">
+<g font-family="Noto Sans KR"><rect x="20" y="40" width="480" height="60" rx="6" fill="#e3e7f2"/><rect x="20" y="40" width="12.5" height="60" rx="3" fill="#1240e0"/>
+<text x="20" y="28" font-size="15" font-weight="700">생애비용 12.28억 원 중 첫해 비용</text><text x="40" y="78" font-size="15">첫해 0.32억 원(2.6%) · 나머지 97.4%는 2년차 이후</text>
+<text x="20" y="150" font-size="15" font-weight="700">연간 총액 증가분 4조 8,092.3억 원의 구성</text>
+<rect x="20" y="166" width="48.6" height="44" fill="#9aa3b8"/><rect x="68.6" y="166" width="175.7" height="44" fill="#1240e0"/><rect x="244.3" y="166" width="255.7" height="44" fill="#c2185b"/>
+<text x="22" y="250" font-size="13">물가 10.1%</text><text x="72" y="232" font-size="13" fill="#1240e0">단속 인원 36.6%</text><text x="250" y="232" font-size="13" fill="#c2185b">1명당 실질 비용 53.3%</text>
+<text x="20" y="270" font-size="13" fill="#5b6275">사람 수 효과는 1인 기준 지표에 나타나지 않고, 물가는 2025년 가격 환산으로 사라짐</text></g></svg></div>
+<div class="card"><ul class="pts" style="font-size:16px">
+<li>연간 총액 = 1명당 연간 비용 × 사용자 수. 사람 수 변화가 그대로 반영</li>
+<li>생애비용 = 1명 기준. 연간 비용 증가는 첫해(2.6%)에만 직접 반영</li>
+<li>2년차 이후 비용은 같은 모형으로 계산되어 구조가 같고, 원단위 변화가 서로 상쇄(사망 고통 +3.35억, 재검거 −1.53억, 사망 소득 −1.47억 원)</li>
+<li>2016년 값은 같은 모형의 부가 추계이므로 "비슷하다"를 결론으로 삼지 않음</li></ul></div>
+</div>
+<div class="foot"><span>2016년 생애비용 11.95억 원(2025년 가격), 2025년 12.28억 원</span><span class="pg"></span></div>
+</section>
+
+<!-- 9 재활 현황 -->
+<section class="slide" data-t="교정 재활 현황">
+<div class="top"><div><div class="kicker">교정 재활 현황</div><h2>이수자 재복역률 31.6%, 미이수·탈락자 34.5%: 차이 2.9%p</h2></div></div>
+<div class="grid2">
+<div>
+<div class="bar" style="grid-template-columns:150px minmax(0,1fr) 70px;font-size:15px"><span>이수 2,126명</span><div class="tr" style="height:30px"><div class="fl" style="width:63.2%;background:#1240e0"></div></div><span class="v">31.6%</span></div>
+<div class="bar" style="grid-template-columns:150px minmax(0,1fr) 70px;font-size:15px"><span>미이수·탈락 116명</span><div class="tr" style="height:30px"><div class="fl" style="width:69%;background:#5d4037"></div></div><span class="v">34.5%</span></div>
+<p class="small">2019~2022년 출소자의 3년 내 재복역률. 차이의 95% 신뢰구간 −6.0~11.7%p로 통계적으로 유의하지 않음</p>
+<table class="t" style="margin-top:12px"><tr><th>2025년 운영</th><th style="text-align:right">개시</th><th style="text-align:right">이수</th><th style="text-align:right">탈락</th></tr>
+<tr><td>기본(40시간)</td><td class="n">1,283</td><td class="n">1,237</td><td class="n">46</td></tr><tr><td>집중(80시간)</td><td class="n">163</td><td class="n">160</td><td class="n">3</td></tr>
+<tr><td>심화</td><td class="n">44</td><td class="n">40</td><td class="n">4</td></tr><tr><td>회복이음(160시간)</td><td class="n">109</td><td class="n">108</td><td class="n">1</td></tr>
+<tr><td><b>합계</b></td><td class="n"><b>1,599</b></td><td class="n"><b>1,545</b></td><td class="n"><b>54</b></td></tr></table></div>
+<div class="card"><div class="small">이수자 1인당 증분비용</div><div class="big">635만 원</div>
+<div class="stack" style="margin-top:12px"><div style="flex-grow:498.2;background:#5d4037">프로그램 498만</div><div style="flex-grow:53.4;background:#8d6e63">53만</div><div style="flex-grow:83.6;background:#a1887f">84만</div></div>
+<div class="small">프로그램 · 치료개입 · 출소 후 관리</div>
+<ul class="pts" style="font-size:15px;margin-top:14px"><li>비교 집단이 116명으로 작아 약 12%p 이상 차이여야 유의</li><li>고강도 과정에 고위험자 배정 가능성(기본 28.3%, 집중 41.2%)</li><li>국적 구분 자료 없음: 외국인 영향 미점검</li></ul></div>
+</div>
+<div class="foot"><span>자료: 교정본부 자료(2026. 11.); 본 연구 계산</span><span class="pg"></span></div>
+</section>
+
+<!-- 10 B/C -->
+<section class="slide" data-t="비용편익">
+<div class="top"><div><div class="kicker">교정 재활 비용편익</div><h2 id="bc-h">대표값 B/C 1.93: 재활 1원이 사회적 비용 1.93원을 줄임</h2></div></div>
+<div class="grid2" style="grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr)">
+<div>
+<div class="small" style="margin-bottom:4px">재활 효과</div><div class="row" id="bc-e"></div>
+<div class="small" style="margin:12px 0 4px">효과 지속</div><div class="row" id="bc-d"></div>
+<div class="small" style="margin:12px 0 4px">금액 기준</div><div class="row" id="bc-b"></div>
+<p class="small" style="margin-top:14px">관측 효과 8.3%는 본 연구 자료(재복역률 차 2.9%p ÷ 34.5%)이며 통계적으로 유의하지 않음. 국내 19.2%(김도균·나종민, 2025), 국외 20%(Mitchell 외, 2006)</p>
+</div>
+<div class="card">
+<div class="small" id="bc-sub"></div><div class="big" id="bc-v" style="font-size:56px">1.93</div>
+<div class="gauge"><div class="g" id="bc-g"></div><div class="one" id="bc-one"><span>B/C = 1</span></div></div>
+<table class="t"><tr><td>이수자 1인당 편익 B</td><td class="n" id="bc-B"></td></tr><tr><td>이수자 1인당 비용 C</td><td class="n">635.1만 원</td></tr>
+<tr><td>순편익 B − C</td><td class="n" id="bc-N"></td></tr><tr><td>손익분기 효과</td><td class="n" id="bc-E"></td></tr>
+<tr><td>참고: 3년 재복역만 반영</td><td class="n">0.22~0.28</td></tr></table>
+</div>
+</div>
+<div class="foot"><span>대표값: 관측 효과 · 5년 반감 · 현재가치 4.5%. 다섯 결과의 평균이 아님</span><span class="pg"></span></div>
+</section>
+
+<!-- 11 한계 -->
+<section class="slide" data-t="해석상 유의점">
+<div class="top"><div><div class="kicker">해석상 유의점</div><h2>결과는 가정에 따른 범위로 읽어야 함</h2></div></div>
+<div class="grid2">
+<ul class="pts" style="font-size:20px;line-height:1.6">
+<li>암수율 10배는 선행연구와 같은 가정. 형사사법을 포함한 전 항목에 적용하여 교도소 비용이 결산의 115%</li>
+<li>고통비용은 교통사고 원단위 준용(전체의 32.2%). 본인 고통만 반영하면 총액 −1조 5,772억 원</li>
+<li>추계분: 검찰·예방 예산 2024년 값, 2차 범죄 2008년 단가, 가족 돌봄 영국 연구 원단위</li></ul>
+<ul class="pts" style="font-size:20px;line-height:1.6">
+<li>재활 효과(2.9%p)는 통계적으로 유의하지 않음. 비교 집단 116명</li>
+<li>외국인 수형자는 강제퇴거로 국내 재복역이 관측되지 않을 수 있음. 국적 구분 자료 확보 시 비교 분석</li>
+<li>연간 비용·생애비용·비용편익은 기준이 달라 합산하지 않음</li></ul>
+</div>
+<div class="foot"><span>세부: 보고서 제3장 제6절, 제5장 제2절</span><span class="pg"></span></div>
+</section>
+
+<!-- 12 시사점 -->
+<section class="slide" data-t="정책 시사점">
+<div class="top"><div><div class="kicker">정책 시사점</div><h2>편익의 크기는 효과가 얼마나 오래 유지되는지에 달림</h2></div></div>
+<div class="grid3" style="flex:1">
+<div class="card"><div class="mid">유지</div><p style="font-size:19px;line-height:1.6">효과 3년 한정 B/C 1.04 → 5년 반감 1.93 → 평생 유지 4.78. 출소 전후 연속 처우와 지역사회 사후관리 연계 필요</p></div>
+<div class="card"><div class="mid">측정</div><p style="font-size:19px;line-height:1.6">집계 자료로는 효과 확인 곤란. 비교군을 둔 평가 설계, 교정·보호관찰·치료기관 자료의 개인 단위 연계, 국적·강제퇴거 기록 필요</p></div>
+<div class="card"><div class="mid">집중</div><p style="font-size:19px;line-height:1.6">만성화 위험군 B/C 2.67, 조기회복군 1.12. 같은 비용이면 고위험군 우선 배정 시 줄어드는 생애비용이 큼</p></div>
+</div>
+<div class="foot"><span>B/C는 관측 효과, 현재가치 4.5% 기준</span><span class="pg"></span></div>
+</section>
+
+</div></div>
+<nav id="nav" aria-label="슬라이드 넘김"><button id="prev" aria-label="이전">←</button><span class="t" id="ttl"></span><div id="prog"><div></div></div><span class="t" id="cnt"></span><button id="next" aria-label="다음">→</button></nav>
+
+<script>
+{
+const D = {"items": [{"f": "형사사법", "i": "경찰", "how": "결산 × 마약류 13,343 ÷ 전체 1,290,412", "src": "실측", "v": 138100689018.701}, {"f": "형사사법", "i": "검찰", "how": "2024 예산 × 23,022 ÷ 1,405,185 (2024 값)", "src": "추계치", "v": 19926742437.9798}, {"f": "형사사법", "i": "법원", "how": "형사소송 예산 × 13,849 ÷ 347,473", "src": "실측", "v": 9899724058.24307}, {"f": "형사사법", "i": "교도소", "how": "결산 × 7,429 ÷ 64,626 (12. 31. 전체 수용자)", "src": "실측", "v": 195331338671.742}, {"f": "형사사법", "i": "국립법무병원", "how": "결산 × 9 ÷ 823", "src": "실측", "v": 510193094.872418}, {"f": "형사사법", "i": "보호관찰소", "how": "결산 × 1,853 ÷ 41,138", "src": "실측", "v": 9050817840.60285}, {"f": "고통비용", "i": "중독자 PGS", "how": "치료보호 1,649 × 1.1억 × 물가", "src": "추계치", "v": 185199190000}, {"f": "고통비용", "i": "사망 PGS", "how": "사망 58 × 9.7억 × 물가", "src": "실측+추정", "v": 57441460000}, {"f": "생산성", "i": "조기사망", "how": "연구진 추계 값", "src": "실측", "v": 42189113160}, {"f": "생산성", "i": "이환·입원", "how": "연구진 추계 값", "src": "실측", "v": 2252245909}, {"f": "생산성", "i": "노동력 상실·미취업", "how": "연구진 추계 값", "src": "실측", "v": 37055281736}, {"f": "의료·복지", "i": "직접 의료비", "how": "청구 진료비 + 치료보호 예산", "src": "실측", "v": 4457898850}, {"f": "의료·복지", "i": "간접의료비", "how": "직접 의료비 × 38.1%", "src": "실측", "v": 1698459461.85}, {"f": "의료·복지", "i": "정신건강·복지", "how": "연구진 추계 값", "src": "실측", "v": 1700000000}, {"f": "사회적 혼란·기타", "i": "2차 범죄 피해", "how": "상해 + 성폭력", "src": "추계치", "v": 11252102122.2868}, {"f": "사회적 혼란·기타", "i": "예방·홍보·재활 예산", "how": "식약처 예산 − 정신건강·복지", "src": "추계치", "v": 36000000000}, {"f": "사회적 혼란·기타", "i": "가족 돌봄", "how": "최저 수준", "src": "추계치", "v": 863598872.182569}, {"f": "사회적 혼란·기타", "i": "약물 운전 교통사고", "how": "33건 × 1건당 비용", "src": "실측+추정", "v": 1488192507.30593}], "bc": {"누적 기준": {"3년 한정": {"sig": [116181538.5248288, 116181538.5248288, 116181538.5248288], "B": [9670563.09646922, 22306855.3967671, 23236307.7049658], "bc": [1.52268352959679, 3.51233748965, 3.65868488505208], "npv": [3319563.09646922, 15955855.3967671, 16885307.7049658], "be": [0.0546644508296191, null, null]}, "5년 반감": {"sig": [262792376.4309055, 262792376.4309055, 262792376.4309055], "B": [21873959.4070968, 50456136.2747339, 52558475.2861811], "bc": [3.44417562700312, 7.94459711458571, 8.27562199436012], "npv": [15522959.4070968, 44105136.2747339, 46207475.2861811], "be": [0.0241673677381955, null, null]}, "평생 유지": {"sig": [1196284906.892695, 1196284906.892695, 1196284906.892695], "B": [99574758.7813815, 229686702.123397, 239256981.378539], "bc": [15.678595304894, 36.1654388479605, 37.6723321332922], "npv": [93223758.7813815, 223335702.123397, 232905981.378539], "be": [0.00530893599292871, null, null]}}, "현재가치 4.5%": {"3년 한정": {"sig": [78991005.770568, 78991005.770568, 78991005.770568], "B": [6574947.40607686, 15166273.1079491, 15798201.1541136], "bc": [1.03526175501131, 2.38801340071627, 2.48751395907945], "npv": [223947.406076861, 8815273.10794906, 9447201.1541136], "be": [0.0804015588616088, null, null]}, "5년 반감": {"sig": [146943020.6376824, 146943020.6376824, 146943020.6376824], "B": [12231046.0913616, 28213059.962435, 29388604.1275365], "bc": [1.92584570797695, 4.44230199377028, 4.62739791017737], "npv": [5880046.09136162, 21862059.962435, 23037604.1275365], "be": [0.0432208346639319, null, null]}, "평생 유지": {"sig": [364996881.3842621, 364996881.3842621, 364996881.3842621], "B": [30381120.9272863, 70079401.2257783, 72999376.2768524], "bc": [4.78367515781551, 11.034388478315, 11.4941546649114], "npv": [24030120.9272863, 63728401.2257783, 66648376.2768524], "be": [0.0174001486695274, null, null]}}, "현재가치 3%": {"3년 한정": {"sig": [84193673.17868742, 84193673.17868742, 84193673.17868742], "B": [7008000.05866685, 16165185.250308, 16838734.6357375], "bc": [1.10344828509949, 2.54529763034294, 2.65135169827389], "npv": [657000.058666848, 9814185.25030799, 10487734.6357375], "be": [0.0754332215262901, null, null]}, "5년 반감": {"sig": [163383632.2432295, 163383632.2432295, 163383632.2432295], "B": [13599507.6722178, 31369657.3907001, 32676726.4486459], "bc": [2.14131753617033, 4.93932567953079, 5.14513091617791], "npv": [7248507.67221777, 25018657.3907001, 26325726.4486459], "be": [0.0388717028309498, null, null]}, "평생 유지": {"sig": [447274451.8093584, 447274451.8093584, 447274451.8093584], "B": [37229630.9945725, 85876694.7473968, 89454890.3618717], "bc": [5.8620108635762, 13.521759525649, 14.085166172551], "npv": [30878630.9945725, 79525694.7473968, 83103890.3618717], "be": [0.0141993354959317, null, null]}}, "현재가치 5%": {"3년 한정": {"sig": [77483040.79886915, 77483040.79886915, 77483040.79886915], "B": [6449429.44004508, 14876743.8333829, 15496608.1597738], "bc": [1.01549825854906, 2.34242541857706, 2.44002647768443], "npv": [98429.4400450829, 8525743.83338288, 9145608.15977383], "be": [0.0819663236563722, null, null]}, "5년 반감": {"sig": [142200436.9649111, 142200436.9649111, 142200436.9649111], "B": [11836289.2717313, 27302483.8972629, 28440087.3929822], "bc": [1.86368906813593, 4.29892676700723, 4.47804871563253], "npv": [5485289.27173129, 20951483.8972629, 22089087.3929822], "be": [0.0446623100150329, null, null]}, "평생 유지": {"sig": [343195972.4045858, 343195972.4045858, 343195972.4045858], "B": [28566486.1021218, 65893626.7016805, 68639194.4809172], "bc": [4.49795088995778, 10.3753151789766, 10.8076199781006], "npv": [22215486.1021218, 59542626.7016805, 62288194.4809172], "be": [0.0185054619245734, null, null]}}}, "life": {"모수|잔여 중독기간 중앙값(년)": [5, 16, 27], "모수|노동능력 상실 비율": [0.125, 0.1555, 0.311], "모수|회복 후 노동능력 상실 잔존": [0, 0.5, 1], "모수|초과 사망률(활동 중독, 연)": [0.007853001464128843, 0.009730893118594437, 0.01212093704245974], "모수|초과 사망률(회복 후, 연)": [0.001, 0.002, 0.003], "모수|연 재검거 확률": [0.05, 0.1, 0.15], "공통|1년차 비용(원)": [31947433.51144739, 31947433.51144739, 31947433.51144739], "공통|반복 비용(활동 중독 1년, 원)": [8926705.453265622, 8926705.453265622, 8926705.453265622], "공통|재검거 1회 형사사법(원)": [15930415.12297569, 15930415.12297569, 15930415.12297569], "공통|사망 PGS(원)": [990369999.9999999, 990369999.9999999, 990369999.9999999], "결과(원)|현재가치 3%": [211514480.7215221, 479221885.3208057, 725120971.3184786], "결과(원)|현재가치 4%": [193640060.0313468, 421271030.3231787, 630113305.97971], "결과(원)|현재가치 4.5%": [186039240.5498776, 396944314.8957095, 590453809.9618278], "결과(원)|현재가치 5%": [179162788.2392602, 375143405.9160332, 555039795.9757613], "결과(원)|누적 기준(명목 누계, 기본)": [438607517.6221677, 1228232340.404142, 1986564711.251064], "구성(4.5%, 원)|1년차": [31947433.51144739, 31947433.51144739, 31947433.51144739], "구성(4.5%, 원)|반복(고통·의료·혼란)": [43369029.44351213, 98268465.67094687, 118993386.4782365], "구성(4.5%, 원)|재검거 형사사법": [3869773.939180211, 17536788.45831509, 31852972.85898782], "구성(4.5%, 원)|노동능력 상실": [19405365.22626015, 69834424.39505354, 168715703.6015881], "구성(4.5%, 원)|초과사망(PGS)": [61939909.02906483, 133133136.8201799, 188221227.9439251], "구성(4.5%, 원)|초과사망(소득)": [25507729.40041288, 46224066.03976662, 50723085.56764285], "기대여명|일반인 잔여(년)": [46.94034142863521, 46.94034142863521, 46.94034142863521], "기대여명|중독자 잔여(년)": [42.96030693565326, 39.4209290551374, 36.68810234715491], "기대여명|활동 중독 기간(년)": [5.749779189592205, 15.5685276707016, 19.99680545395885], "연령별(B)|17세 · 674명": [463330481.4105529, 2265442680.597895, null], "연령별(B)|25세 · 6,913명": [462441792.9661977, 1751108149.236989, null], "연령별(B)|35세 · 6,986명": [428874614.2839124, 1254292267.34592, null], "연령별(B)|45세 · 3,925명": [366165993.8844193, 881044723.056239, null], "연령별(B)|55세 · 2,428명": [290021522.6999738, 604675405.6431926, null], "연령별(B)|65세 · 1,990명": [225999609.2486162, 414630707.4005167, null]}}
+;
+const CLC = {'형사사법':'#1240e0','고통비용':'#c2185b','생산성':'#2e7d32','의료·복지':'#00838f','사회적 혼란·기타':'#ef6c00'};
+const N = 23403, TOT = D.items.reduce((a, b) => a + b.v, 0);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const won = v => { const a = Math.abs(v), s = v < 0 ? '−' : '';
+  if (a >= 1e12) { const j = Math.floor(a / 1e12), o = Math.round((a - j * 1e12) / 1e7) / 10; return s + j + '조' + (o ? ' ' + o.toLocaleString('ko-KR', {minimumFractionDigits: 1, maximumFractionDigits: 1}) + '억' : '') + ' 원'; }
+  if (a >= 1e8) return s + (a / 1e8).toLocaleString('ko-KR', {minimumFractionDigits: 1, maximumFractionDigits: 1}) + '억 원';
+  if (a >= 1e4) return s + (a / 1e4).toLocaleString('ko-KR', {maximumFractionDigits: 1}) + '만 원';
+  return s + Math.round(a).toLocaleString('ko-KR') + '원'; };
+const isEst = it => it.src !== '실측';
+let lam = 10;
+
+/* ---------- 슬라이드 ---------- */
+const slides = [...document.querySelectorAll('.slide')], deck = document.getElementById('deck');
+let cur = 0;
+function fit() { const vp = document.getElementById('viewport'); const s = Math.min(vp.clientWidth / 1280, vp.clientHeight / 720) * 0.98; deck.style.transform = `scale(${s})`; }
+addEventListener('resize', fit); fit();
+function go(i) { cur = Math.max(0, Math.min(slides.length - 1, i)); slides.forEach((s, k) => s.classList.toggle('on', k === cur));
+  slides[cur].querySelectorAll('iframe[data-src]:not([src])').forEach(f => f.src = f.dataset.src);
+  document.getElementById('ttl').textContent = slides[cur].dataset.t; document.getElementById('cnt').textContent = (cur + 1) + ' / ' + slides.length;
+  document.querySelector('#prog div').style.width = ((cur + 1) / slides.length * 100) + '%';
+  try { history.replaceState(null, '', '#s' + (cur + 1)); } catch (e) {}
+  if (slides[cur].dataset.t === '1인당 생애비용') drawLife(false); }
+document.querySelectorAll('.pg').forEach((p, i) => p.textContent = (i + 2) + ' / ' + slides.length);
+document.getElementById('prev').onclick = () => go(cur - 1); document.getElementById('next').onclick = () => go(cur + 1);
+addEventListener('keydown', e => { if (e.target.tagName === 'INPUT') return; if (['ArrowRight', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); go(cur + 1); } if (['ArrowLeft', 'PageUp'].includes(e.key)) go(cur - 1); if (e.key === 'Home') go(0); if (e.key === 'End') go(slides.length - 1); });
+let tx = null; deck.addEventListener('touchstart', e => tx = e.touches[0].clientX, {passive: true});
+deck.addEventListener('touchend', e => { if (tx === null) return; const d = e.changedTouches[0].clientX - tx; if (Math.abs(d) > 60 && !e.target.closest('input,button,svg#life')) go(cur + (d < 0 ? 1 : -1)); tx = null; });
+
+/* ---------- 암수율 ---------- */
+const STEPS = [['원자료', '59개 셀', 0], ['항목 비용', '18개', 0], ['분야 소계', '5개', 0], ['단속 기준 총액', '7,544.2억', 0], ['1명당 계수', '3,223.6만', 0], ['× 실질 사용자', '', 1], ['사회적 비용', '', 1]];
+const pipe = document.getElementById('pipe');
+function drawPipe() { pipe.innerHTML = STEPS.map(([a, b, h], i) => `<div class="${h && lam !== 1 ? 'hit' : ''}"><span>${i + 1}. ${a}</span><b class="num">${b || (a === '× 실질 사용자' ? Math.round(N * lam).toLocaleString('ko-KR') + '명' : won(TOT * lam).replace(' 원', ''))}</b></div>`).join(''); }
+const ppl = document.getElementById('people');
+const glyph = (x, y, s, c, o) => `<g transform="translate(${x},${y}) scale(${s})" fill="${c}" opacity="${o}"><circle cx="5" cy="3" r="3"/><path d="M0 16 Q0 7 5 7 Q10 7 10 16z"/></g>`;
+function drawPeople() {
+  const W = ppl.clientWidth || 640, H = ppl.clientHeight || 230, total = Math.round(N * lam / 1000), arrested = Math.round(N / 1000);
+  const area = W * H, cell = Math.max(7, Math.min(26, Math.floor(Math.sqrt(area / Math.max(total, 1)) * 0.92))), cols = Math.floor(W / cell);
+  let s = ''; for (let i = 0; i < total; i++) { const x = (i % cols) * cell, y = Math.floor(i / cols) * cell * 1.15; if (y + cell > H) break;
+    s += glyph(x + 1, y + 1, cell / 17, '#1240e0', i < arrested ? 1 : 0.22); }
+  ppl.innerHTML = s + `<title>검거 ${arrested}개 · 숨은 사용자 ${total - arrested}개(1개 = 1,000명)</title>`;
+}
+function setLam(v) { lam = Math.round(v * 100) / 100; document.getElementById('lam').value = lam;
+  const lt = (lam === 1 ? '미반영' : lam.toLocaleString('ko-KR', {maximumFractionDigits: 2}) + '배');
+  document.querySelectorAll('.lam-t').forEach(e => e.textContent = lt);
+  document.getElementById('lam-v').textContent = lam.toFixed(lam % 1 ? 2 : 1) + '배';
+  document.getElementById('lam-h').textContent = lam === 1 ? '암수율 미반영: 단속된 사람만 계산' : `암수율 ${lam.toLocaleString('ko-KR', {maximumFractionDigits: 2})}배: 단속된 1명 뒤에 숨은 사용자 ${(lam - 1).toLocaleString('ko-KR', {maximumFractionDigits: 2})}명`;
+  document.getElementById('lam-sc').textContent = won(TOT * lam);
+  document.getElementById('lam-add').textContent = '+' + won(TOT * (lam - 1));
+  const d10 = TOT * (lam - 10); document.getElementById('lam-d10').textContent = Math.abs(d10) < 1e6 ? '기본값' : (d10 > 0 ? '+' : '') + won(d10);
+  document.getElementById('lam-n').textContent = Math.round(N * lam).toLocaleString('ko-KR') + '명';
+  document.getElementById('k-sc').textContent = won(TOT * lam);
+  document.getElementById('k-sc2').textContent = lam === 10 ? '암수율 10배(기본) 적용' : `암수율 ${lt} 적용 · 기본 10배는 7조 5,441.7억 원`;
+  document.getElementById('k-x').textContent = (TOT * lam / 2.2389e12).toFixed(2);
+  document.querySelectorAll('#s-lam .b[data-l]').forEach(b => b.setAttribute('aria-pressed', Math.abs(+b.dataset.l - lam) < 0.001));
+  drawPipe(); drawPeople(); drawItems(); }
+document.getElementById('lam').addEventListener('input', e => setLam(+e.target.value));
+document.querySelectorAll('#s-lam .b[data-l]').forEach(b => b.onclick = () => setLam(+b.dataset.l));
+
+/* ---------- 구성 ---------- */
+function drawItems() {
+  const max = Math.max(...D.items.map(i => i.v)) * lam;
+  document.getElementById('items').innerHTML = D.items.slice().sort((a, b) => b.v - a.v).map(it => {
+    const c = CLC[it.f]; return `<div class="bar"><span>${esc(it.i)}${isEst(it) ? ' <span class="small">(추계)</span>' : ''}</span><div class="tr"><div class="fl ${isEst(it) ? 'est' : ''}" style="width:${it.v * lam / max * 100}%;background-color:${c}"></div></div><span class="v">${won(it.v * lam)}</span></div>`; }).join('');
+  const F = {}; D.items.forEach(it => { F[it.f] = F[it.f] || {v: 0, e: 0}; F[it.f].v += it.v; if (isEst(it)) F[it.f].e += it.v; });
+  document.getElementById('fields').innerHTML = Object.entries(F).sort((a, b) => b[1].v - a[1].v).map(([f, o]) => `<div style="margin:6px 0 10px"><div class="row" style="justify-content:space-between;font-size:14px"><b>${f}</b><span class="num">${(o.v / TOT * 100).toFixed(1)}%</span></div>
+    <div style="display:flex;height:12px;border-radius:3px;overflow:hidden;background:#f3f5f9"><div style="width:${(o.v - o.e) / TOT * 100}%;background:${CLC[f]}"></div><div class="est" style="width:${o.e / TOT * 100}%;background-color:${CLC[f]}"></div></div>
+    <div class="small">${won(o.v * lam)}${o.e ? ` · 추계분 ${Math.round(o.e / o.v * 100)}%` : ''}</div></div>`).join('');
+}
+
+/* ---------- 2016 폭포 ---------- */
+{ const steps = [['2016년 박성수(2018)', 22389, 0, '#9aa3b8'], ['물가 상승(×1.217)', 4860.7, 22389, '#9aa3b8'], ['단속 인원 증가(×1.65)', 17616.2, 27249.7, '#1240e0'], ['1명당 실질 비용 증가', 25615.4, 44865.9, '#c2185b'], ['2025년 본 연구', 70481.3, 0, '#111522']];
+  const mx = 72000; document.getElementById('wf').innerHTML = steps.map(([a, v, b, c]) => `<div class="bar" style="grid-template-columns:170px minmax(0,1fr) 120px;font-size:14px;margin:12px 0"><span>${a}</span><div class="tr" style="height:30px;background:none"><div class="fl" style="left:${b / mx * 100}%;width:${v / mx * 100}%;background:${c}"></div></div><span class="v">${b ? '+' : ''}${won(v * 1e8)}</span></div>`).join('') + '<p class="small">기여율: 물가 10.1%, 단속 인원 36.6%, 1명당 실질 비용 53.3%</p>'; }
+
+/* ---------- 생애비용 ---------- */
+const L = D.life, SC = ['A 조기회복', 'B 기준', 'C 만성화'];
+const comp = [['1년차', '첫해 비용', '#1240e0'], ['반복(고통·의료·혼란)', '반복 치료·고통·혼란', '#c2185b'], ['재검거 형사사법', '재검거', '#5b6275'], ['노동능력 상실', '노동능력 상실', '#2e7d32'], ['초과사망(PGS)', '조기 사망 고통', '#6a1b9a'], ['초과사망(소득)', '조기 사망 소득', '#9c4dcc']];
+const AGES = [[17, 674, 67.3, 55.2], [25, 6913, 59.4, 49.2], [35, 6986, 49.5, 41.6], [45, 3925, 39.8, 33.9], [55, 2428, 30.5, 26.4], [65, 1990, 21.8, 19.1]];
+const ageKeys = Object.keys(L).filter(k => k.startsWith('연령별'));
+let sIdx = 1, age = null, playT = null, prog = 1;
+document.getElementById('ages').innerHTML = '<button class="b ag" data-a="" aria-pressed="true">평균</button>' + AGES.map((a, i) => `<button class="b ag" data-a="${i}">${a[0]}세</button>`).join('');
+document.querySelectorAll('.sc').forEach(b => b.onclick = () => { sIdx = +b.dataset.s; if (sIdx !== 1) age = null; drawLife(true); });
+document.querySelectorAll('.ag').forEach(b => b.onclick = () => { age = b.dataset.a === '' ? null : +b.dataset.a; if (age !== null) sIdx = 1; drawLife(true); });
+document.getElementById('play').onclick = () => drawLife(true);
+const lifeSvg = document.getElementById('life');
+function lifeParams() {
+  const gen = L['기대여명|일반인 잔여(년)'][sIdx], rem = L['기대여명|중독자 잔여(년)'][sIdx], act = L['기대여명|활동 중독 기간(년)'][sIdx];
+  if (age === null) return {start: null, gen, rem, act, pv: L['결과(원)|현재가치 4.5%'][sIdx], cum: L['결과(원)|누적 기준(명목 누계, 기본)'][sIdx]};
+  const a = AGES[age], k = ageKeys[age]; return {start: a[0], gen: a[2], rem: a[3], act: Math.min(act, a[3]), pv: L[k][0], cum: L[k][1], n: a[1]};
+}
+function renderLife(p, t) {
+  const W = lifeSvg.clientWidth || 1160, H = 250, x0 = 70, x1 = W - 40, span = Math.max(p.gen, 50), X = y => x0 + (x1 - x0) * y / span;
+  const yL = 120, now = t * p.rem, st = p.start;
+  const lbl = y => st === null ? (y === 0 ? '' : '+' + Math.round(y) + '년') : (st + Math.round(y)) + '세';
+  let s = `<g font-family="Noto Sans KR" font-size="13">`;
+  s += `<line x1="${X(0)}" y1="${yL + 34}" x2="${X(p.gen)}" y2="${yL + 34}" stroke="#9aa3b8" stroke-width="2" stroke-dasharray="5 5"/><text x="${X(p.gen)}" y="${yL + 76}" text-anchor="end" fill="#5b6275">일반인 기대 수명 ${lbl(p.gen)}</text>`;
+  s += `<rect x="${X(0)}" y="${yL - 8}" width="${X(p.act) - X(0)}" height="16" rx="3" fill="#c2185b" opacity=".85"/>`;
+  s += `<rect x="${X(p.act)}" y="${yL - 8}" width="${X(p.rem) - X(p.act)}" height="16" rx="3" fill="#2e7d32" opacity=".55"/>`;
+  s += `<rect x="${X(p.rem)}" y="${yL - 8}" width="${Math.max(X(p.gen) - X(p.rem), 0)}" height="16" rx="3" fill="#6a1b9a" opacity=".18"/>`;
+  s += `<text x="${X(0)}" y="${yL - 18}" fill="#c2185b" font-weight="700">활동 중독 ${p.act.toFixed(1)}년</text><text x="${Math.max(X(p.act) + 6, X(0) + 150)}" y="${yL - 18}" fill="#2e7d32" font-weight="700">회복 후</text>`;
+  s += `<text x="${(X(p.rem) + X(p.gen)) / 2}" y="${yL + 4}" text-anchor="middle" font-size="12" fill="#6a1b9a">잃은 ${(p.gen - p.rem).toFixed(1)}년</text>`;
+  [[0, '검거'], [p.rem, '사망']].forEach(([y, a]) => s += `<line x1="${X(y)}" y1="${yL - 30}" x2="${X(y)}" y2="${yL + 30}" stroke="#111522"/><text x="${X(y)}" y="${yL + 52}" text-anchor="middle" font-weight="700">${a} ${lbl(y)}</text>`);
+  const px = X(Math.min(now, p.rem)), alive = now < p.rem - 0.01, col = now < p.act ? '#c2185b' : '#2e7d32';
+  s += `<g transform="translate(${px - 14},${yL - 84})" opacity="${alive ? 1 : .35}">${alive ? `<circle cx="14" cy="9" r="9" fill="${col}"/><path d="M2 54 Q2 22 14 22 Q26 22 26 54z" fill="${col}"/>` : `<circle cx="14" cy="9" r="9" fill="none" stroke="#6a1b9a" stroke-width="2"/><path d="M2 54 Q2 22 14 22 Q26 22 26 54z" fill="none" stroke="#6a1b9a" stroke-width="2"/>`}</g>`;
+  const ev = now < 1 ? '검거된 해: 수사·재판·수용과 치료 비용' : now < p.act ? '활동 중독기: 재사용, 재검거, 노동능력 상실' : alive ? '회복 후: 노동능력 일부 회복, 초과 사망 위험 지속' : '조기 사망: 고통비용과 잃은 소득';
+  s += `<text x="${x0}" y="24" font-size="15" font-weight="700">${ev}</text></g>`;
+  lifeSvg.innerHTML = s;
+  // stack
+  const vals = comp.map(c => L['구성(4.5%, 원)|' + c[0]][sIdx]), tot = vals.reduce((a, b) => a + b, 0);
+  const shown = comp.map((c, i) => i === 0 ? now >= 0 : i <= 3 ? now >= Math.min(1, p.act) : !alive);
+  document.getElementById('lstack').innerHTML = comp.map((c, i) => `<div style="flex-grow:${shown[i] ? vals[i] : 0.0001};background:${c[2]}">${vals[i] / tot > .09 && shown[i] ? (vals[i] / 1e8).toFixed(2) + '억' : ''}</div>`).join('');
+  document.getElementById('lcmp').innerHTML = comp.map((c, i) => `<div class="cmp" style="opacity:${shown[i] ? 1 : .3}"><i style="background:${c[2]}"></i><span>${c[1]}</span><span class="num">${(vals[i] / 1e8).toFixed(2)}억 원 · ${(vals[i] / tot * 100).toFixed(0)}%</span></div>`).join('');
+}
+function drawLife(anim) {
+  document.querySelectorAll('.sc').forEach(b => b.setAttribute('aria-pressed', +b.dataset.s === sIdx));
+  document.querySelectorAll('.ag').forEach(b => b.setAttribute('aria-pressed', (b.dataset.a === '' ? null : +b.dataset.a) === age));
+  const p = lifeParams();
+  document.getElementById('l-cum').textContent = (p.cum / 1e8).toFixed(2) + '억 원';
+  document.getElementById('l-pv').textContent = (p.pv / 1e8).toFixed(2) + '억 원';
+  document.getElementById('l-sub').textContent = SC[sIdx] + (age === null ? ' · 연령 가중 평균' : ` · ${p.start}세 검거(${p.n.toLocaleString('ko-KR')}명 대표)`);
+  document.getElementById('l-life').textContent = `잔여 기대여명 ${p.gen.toFixed(1)}년 → ${p.rem.toFixed(1)}년(${(p.gen - p.rem).toFixed(1)}년 단축)`;
+  document.getElementById('life-h').textContent = `검거된 중독자 1명이 평생 남기는 사회적 비용 ${(p.cum / 1e8).toFixed(2)}억 원`;
+  document.getElementById('l-ch').textContent = age === null ? '생애비용 구성(현재가치 4.5%) · 타임라인을 따라 쌓임' : '생애비용 구성: 나이별 구성은 산출하지 않아 B 연령 가중 평균(3.97억 원) 구성을 표시';
+  clearInterval(playT);
+  if (!anim || matchMedia('(prefers-reduced-motion: reduce)').matches) { prog = 1; renderLife(p, 1); return; }
+  prog = 0; playT = setInterval(() => { prog = Math.min(1.02, prog + 0.006); renderLife(p, Math.min(prog, 1)); if (prog >= 1.02) clearInterval(playT); }, 30);
+}
+
+/* ---------- B/C ---------- */
+const BE = [['관측 8.3%', 0], ['국내 19.2%', 1], ['국외 20%', 2]], BD = ['3년 한정', '5년 반감', '평생 유지'], BB = [['현재가치 4.5%', '현재가치 4.5%'], ['현재가치 3%', '현재가치 3%'], ['현재가치 5%', '현재가치 5%'], ['누적 기준', '누적 기준']];
+let be = 0, bd = 1, bb = 0;
+const mk = (id, arr, get, set) => { const el = document.getElementById(id); el.innerHTML = arr.map((a, i) => `<button class="b" data-i="${i}">${Array.isArray(a) ? a[0] : a}</button>`).join('');
+  el.onclick = e => { const b = e.target.closest('button'); if (b) { set(+b.dataset.i); drawBC(); } }; };
+mk('bc-e', BE, () => be, v => be = v); mk('bc-d', BD, () => bd, v => bd = v); mk('bc-b', BB, () => bb, v => bb = v);
+function drawBC() {
+  [['bc-e', be], ['bc-d', bd], ['bc-b', bb]].forEach(([id, v]) => document.querySelectorAll('#' + id + ' button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.i === v)));
+  const r = D.bc[BB[bb][1]][BD[bd]], v = r.bc[be], rep = be === 0 && bd === 1 && bb === 0;
+  document.getElementById('bc-v').textContent = v.toFixed(2);
+  document.getElementById('bc-v').style.color = v >= 1 ? 'var(--blue)' : 'var(--warn)';
+  document.getElementById('bc-sub').textContent = `${BE[be][0]} · ${BD[bd]} · ${BB[bb][0]}${rep ? ' · 대표값' : ''}`;
+  const mx = 12; document.getElementById('bc-g').style.width = Math.min(v / mx, 1) * 100 + '%'; document.getElementById('bc-one').style.left = (1 / mx * 100) + '%';
+  document.getElementById('bc-B').textContent = won(r.B[be]); document.getElementById('bc-N').textContent = won(r.npv[be]);
+  document.getElementById('bc-E').textContent = (r.be[0] * 100).toFixed(1) + '%';
+  document.getElementById('bc-h').textContent = rep ? '대표값 B/C 1.93: 재활 1원이 사회적 비용 1.93원을 줄임' : `이 가정에서 B/C ${v.toFixed(2)}: 재활 1원당 ${v.toFixed(2)}원 절감`;
+}
+
+setLam(10); drawBC();
+const h = (location.hash.match(/^#s(\d+)$/) || [])[1]; go(h ? +h - 1 : 0);
+addEventListener('hashchange', () => { const m = (location.hash.match(/^#s(\d+)$/) || [])[1]; if (m && +m - 1 !== cur) go(+m - 1); });
+new ResizeObserver(() => { drawPeople(); if (slides[cur].dataset.t === '1인당 생애비용') renderLife(lifeParams(), Math.min(prog, 1)); }).observe(deck);
+}
+</script>
+</body>
+</html>

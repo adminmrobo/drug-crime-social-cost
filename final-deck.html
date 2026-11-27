@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="noindex,nofollow">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>마약류 사회적 비용 최종 발표</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
@@ -93,7 +93,7 @@ table.t td.n{text-align:right;font-family:"Space Grotesk","Noto Sans KR";white-s
 <ul class="pts" style="margin-top:18px;font-size:17px;line-height:1.7"><li>형사사법 49.6%, 고통비용 32.3%</li><li>2016년 2조 2,389억 원의 <span id="k-x">3.36</span>배</li><li>단속 인원 기준(암수율 미반영) 7,518.5억 원</li></ul></div>
 <div class="card"><div class="small">중독자 1명의 생애 사회적 비용</div><div class="big">12.28억 원</div><div class="small" style="margin-top:8px">누적 기준, 현재가치(4.5%) 3.97억 원</div>
 <ul class="pts" style="margin-top:18px;font-size:17px;line-height:1.7"><li>기대여명 7.5년 단축(기준 시나리오)</li><li>범위 4.38억~19.86억 원(조기회복~만성화)</li><li>암수율과 무관한 1인 기준 지표</li></ul></div>
-<div class="card"><div class="small">교정 재활 비용편익(대표값)</div><div class="big">B/C 1.93</div><div class="small" style="margin-top:8px">생애가치 기준, 관측 효과, 현재가치 4.5%</div>
+<div class="card"><div class="small">교정 재활 비용편익(대표값)</div><div class="big">B/C 1.93</div><div class="small" style="margin-top:8px">생애가치 기준, 관측 효과, 현재가치 4.5%(효과 5년 반감·사망 비용도 같은 비율로 감소 가정, 사망 감소분 제외 시 약 1.0)</div>
 <ul class="pts" style="margin-top:18px;font-size:17px;line-height:1.7"><li>이수자 1인당 비용 635만 원</li><li>3년 재복역만 보면 0.22~0.28</li><li>손익분기 효과 4.3%</li></ul></div>
 </div>
 <div class="foot"><span>자료: 2025년 기준 집계(2026. 11.), 본 연구 계산</span><span class="pg"></span></div>
@@ -143,7 +143,7 @@ table.t td.n{text-align:right;font-family:"Space Grotesk","Noto Sans KR";white-s
 <div class="row" style="justify-content:space-between"><label for="lam" style="font-weight:700">암수율 <span class="num" id="lam-v" style="color:var(--blue);font-size:22px">10.0배</span></label>
 <div class="row"><button class="b" data-l="1">미반영(1배)</button><button class="b" data-l="10">기본 10배</button><button class="b" data-l="28.57">28.57배</button></div></div>
 <input type="range" id="lam" min="1" max="30" step="0.01" value="10" aria-label="암수율">
-<div class="small" style="margin:-4px 0 8px">암수율은 단속되지 않은 실제 사용자까지 포함하기 위한 배수이다. 실질 사용자 = 검거 사범 23,403명 × 암수율.</div>
+<div class="small" style="margin:-4px 0 8px">암수율은 단속되지 않은 실제 사용자까지 포함하기 위한 배수이다. 실질 사용자 = 검거 사범 23,403명 × 암수율. 암수율 반영 금액은 1명당 평균 비용 × 실질 사용자로 산정한 규모의 추정치이다.</div>
 <svg id="people" role="img" aria-label="검거 사범과 숨은 사용자 인물 격자"></svg>
 <div class="legend"><span><i style="background:#1240e0"></i>검거 사범(1명 = 1,000명)</span><span><i style="background:#1240e0;opacity:.22"></i>숨은 사용자(암수)</span></div>
 </div>
@@ -155,7 +155,8 @@ table.t td.n{text-align:right;font-family:"Space Grotesk","Noto Sans KR";white-s
 <table class="t" style="margin-top:8px"><tr><td>단속 인원 기준(미반영)</td><td class="n">7,518.5억 원</td></tr>
 <tr><td>암수 반영으로 늘어난 몫</td><td class="n" id="lam-add" style="color:var(--blue)"></td></tr>
 <tr><td>기본(10배) 대비 증감</td><td class="n" id="lam-d10"></td></tr>
-<tr><td>실질 사용자 수</td><td class="n" id="lam-n"></td></tr></table>
+<tr><td>실질 사용자 수</td><td class="n" id="lam-n"></td></tr>
+<tr><td>근거가 분명한 항목에만 10배 적용</td><td class="n">2조 7,599.2억 원</td></tr></table>
 <div class="small" style="margin-top:8px">영향 없음: 1명당 계수, 1인당 생애비용, SC<sub>r</sub>, 재활 B/C</div>
 </div>
 </div>
@@ -250,7 +251,7 @@ table.t td.n{text-align:right;font-family:"Space Grotesk","Noto Sans KR";white-s
 
 <!-- 10 B/C -->
 <section class="slide" data-t="비용편익">
-<div class="top"><div><div class="kicker">교정 재활 비용편익</div><h2 id="bc-h">대표값 B/C 1.93: 재활 1원이 사회적 비용 1.93원을 줄임</h2></div></div>
+<div class="top"><div><div class="kicker">교정 재활 비용편익</div><h2 id="bc-h">대표값 B/C 1.93: 효과 지속 가정에서 재활 1원당 1.93원 절감(사망 감소분 제외 시 약 1.0)</h2></div></div>
 <div class="grid2" style="grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr)">
 <div>
 <div class="small" style="margin-bottom:4px">재활 효과</div><div class="row" id="bc-e"></div>
@@ -445,7 +446,7 @@ function drawBC() {
   const mx = 12; document.getElementById('bc-g').style.width = Math.min(v / mx, 1) * 100 + '%'; document.getElementById('bc-one').style.left = (1 / mx * 100) + '%';
   document.getElementById('bc-B').textContent = won(r.B[be]); document.getElementById('bc-N').textContent = won(r.npv[be]);
   document.getElementById('bc-E').textContent = (r.be[0] * 100).toFixed(1) + '%';
-  document.getElementById('bc-h').textContent = rep ? '대표값 B/C 1.93: 재활 1원이 사회적 비용 1.93원을 줄임' : `이 가정에서 B/C ${v.toFixed(2)}: 재활 1원당 ${v.toFixed(2)}원 절감`;
+  document.getElementById('bc-h').textContent = rep ? '대표값 B/C 1.93: 효과 지속 가정에서 재활 1원당 1.93원 절감(사망 감소분 제외 시 약 1.0)' : `이 가정에서 B/C ${v.toFixed(2)}: 재활 1원당 ${v.toFixed(2)}원 절감`;
 }
 
 setLam(10); drawBC();

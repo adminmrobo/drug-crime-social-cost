@@ -117,14 +117,2876 @@ tr.click{cursor:pointer}tr.click:hover{background:var(--zone)}
 <h2 class="sec">대사표</h2>
 <p class="sub">합계가 맞는지, 옮겨 적은 값이 원래 값과 같은지 다시 계산하였다.</p>
 <div class="scroll"><table class="stack" id="rtable"><thead><tr><th>점검</th><th>엑셀 값</th><th>다시 계산한 값</th><th>차이</th><th>결과</th></tr></thead><tbody></tbody></table></div>
-<p class="note">자료: 2025년 기준 집계 엑셀(2026. 11. 19. 수령) 시트 0~7의 수식과 값. 노드 125개, 연결 151개. 생산성·정신건강 항목의 세부 산식과 생애비용 모형은 엑셀 밖 추계 파일에 있다.</p>
+<p class="note">자료: 2025년 기준 집계 엑셀(2026. 11. 19. 수령, 11. 27. 조기사망 할인율 4.5% 반영) 시트 0~7의 수식과 값. 노드 125개, 연결 151개. 생산성·정신건강 항목의 세부 산식과 생애비용 모형은 엑셀 밖 추계 파일에 있다.</p>
 </section>
 
 <script src="vendor/three.min.js"></script>
 <script src="vendor/OrbitControls.js"></script>
 <script>
 {
-const DATA = {"nodes":[{"id":"n_arrest","label":"검거 사범 2025","stage":0,"cl":"공통","value":23403,"unit":"명","src":"실측","cell":"1.입력값!C2","note":"대검찰청(2026)","flags":[]},{"id":"n_l10","label":"암수율 기본","stage":0,"cl":"공통","value":10,"unit":"배","src":"가정","cell":"1.입력값!C3","note":"박성수(2018)과 같은 10배","flags":[]},{"id":"n_l28","label":"암수율 민감도","stage":0,"cl":"공통","value":28.57,"unit":"배","src":"가정","cell":"1.입력값!C4","note":"박성수·백민석(2019)","flags":[]},{"id":"n_cpi","label":"물가 계수 2025/2024","stage":0,"cl":"공통","value":1.021,"unit":"배","src":"실측","cell":"1.입력값!C5","note":"통계청 소비자물가","flags":["shared"]},{"id":"police_b","label":"경찰 세출결산","stage":0,"cl":"형사사법","value":13355826000000,"unit":"원","src":"실측","cell":"1.입력값!C6","note":"","flags":[]},{"id":"police_t","label":"경찰 전체 검거","stage":0,"cl":"형사사법","value":1290412,"unit":"명","src":"실측","cell":"1.입력값!C7","note":"","flags":[]},{"id":"police_d","label":"경찰 마약류 검거","stage":0,"cl":"형사사법","value":13343,"unit":"명","src":"실측","cell":"1.입력값!C8","note":"","flags":[]},{"id":"police_ratio","label":"경찰 마약류 배분비율","stage":1,"cl":"형사사법","value":0.010340108430485767,"unit":"비율","src":"계산","cell":null,"note":"마약류 검거 ÷ 전체 검거","flags":[]},{"id":"police","label":"경찰","stage":2,"cl":"형사사법","value":138100689018.701,"unit":"원","src":"계산","cell":"0.총괄_2025!E2","note":"='1.입력값'!C6*'1.입력값'!C8/'1.입력값'!C7","flags":[]},{"id":"pros_b","label":"검찰 총예산(2024)","stage":0,"cl":"형사사법","value":1216260949210,"unit":"원","src":"2024 대용","cell":"1.입력값!C9","note":"","flags":[]},{"id":"pros_t","label":"검찰 전체 처리(2024)","stage":0,"cl":"형사사법","value":1405185,"unit":"명","src":"2024 대용","cell":"1.입력값!C10","note":"","flags":[]},{"id":"pros_d","label":"검찰 마약류(2024)","stage":0,"cl":"형사사법","value":23022,"unit":"명","src":"2024 대용","cell":"1.입력값!C11","note":"","flags":[]},{"id":"pros_ratio","label":"검찰 마약류 배분비율","stage":1,"cl":"형사사법","value":0.016383607852346844,"unit":"비율","src":"계산","cell":null,"note":"마약류(2024) ÷ 전체 처리(2024)","flags":[]},{"id":"pros","label":"검찰","stage":2,"cl":"형사사법","value":19926742437.9798,"unit":"원","src":"계산","cell":"0.총괄_2025!E3","note":"='1.입력값'!C9*'1.입력값'!C11/'1.입력값'!C10","flags":[]},{"id":"court_b","label":"법원 형사소송 예산","stage":0,"cl":"형사사법","value":248385213206,"unit":"원","src":"실측","cell":"1.입력값!C12","note":"","flags":[]},{"id":"court_t","label":"법원 형사공판 처리","stage":0,"cl":"형사사법","value":347473,"unit":"명","src":"실측","cell":"1.입력값!C13","note":"","flags":[]},{"id":"court_d","label":"법원 마약류 인원","stage":0,"cl":"형사사법","value":13849,"unit":"명","src":"실측","cell":"1.입력값!C14","note":"","flags":[]},{"id":"court_ratio","label":"법원 마약류 배분비율","stage":1,"cl":"형사사법","value":0.0398563341612154,"unit":"비율","src":"계산","cell":null,"note":"마약류 인원 ÷ 형사공판 처리","flags":[]},{"id":"court","label":"법원","stage":2,"cl":"형사사법","value":9899724058.24307,"unit":"원","src":"계산","cell":"0.총괄_2025!E4","note":"='1.입력값'!C12*'1.입력값'!C14/'1.입력값'!C13","flags":[]},{"id":"prison_b","label":"교도소 세출결산","stage":0,"cl":"형사사법","value":1699217000000,"unit":"원","src":"실측","cell":"1.입력값!C15","note":"","flags":[]},{"id":"prison_t","label":"교도소 전체 수용(12. 31.)","stage":0,"cl":"형사사법","value":64626,"unit":"명","src":"실측","cell":"1.입력값!C16","note":"","flags":[]},{"id":"prison_d","label":"교도소 마약류 수용(12. 31.)","stage":0,"cl":"형사사법","value":7429,"unit":"명","src":"실측","cell":"1.입력값!C17","note":"","flags":[]},{"id":"prison_ratio","label":"교도소 마약류 배분비율","stage":1,"cl":"형사사법","value":0.11495373379135332,"unit":"비율","src":"계산","cell":null,"note":"마약류 수용(12. 31.) ÷ 전체 수용(12. 31.)","flags":[]},{"id":"prison","label":"교도소","stage":2,"cl":"형사사법","value":195331338671.742,"unit":"원","src":"계산","cell":"0.총괄_2025!E5","note":"='1.입력값'!C15*'1.입력값'!C17/'1.입력값'!C16","flags":[]},{"id":"hosp_b","label":"국립법무병원 세출결산","stage":0,"cl":"형사사법","value":46654324120,"unit":"원","src":"실측","cell":"1.입력값!C18","note":"","flags":[]},{"id":"hosp_t","label":"국립법무병원 전체 인원","stage":0,"cl":"형사사법","value":823,"unit":"명","src":"실측","cell":"1.입력값!C19","note":"","flags":[]},{"id":"hosp_d","label":"국립법무병원 마약류 인원","stage":0,"cl":"형사사법","value":9,"unit":"명","src":"실측","cell":"1.입력값!C20","note":"","flags":[]},{"id":"hosp_ratio","label":"국립법무병원 마약류 배분비율","stage":1,"cl":"형사사법","value":0.010935601458080195,"unit":"비율","src":"계산","cell":null,"note":"마약류 인원 ÷ 전체 인원","flags":[]},{"id":"hosp","label":"국립법무병원","stage":2,"cl":"형사사법","value":510193094.872418,"unit":"원","src":"계산","cell":"0.총괄_2025!E6","note":"='1.입력값'!C18*'1.입력값'!C20/'1.입력값'!C19","flags":[]},{"id":"prob_b","label":"보호관찰소 세출결산","stage":0,"cl":"형사사법","value":200934994240,"unit":"원","src":"실측","cell":"1.입력값!C21","note":"","flags":[]},{"id":"prob_t","label":"보호관찰소 총 접수","stage":0,"cl":"형사사법","value":41138,"unit":"명","src":"실측","cell":"1.입력값!C22","note":"","flags":[]},{"id":"prob_d","label":"보호관찰소 마약류 접수","stage":0,"cl":"형사사법","value":1853,"unit":"명","src":"실측","cell":"1.입력값!C23","note":"","flags":[]},{"id":"prob_ratio","label":"보호관찰소 마약류 배분비율","stage":1,"cl":"형사사법","value":0.045043512081287373,"unit":"비율","src":"계산","cell":null,"note":"마약류 접수 ÷ 총 접수","flags":[]},{"id":"prob","label":"보호관찰소","stage":2,"cl":"형사사법","value":9050817840.60285,"unit":"원","src":"계산","cell":"0.총괄_2025!E7","note":"='1.입력값'!C21*'1.입력값'!C23/'1.입력값'!C22","flags":[]},{"id":"pros_b25","label":"검찰 2025 결산(미사용)","stage":0,"cl":"형사사법","value":1287948927480,"unit":"원","src":"실측","cell":"1.입력값!F9 주석","note":"2025 처리 인원이 없어 2024 예산·인원을 대신 사용","flags":["ref","orphan"]},{"id":"f_cj","label":"형사사법 소계","stage":3,"cl":"형사사법","value":372819505122.141,"unit":"원","src":"계산","cell":"0.총괄_2025!E20","note":"","flags":[]},{"id":"tx_n","label":"치료보호 인원 2025","stage":0,"cl":"고통비용","value":1649,"unit":"명","src":"실측","cell":"1.입력값!C24","note":"","flags":["shared"]},{"id":"pgs_add_u","label":"중독자 PGS 원단위(2024)","stage":0,"cl":"고통비용","value":110000000,"unit":"원","src":"추정·문헌","cell":"1.입력값!C25","note":"중상 PGS 2.2억 원 × 50%(연구진 가정)","flags":[]},{"id":"death_n","label":"약물중독 사망자(20~64세)","stage":0,"cl":"고통비용","value":58,"unit":"명","src":"실측","cell":"1.입력값!C26","note":"","flags":[]},{"id":"pgs_d_u","label":"사망 PGS 원단위(2024)","stage":0,"cl":"고통비용","value":970000000,"unit":"원","src":"추정·문헌","cell":"1.입력값!C27","note":"한국교통연구원(2025) 교통사고 원단위 준용","flags":[]},{"id":"pgs_add_u25","label":"중독자 PGS 원단위 × 물가","stage":1,"cl":"고통비용","value":112309999.99999999,"unit":"원","src":"계산","cell":null,"note":"","flags":[]},{"id":"pgs_d_u25","label":"사망 PGS 원단위 × 물가","stage":1,"cl":"고통비용","value":990369999.9999999,"unit":"원","src":"계산","cell":null,"note":"","flags":[]},{"id":"pgs_add","label":"중독자 PGS","stage":2,"cl":"고통비용","value":185199190000,"unit":"원","src":"계산","cell":"0.총괄_2025!E8","note":"","flags":[]},{"id":"pgs_d","label":"사망 PGS","stage":2,"cl":"고통비용","value":57441460000,"unit":"원","src":"계산","cell":"0.총괄_2025!E9","note":"","flags":[]},{"id":"f_pgs","label":"고통비용 소계","stage":3,"cl":"고통비용","value":242640650000,"unit":"원","src":"계산","cell":"0.총괄_2025!E21","note":"","flags":[]},{"id":"early_in","label":"조기사망 손실(연구진 추계)","stage":0,"cl":"생산성","value":42189113160,"unit":"원","src":"엑셀 밖 근거","cell":"1.입력값!C28","note":"세부 산식(임금·취업률·손실일수)은 별도 추계 파일에 있음","flags":["nobase"]},{"id":"early","label":"조기사망","stage":2,"cl":"생산성","value":42189113160,"unit":"원","src":"계산","cell":"0.총괄_2025!E10","note":"","flags":[]},{"id":"morb_in","label":"이환·입원 손실(연구진 추계)","stage":0,"cl":"생산성","value":2252245909,"unit":"원","src":"엑셀 밖 근거","cell":"1.입력값!C29","note":"세부 산식(임금·취업률·손실일수)은 별도 추계 파일에 있음","flags":["nobase"]},{"id":"morb","label":"이환·입원","stage":2,"cl":"생산성","value":2252245909,"unit":"원","src":"계산","cell":"0.총괄_2025!E11","note":"","flags":[]},{"id":"unemp_in","label":"노동력 상실·미취업 손실(연구진 추계)","stage":0,"cl":"생산성","value":37055281736,"unit":"원","src":"엑셀 밖 근거","cell":"1.입력값!C30","note":"세부 산식(임금·취업률·손실일수)은 별도 추계 파일에 있음","flags":["nobase"]},{"id":"unemp","label":"노동력 상실·미취업","stage":2,"cl":"생산성","value":37055281736,"unit":"원","src":"계산","cell":"0.총괄_2025!E12","note":"","flags":[]},{"id":"f_prod","label":"생산성 소계","stage":3,"cl":"생산성","value":81496640805,"unit":"원","src":"계산","cell":"0.총괄_2025!E22","note":"","flags":[]},{"id":"claim","label":"청구 진료비","stage":0,"cl":"의료·복지","value":3017898850,"unit":"원","src":"실측","cell":"1.입력값!C31","note":"","flags":["shared"]},{"id":"tx_budget","label":"치료보호 지원 예산","stage":0,"cl":"의료·복지","value":1440000000,"unit":"원","src":"실측","cell":"1.입력값!C32","note":"","flags":["shared"]},{"id":"ind_rate","label":"간접의료비 비율","stage":0,"cl":"의료·복지","value":0.381,"unit":"비율","src":"추정·문헌","cell":"1.입력값!C33","note":"박성수(2018) 38.1%","flags":[]},{"id":"mh_in","label":"정신건강·복지 지원(연구진 추계)","stage":0,"cl":"의료·복지","value":1700000000,"unit":"원","src":"엑셀 밖 근거","cell":"1.입력값!C34","note":"세부 내역은 별도 추계 파일","flags":["nobase","shared"]},{"id":"dmed","label":"직접 의료비","stage":2,"cl":"의료·복지","value":4457898850,"unit":"원","src":"계산","cell":"0.총괄_2025!E13","note":"","flags":[]},{"id":"imed","label":"간접의료비","stage":2,"cl":"의료·복지","value":1698459461.85,"unit":"원","src":"계산","cell":"0.총괄_2025!E14","note":"","flags":[]},{"id":"mh","label":"정신건강·복지","stage":2,"cl":"의료·복지","value":1700000000,"unit":"원","src":"계산","cell":"0.총괄_2025!E15","note":"","flags":[]},{"id":"f_med","label":"의료·복지 소계","stage":3,"cl":"의료·복지","value":7856358311.85,"unit":"원","src":"계산","cell":"0.총괄_2025!E23","note":"","flags":[]},{"id":"as_n","label":"상해 연평균 인원(2021~2024)","stage":0,"cl":"사회적 혼란·기타","value":323,"unit":"명","src":"2024 대용","cell":"2.사회적 혼란·기타!F2 수식 안","note":"(40,679 − 39,387) ÷ 4. 입력값 시트에 없음","flags":["hard"]},{"id":"sx_n","label":"성폭력 연평균 인원(2021~2024)","stage":0,"cl":"사회적 혼란·기타","value":477.25,"unit":"명","src":"2024 대용","cell":"2.사회적 혼란·기타!F3 수식 안","note":"(23,613 − 21,704) ÷ 4. 입력값 시트에 없음","flags":["hard"]},{"id":"attr","label":"마약 상태 귀속 비율","stage":0,"cl":"사회적 혼란·기타","value":0.25,"unit":"비율","src":"가정","cell":"2.사회적 혼란·기타!F2·F3 수식 안","note":"연구진 가정","flags":["hard"]},{"id":"as_u","label":"상해 1건당 단가(2008)","stage":0,"cl":"사회적 혼란·기타","value":22066382,"unit":"원","src":"추정·문헌","cell":"2.사회적 혼란·기타!F2 수식 안","note":"박경래 외(2010)","flags":["hard"]},{"id":"sx_u","label":"성폭력 1건당 단가(2008)","stage":0,"cl":"사회적 혼란·기타","value":50985038.00000001,"unit":"원","src":"추정·문헌","cell":"2.사회적 혼란·기타!F3 수식 안","note":"강간 20% × 2.17억 + 추행 80% × 943만 원","flags":["hard"]},{"id":"cpi08","label":"물가 환산 2008→2025","stage":0,"cl":"사회적 혼란·기타","value":1.4306527607361963,"unit":"배","src":"실측","cell":"2.사회적 혼란·기타 수식 안","note":"114.2 × 1.021 ÷ 81.5. 물가 계수 1.021이 입력값 시트와 연결되지 않음","flags":["hard"]},{"id":"as","label":"2차 범죄: 상해","stage":1,"cl":"사회적 혼란·기타","value":2549223423.96658,"unit":"원","src":"계산","cell":"2.사회적 혼란·기타!F2","note":"","flags":[]},{"id":"sx","label":"2차 범죄: 성폭력","stage":1,"cl":"사회적 혼란·기타","value":8702878698.32027,"unit":"원","src":"계산","cell":"2.사회적 혼란·기타!F3","note":"","flags":[]},{"id":"crime2","label":"2차 범죄 피해","stage":2,"cl":"사회적 혼란·기타","value":11252102122.2868,"unit":"원","src":"계산","cell":"0.총괄_2025!E16","note":"","flags":[]},{"id":"murder","label":"마약 상태 살인(합계 제외)","stage":1,"cl":"사회적 혼란·기타","value":404188320196.365,"unit":"원","src":"추정·문헌","cell":"2.사회적 혼란·기타!F9","note":"연 65명 × 25% × 173.2억 원. 합계에서 제외","flags":["ref","orphan"]},{"id":"mfds","label":"식약처 마약류 예산(2024)","stage":0,"cl":"사회적 혼란·기타","value":37700000000,"unit":"원","src":"2024 대용","cell":"2.사회적 혼란·기타!F4 수식 안","note":"2025 예산 미확인","flags":["hard"]},{"id":"prev","label":"예방·홍보·재활 예산","stage":2,"cl":"사회적 혼란·기타","value":36000000000,"unit":"원","src":"계산","cell":"0.총괄_2025!E17","note":"377억 − 17억. 17억이 입력값 C34와 연결되지 않음","flags":["hard"]},{"id":"fam_k","label":"동거 가족 수(0.64명)","stage":0,"cl":"사회적 혼란·기타","value":0.6389342083138295,"unit":"명","src":"추정·문헌","cell":"2.사회적 혼란·기타!F5 수식 안","note":"140,593 ÷ 220,043","flags":["hard"]},{"id":"fam_u","label":"가족 1인당 의료비 £450(2008)","stage":0,"cl":"사회적 혼란·기타","value":450,"unit":"파운드","src":"추정·문헌","cell":"2.사회적 혼란·기타!F5 수식 안","note":"Copello, Templeton & Powell(2010). 환율·물가 환산 × 1.27 × 847.5 ÷ 0.689 × 1.166","flags":["hard"]},{"id":"family","label":"가족 돌봄","stage":2,"cl":"사회적 혼란·기타","value":863598872.182569,"unit":"원","src":"계산","cell":"0.총괄_2025!E18","note":"치료보호 1,649명을 수식에 직접 적음(입력값 C24와 연결 없음)","flags":["hard"]},{"id":"dui_n","label":"마약류 운전 사고 2025","stage":0,"cl":"사회적 혼란·기타","value":33,"unit":"건","src":"실측","cell":"2.사회적 혼란·기타!F6 수식 안","note":"경찰청(2026)","flags":["hard"]},{"id":"dui_u","label":"교통사고 1건당 평균 비용(2023)","stage":0,"cl":"사회적 혼란·기타","value":43163586.395439915,"unit":"원","src":"추정·문헌","cell":"2.사회적 혼란·기타!F6 수식 안","note":"한국교통연구원(2025): 54조 595억 원 ÷ 1,252,433건","flags":["hard"]},{"id":"dui","label":"약물 운전 교통사고","stage":2,"cl":"사회적 혼란·기타","value":1488192507.30593,"unit":"원","src":"계산","cell":"0.총괄_2025!E19","note":"","flags":[]},{"id":"fear","label":"범죄 공포·방어 행동","stage":2,"cl":"사회적 혼란·기타","value":0,"unit":"원","src":"가정","cell":"2.사회적 혼란·기타!F7","note":"범죄 1건당 단가에 포함되어 0원(박경래 외, 2010; Cohen et al., 2004)","flags":[]},{"id":"f_soc","label":"사회적 혼란·기타 소계","stage":3,"cl":"사회적 혼란·기타","value":49603893501.7753,"unit":"원","src":"계산","cell":"0.총괄_2025!E24","note":"","flags":[]},{"id":"total","label":"사회적 비용(암수율 미반영)","stage":4,"cl":"총괄","value":754417047740.767,"unit":"원","src":"계산","cell":"0.총괄_2025!E25","note":"","flags":[]},{"id":"per","label":"검거 사범 1명당 비용","stage":4,"cl":"총괄","value":32235911.96602,"unit":"원","src":"계산","cell":"0.총괄_2025!G25","note":"","flags":[]},{"id":"lam10","label":"사회적 비용(암수율 10배)","stage":5,"cl":"총괄","value":7544170477407.66,"unit":"원","src":"계산","cell":"0.총괄_2025!H25","note":"","flags":[]},{"id":"lam28","label":"사회적 비용(암수율 28.57배)","stage":5,"cl":"총괄","value":21553695053953.7,"unit":"원","src":"계산","cell":"0.총괄_2025!I25","note":"","flags":[]},{"id":"lp_dur","label":"잔여 중독기간 중앙값(B)","stage":0,"cl":"생애비용","value":16,"unit":"년","src":"추정·문헌","cell":"4.1인당 생애비용(별지 2)!D2","note":"Dennis et al.(2005) 첫 치료~단약 중앙값 9년, 첫 사용~단약 27년. B는 A(5년)와 C(27년)의 중간값 16년","flags":[]},{"id":"lp_lab","label":"노동능력 상실 비율(B)","stage":0,"cl":"생애비용","value":0.1555,"unit":"비율","src":"추정·문헌","cell":"4.1인당 생애비용(별지 2)!D3","note":"2025 범죄백서 무직 31.1%; B는 × 50%(박성수, 2018); A는 25% × 50%","flags":[]},{"id":"lp_mort","label":"초과 사망률(활동, B)","stage":0,"cl":"생애비용","value":0.009730893118594437,"unit":"비율","src":"추정·문헌","cell":"4.1인당 생애비용(별지 2)!D5","note":"Stockings et al.(2019) 조사망률 0.92~1.42% × (1 − 1/6.83)","flags":[]},{"id":"lp_rearr","label":"연 재검거 확률(B)","stage":0,"cl":"생애비용","value":0.1,"unit":"비율","src":"가정","cell":"4.1인당 생애비용(별지 2)!D7","note":"재범률 34.5%(서울신문, 2025. 6. 27.); 11. 9. 별지 10%","flags":[]},{"id":"lp_life","label":"생명표 기대여명(Gompertz)","stage":0,"cl":"생애비용","value":46.94034142863521,"unit":"년","src":"실측","cell":"4.1인당 생애비용(별지 2)!C24","note":"통계청(2025. 12. 3.) 2024년 생명표. 보도 자료에서 옮김","flags":[]},{"id":"l_first","label":"1년차 비용","stage":1,"cl":"생애비용","value":31947433.51144739,"unit":"원","src":"계산","cell":"4.1인당 생애비용(별지 2)!D8","note":"값만 적힘(수식 없음). 2차 범죄 하한 45.0억 원 기준","flags":["mismatch"]},{"id":"l_rep","label":"반복 비용(활동 중독 1년)","stage":1,"cl":"생애비용","value":8926705.453265622,"unit":"원","src":"계산","cell":"4.1인당 생애비용(별지 2)!D9","note":"값만 적힘. 2차 범죄 전체 112.5억 원 기준","flags":["mismatch"]},{"id":"l_rearr","label":"재검거 1회 형사사법","stage":1,"cl":"생애비용","value":15930415.12297569,"unit":"원","src":"계산","cell":"4.1인당 생애비용(별지 2)!D10","note":"값만 적힘. 형사사법 1명당과 같음","flags":[]},{"id":"l_dpgs","label":"사망 PGS(2025)","stage":1,"cl":"생애비용","value":990369999.9999999,"unit":"원","src":"계산","cell":"4.1인당 생애비용(별지 2)!D11","note":"값만 적힘","flags":[]},{"id":"life_pv","label":"생애비용 B(현재가치 4.5%)","stage":4,"cl":"생애비용","value":396944314.8957095,"unit":"원","src":"엑셀 밖 근거","cell":"4.1인당 생애비용(별지 2)!D15","note":"연령별·연도별 모형 계산은 엑셀 밖에서 하고 결과만 적음","flags":["nobase"]},{"id":"life_cum","label":"생애비용 B(누적 기준)","stage":5,"cl":"생애비용","value":1228232340.404142,"unit":"원","src":"엑셀 밖 근거","cell":"4.1인당 생애비용(별지 2)!D17","note":"대표값. 연간 사회적 비용과 더하지 않음","flags":["nobase"]},{"id":"r_budget","label":"재활 예산 + 전담인력 인건비","stage":0,"cl":"재활 비용편익","value":7697000000,"unit":"원","src":"엑셀 밖 근거","cell":"6.교정 재활 비용편익!C23","note":"59.99억(집행액 간주) + 16.98억(정원 × 봉급표 × 1.6 × 투입비율 추정). 합계만 값으로 적음","flags":["nobase"]},{"id":"r_comp","label":"2025 이수 인원","stage":0,"cl":"재활 비용편익","value":1545,"unit":"명","src":"실측","cell":"6.교정 재활 비용편익!C24 수식 안","note":"교정본부 자료(2026. 11.)","flags":["hard"]},{"id":"r_out_cost","label":"중독 외래 진료비·인원","stage":0,"cl":"재활 비용편익","value":979000000,"unit":"원","src":"추계치","cell":"6.교정 재활 비용편익!C33 수식 안","note":"9.79억 원 ÷ 1,835명. 의료·복지 추계값을 옮겨 적음","flags":["hard"]},{"id":"uc06","label":"UC-06 프로그램 원가","stage":1,"cl":"재활 비용편익","value":4981877.022653721,"unit":"원","src":"계산","cell":"6.교정 재활 비용편익!C24 일부","note":"","flags":[]},{"id":"uc10","label":"UC-10 치료개입","stage":1,"cl":"재활 비용편익","value":533514.986376022,"unit":"원","src":"계산","cell":"6.교정 재활 비용편익!C33","note":"","flags":[]},{"id":"uc12","label":"UC-12 사후관리","stage":1,"cl":"재활 비용편익","value":835652.171389939,"unit":"원","src":"계산","cell":"6.교정 재활 비용편익!C34","note":"14.4억 원 ÷ 1,649명 ÷ 1.045. 입력값 C24·C32와 연결 없음","flags":["hard"]},{"id":"dC","label":"ΔC 증분비용(이수자 1인)","stage":2,"cl":"재활 비용편익","value":6351044.18041968,"unit":"원","src":"계산","cell":"6.교정 재활 비용편익!C24","note":"","flags":[]},{"id":"c_n1","label":"이수 출소·재복역(2019~2022)","stage":0,"cl":"재활 비용편익","value":2126,"unit":"명","src":"실측","cell":"6.교정 재활 비용편익!C14·C15","note":"2,126명 중 672명","flags":[]},{"id":"c_n0","label":"미이수·탈락 출소·재복역","stage":0,"cl":"재활 비용편익","value":116,"unit":"명","src":"실측","cell":"6.교정 재활 비용편익!C16·C17","note":"116명 중 40명","flags":[]},{"id":"c_all","label":"전체 출소·재복역(2019~2022)","stage":0,"cl":"재활 비용편익","value":5977,"unit":"명","src":"실측","cell":"6.교정 재활 비용편익!C10·C11","note":"5,977명 중 1,855명(31.0%). 현황 서술용, 계산에 쓰이지 않음","flags":["ref","orphan"]},{"id":"c_stock","label":"연말 기결·미결(2024·2025)","stage":0,"cl":"재활 비용편익","value":4188,"unit":"명","src":"실측","cell":"6.교정 재활 비용편익!C2·C3·C4","note":"기결 3,477·4,188명, 미결 3,241명. 교도소 기결·미결 배분과 현황 서술용","flags":["ref","orphan"]},{"id":"r1","label":"r1 이수 재복역률","stage":1,"cl":"재활 비용편익","value":0.316086547507056,"unit":"비율","src":"계산","cell":"6.교정 재활 비용편익!C18","note":"","flags":[]},{"id":"r0","label":"r0 미이수·탈락 재복역률","stage":1,"cl":"재활 비용편익","value":0.344827586206897,"unit":"비율","src":"계산","cell":"6.교정 재활 비용편익!C19","note":"","flags":[]},{"id":"dr","label":"재복역률 차 r0 − r1","stage":2,"cl":"재활 비용편익","value":0.0287410386998411,"unit":"비율","src":"계산","cell":"6.교정 재활 비용편익!C20","note":"95% CI −6.0~+11.7%p, 유의하지 않음","flags":[]},{"id":"D","label":"할인계수 D(3년 시점 분포)","stage":1,"cl":"재활 비용편익","value":0.944333280731115,"unit":"계수","src":"엑셀 밖 근거","cell":"6.교정 재활 비용편익!C13","note":"1년 내 37.8%, 1~2년 43.1%, 2~3년 19.1%로 계산한 값만 적음","flags":["nobase"]},{"id":"scr_in","label":"평균 실형·복역 비율·UC-01·검찰 단계","stage":0,"cl":"재활 비용편익","value":50357000,"unit":"원","src":"엑셀 밖 근거","cell":"6.교정 재활 비용편익!C25","note":"2.45년 × 85% × 2,378.4만 원 + 86.6만 원. 근거 셀 없이 결과만 적음(곱하면 5,039.6만 원)","flags":["nobase"]},{"id":"scr_lo","label":"SCᵣ 하한(형사사법분)","stage":2,"cl":"재활 비용편익","value":50357000,"unit":"원","src":"계산","cell":"6.교정 재활 비용편익!C25","note":"","flags":["mismatch"]},{"id":"scr_hi","label":"SCᵣ 확장","stage":2,"cl":"재활 비용편익","value":66663000,"unit":"원","src":"계산","cell":"6.교정 재활 비용편익!C26","note":"(3,223.6 − 1,593.0)만 원을 수식에 직접 적음. 총괄 시트와 연결 없음","flags":["mismatch"]},{"id":"B_lo","label":"편익 B 하한(재복역)","stage":3,"cl":"재활 비용편익","value":1366745.34796608,"unit":"원","src":"계산","cell":"6.교정 재활 비용편익!C27","note":"","flags":[]},{"id":"B_hi","label":"편익 B 확장(재복역)","stage":3,"cl":"재활 비용편익","value":1809308.44036504,"unit":"원","src":"계산","cell":"6.교정 재활 비용편익!C28","note":"","flags":[]},{"id":"bc_lo","label":"B/C 재복역 하한","stage":4,"cl":"재활 비용편익","value":0.215200100824328,"unit":"배","src":"계산","cell":"6.교정 재활 비용편익!C29","note":"","flags":[]},{"id":"bc_hi","label":"B/C 재복역 확장","stage":4,"cl":"재활 비용편익","value":0.28488361739683,"unit":"배","src":"계산","cell":"6.교정 재활 비용편익!C30","note":"","flags":[]},{"id":"e_obs","label":"재활 효과 e(관측)","stage":1,"cl":"재활 비용편익","value":0.08323665893271462,"unit":"비율","src":"계산","cell":"7.생애가치 비용편익!C3","note":"값만 적음(2.87%p ÷ 34.5%). 시트 6 재복역률 차와 연결 없음","flags":["mismatch"]},{"id":"e_lit","label":"재활 효과 e(국내·국외 문헌)","stage":0,"cl":"재활 비용편익","value":0.192,"unit":"비율","src":"추정·문헌","cell":"7.생애가치 비용편익!D3·E3","note":"김도균·나종민(2025) 19.2%, Mitchell 외(2006) 20%","flags":[]},{"id":"dC7","label":"ΔC(시트 7)","stage":2,"cl":"재활 비용편익","value":6351000,"unit":"원","src":"계산","cell":"7.생애가치 비용편익!C2","note":"6,351,000원을 값으로 적음(시트 6은 6,351,044원)","flags":["mismatch"]},{"id":"sigma","label":"Σ w(t)·C(t)(현재가치, 5년 반감)","stage":3,"cl":"생애비용","value":146943020.6376824,"unit":"원","src":"엑셀 밖 근거","cell":"7.생애가치 비용편익!C24","note":"B 시나리오 1년차 이후 생애비용 × 효과 지속. 결과만 적음","flags":["nobase"]},{"id":"bl","label":"생애가치 편익 B(관측)","stage":4,"cl":"재활 비용편익","value":12231046.0913616,"unit":"원","src":"계산","cell":"7.생애가치 비용편익!C25","note":"","flags":[]},{"id":"bc_life","label":"B/C 생애가치(대표값)","stage":5,"cl":"재활 비용편익","value":1.92584570797695,"unit":"배","src":"계산","cell":"7.생애가치 비용편익!C26","note":"관측 효과, 현재가치 4.5%, 5년 반감","flags":[]},{"id":"bc_life_lit","label":"B/C 생애가치(문헌 효과)","stage":5,"cl":"재활 비용편익","value":4.44230199377028,"unit":"배","src":"계산","cell":"7.생애가치 비용편익!D26·E26","note":"국내 4.44, 국외 4.63","flags":[]},{"id":"cohort","label":"2025 이수 1,545명 순편익(현재가치)","stage":5,"cl":"재활 비용편익","value":9084671211.1537,"unit":"원","src":"계산","cell":"7.생애가치 비용편익!C69","note":"","flags":[]}],"edges":[{"s":"police_t","t":"police_ratio","kind":"link","note":""},{"s":"police_d","t":"police_ratio","kind":"link","note":""},{"s":"police_b","t":"police","kind":"link","note":""},{"s":"police_ratio","t":"police","kind":"link","note":""},{"s":"pros_t","t":"pros_ratio","kind":"link","note":""},{"s":"pros_d","t":"pros_ratio","kind":"link","note":""},{"s":"pros_b","t":"pros","kind":"link","note":""},{"s":"pros_ratio","t":"pros","kind":"link","note":""},{"s":"court_t","t":"court_ratio","kind":"link","note":""},{"s":"court_d","t":"court_ratio","kind":"link","note":""},{"s":"court_b","t":"court","kind":"link","note":""},{"s":"court_ratio","t":"court","kind":"link","note":""},{"s":"prison_t","t":"prison_ratio","kind":"link","note":""},{"s":"prison_d","t":"prison_ratio","kind":"link","note":""},{"s":"prison_b","t":"prison","kind":"link","note":""},{"s":"prison_ratio","t":"prison","kind":"link","note":""},{"s":"hosp_t","t":"hosp_ratio","kind":"link","note":""},{"s":"hosp_d","t":"hosp_ratio","kind":"link","note":""},{"s":"hosp_b","t":"hosp","kind":"link","note":""},{"s":"hosp_ratio","t":"hosp","kind":"link","note":""},{"s":"prob_t","t":"prob_ratio","kind":"link","note":""},{"s":"prob_d","t":"prob_ratio","kind":"link","note":""},{"s":"prob_b","t":"prob","kind":"link","note":""},{"s":"prob_ratio","t":"prob","kind":"link","note":""},{"s":"police","t":"f_cj","kind":"link","note":""},{"s":"pros","t":"f_cj","kind":"link","note":""},{"s":"court","t":"f_cj","kind":"link","note":""},{"s":"prison","t":"f_cj","kind":"link","note":""},{"s":"hosp","t":"f_cj","kind":"link","note":""},{"s":"prob","t":"f_cj","kind":"link","note":""},{"s":"pgs_add_u","t":"pgs_add_u25","kind":"link","note":""},{"s":"n_cpi","t":"pgs_add_u25","kind":"link","note":""},{"s":"pgs_d_u","t":"pgs_d_u25","kind":"link","note":""},{"s":"n_cpi","t":"pgs_d_u25","kind":"link","note":""},{"s":"tx_n","t":"pgs_add","kind":"link","note":""},{"s":"pgs_add_u25","t":"pgs_add","kind":"link","note":""},{"s":"death_n","t":"pgs_d","kind":"link","note":""},{"s":"pgs_d_u25","t":"pgs_d","kind":"link","note":""},{"s":"pgs_add","t":"f_pgs","kind":"link","note":""},{"s":"pgs_d","t":"f_pgs","kind":"link","note":""},{"s":"early_in","t":"early","kind":"link","note":""},{"s":"morb_in","t":"morb","kind":"link","note":""},{"s":"unemp_in","t":"unemp","kind":"link","note":""},{"s":"early","t":"f_prod","kind":"link","note":""},{"s":"morb","t":"f_prod","kind":"link","note":""},{"s":"unemp","t":"f_prod","kind":"link","note":""},{"s":"claim","t":"dmed","kind":"link","note":""},{"s":"tx_budget","t":"dmed","kind":"link","note":""},{"s":"dmed","t":"imed","kind":"link","note":""},{"s":"ind_rate","t":"imed","kind":"link","note":""},{"s":"mh_in","t":"mh","kind":"link","note":""},{"s":"dmed","t":"f_med","kind":"link","note":""},{"s":"imed","t":"f_med","kind":"link","note":""},{"s":"mh","t":"f_med","kind":"link","note":""},{"s":"as_n","t":"as","kind":"copy","note":""},{"s":"attr","t":"as","kind":"copy","note":""},{"s":"as_u","t":"as","kind":"copy","note":""},{"s":"cpi08","t":"as","kind":"copy","note":""},{"s":"sx_n","t":"sx","kind":"copy","note":""},{"s":"attr","t":"sx","kind":"copy","note":""},{"s":"sx_u","t":"sx","kind":"copy","note":""},{"s":"cpi08","t":"sx","kind":"copy","note":""},{"s":"as","t":"crime2","kind":"link","note":""},{"s":"sx","t":"crime2","kind":"link","note":""},{"s":"mfds","t":"prev","kind":"copy","note":""},{"s":"mh_in","t":"prev","kind":"copy","note":"중복 제거를 위해 차감(−17억 원)"},{"s":"tx_n","t":"family","kind":"copy","note":""},{"s":"fam_k","t":"family","kind":"copy","note":""},{"s":"fam_u","t":"family","kind":"copy","note":""},{"s":"dui_n","t":"dui","kind":"copy","note":""},{"s":"dui_u","t":"dui","kind":"copy","note":""},{"s":"crime2","t":"f_soc","kind":"link","note":""},{"s":"prev","t":"f_soc","kind":"link","note":""},{"s":"family","t":"f_soc","kind":"link","note":""},{"s":"dui","t":"f_soc","kind":"link","note":""},{"s":"fear","t":"f_soc","kind":"link","note":""},{"s":"f_cj","t":"total","kind":"link","note":""},{"s":"f_pgs","t":"total","kind":"link","note":""},{"s":"f_prod","t":"total","kind":"link","note":""},{"s":"f_med","t":"total","kind":"link","note":""},{"s":"f_soc","t":"total","kind":"link","note":""},{"s":"total","t":"per","kind":"link","note":""},{"s":"n_arrest","t":"per","kind":"link","note":""},{"s":"per","t":"lam10","kind":"link","note":""},{"s":"n_arrest","t":"lam10","kind":"link","note":""},{"s":"n_l10","t":"lam10","kind":"link","note":""},{"s":"per","t":"lam28","kind":"link","note":""},{"s":"n_arrest","t":"lam28","kind":"link","note":""},{"s":"n_l28","t":"lam28","kind":"link","note":""},{"s":"per","t":"l_first","kind":"copy","note":""},{"s":"crime2","t":"l_first","kind":"copy","note":"하한 45.0억 원으로 바꿔 적용"},{"s":"pgs_add","t":"l_rep","kind":"copy","note":""},{"s":"dmed","t":"l_rep","kind":"copy","note":""},{"s":"imed","t":"l_rep","kind":"copy","note":""},{"s":"mh","t":"l_rep","kind":"copy","note":""},{"s":"morb","t":"l_rep","kind":"copy","note":""},{"s":"crime2","t":"l_rep","kind":"copy","note":""},{"s":"family","t":"l_rep","kind":"copy","note":""},{"s":"dui","t":"l_rep","kind":"copy","note":""},{"s":"f_cj","t":"l_rearr","kind":"copy","note":""},{"s":"pgs_d_u25","t":"l_dpgs","kind":"copy","note":""},{"s":"l_first","t":"life_pv","kind":"model","note":""},{"s":"l_rep","t":"life_pv","kind":"model","note":""},{"s":"l_rearr","t":"life_pv","kind":"model","note":""},{"s":"l_dpgs","t":"life_pv","kind":"model","note":""},{"s":"lp_dur","t":"life_pv","kind":"model","note":""},{"s":"lp_lab","t":"life_pv","kind":"model","note":""},{"s":"lp_mort","t":"life_pv","kind":"model","note":""},{"s":"lp_rearr","t":"life_pv","kind":"model","note":""},{"s":"lp_life","t":"life_pv","kind":"model","note":""},{"s":"life_pv","t":"life_cum","kind":"model","note":""},{"s":"r_budget","t":"uc06","kind":"link","note":""},{"s":"r_comp","t":"uc06","kind":"copy","note":""},{"s":"r_out_cost","t":"uc10","kind":"copy","note":""},{"s":"tx_budget","t":"uc12","kind":"copy","note":""},{"s":"tx_n","t":"uc12","kind":"copy","note":""},{"s":"uc06","t":"dC","kind":"link","note":""},{"s":"uc10","t":"dC","kind":"link","note":""},{"s":"uc12","t":"dC","kind":"link","note":""},{"s":"c_n1","t":"r1","kind":"link","note":""},{"s":"c_n0","t":"r0","kind":"link","note":""},{"s":"r1","t":"dr","kind":"link","note":""},{"s":"r0","t":"dr","kind":"link","note":""},{"s":"scr_in","t":"scr_lo","kind":"copy","note":""},{"s":"scr_lo","t":"scr_hi","kind":"link","note":""},{"s":"per","t":"scr_hi","kind":"copy","note":""},{"s":"f_cj","t":"scr_hi","kind":"copy","note":"형사사법 1명당을 빼서 중복 방지"},{"s":"dr","t":"B_lo","kind":"link","note":""},{"s":"scr_lo","t":"B_lo","kind":"link","note":""},{"s":"D","t":"B_lo","kind":"link","note":""},{"s":"dr","t":"B_hi","kind":"link","note":""},{"s":"scr_hi","t":"B_hi","kind":"link","note":""},{"s":"D","t":"B_hi","kind":"link","note":""},{"s":"B_lo","t":"bc_lo","kind":"link","note":""},{"s":"dC","t":"bc_lo","kind":"link","note":""},{"s":"B_hi","t":"bc_hi","kind":"link","note":""},{"s":"dC","t":"bc_hi","kind":"link","note":""},{"s":"dr","t":"e_obs","kind":"copy","note":""},{"s":"r0","t":"e_obs","kind":"copy","note":""},{"s":"dC","t":"dC7","kind":"copy","note":""},{"s":"life_pv","t":"sigma","kind":"model","note":""},{"s":"e_obs","t":"bl","kind":"link","note":""},{"s":"sigma","t":"bl","kind":"link","note":""},{"s":"bl","t":"bc_life","kind":"link","note":""},{"s":"dC7","t":"bc_life","kind":"link","note":""},{"s":"e_lit","t":"bc_life_lit","kind":"link","note":""},{"s":"sigma","t":"bc_life_lit","kind":"link","note":""},{"s":"dC7","t":"bc_life_lit","kind":"link","note":""},{"s":"bl","t":"cohort","kind":"link","note":""},{"s":"dC7","t":"cohort","kind":"link","note":""},{"s":"r_comp","t":"cohort","kind":"copy","note":""}],"checks":[{"kind":"누락","level":"참고","nodes":["pros_b25"],"title":"검찰 2025 결산(미사용): 위 단계로 이어지지 않음","detail":"2025 처리 인원이 없어 2024 예산·인원을 대신 사용"},{"kind":"누락","level":"참고","nodes":["murder"],"title":"마약 상태 살인(합계 제외): 위 단계로 이어지지 않음","detail":"연 65명 × 25% × 173.2억 원. 합계에서 제외"},{"kind":"누락","level":"참고","nodes":["c_all"],"title":"전체 출소·재복역(2019~2022): 위 단계로 이어지지 않음","detail":"5,977명 중 1,855명(31.0%). 현황 서술용, 계산에 쓰이지 않음"},{"kind":"누락","level":"참고","nodes":["c_stock"],"title":"연말 기결·미결(2024·2025): 위 단계로 이어지지 않음","detail":"기결 3,477·4,188명, 미결 3,241명. 교도소 기결·미결 배분과 현황 서술용"},{"kind":"공백","level":"확인","nodes":["early_in"],"title":"조기사망 손실(연구진 추계): 엑셀에 근거 셀 없음","detail":"세부 산식(임금·취업률·손실일수)은 별도 추계 파일에 있음"},{"kind":"공백","level":"확인","nodes":["morb_in"],"title":"이환·입원 손실(연구진 추계): 엑셀에 근거 셀 없음","detail":"세부 산식(임금·취업률·손실일수)은 별도 추계 파일에 있음"},{"kind":"공백","level":"확인","nodes":["unemp_in"],"title":"노동력 상실·미취업 손실(연구진 추계): 엑셀에 근거 셀 없음","detail":"세부 산식(임금·취업률·손실일수)은 별도 추계 파일에 있음"},{"kind":"공백","level":"확인","nodes":["mh_in"],"title":"정신건강·복지 지원(연구진 추계): 엑셀에 근거 셀 없음","detail":"세부 내역은 별도 추계 파일"},{"kind":"공백","level":"확인","nodes":["life_pv"],"title":"생애비용 B(현재가치 4.5%): 엑셀에 근거 셀 없음","detail":"연령별·연도별 모형 계산은 엑셀 밖에서 하고 결과만 적음"},{"kind":"공백","level":"확인","nodes":["life_cum"],"title":"생애비용 B(누적 기준): 엑셀에 근거 셀 없음","detail":"대표값. 연간 사회적 비용과 더하지 않음"},{"kind":"공백","level":"확인","nodes":["r_budget"],"title":"재활 예산 + 전담인력 인건비: 엑셀에 근거 셀 없음","detail":"59.99억(집행액 간주) + 16.98억(정원 × 봉급표 × 1.6 × 투입비율 추정). 합계만 값으로 적음"},{"kind":"공백","level":"확인","nodes":["D"],"title":"할인계수 D(3년 시점 분포): 엑셀에 근거 셀 없음","detail":"1년 내 37.8%, 1~2년 43.1%, 2~3년 19.1%로 계산한 값만 적음"},{"kind":"공백","level":"확인","nodes":["scr_in"],"title":"평균 실형·복역 비율·UC-01·검찰 단계: 엑셀에 근거 셀 없음","detail":"2.45년 × 85% × 2,378.4만 원 + 86.6만 원. 근거 셀 없이 결과만 적음(곱하면 5,039.6만 원)"},{"kind":"공백","level":"확인","nodes":["sigma"],"title":"Σ w(t)·C(t)(현재가치, 5년 반감): 엑셀에 근거 셀 없음","detail":"B 시나리오 1년차 이후 생애비용 × 효과 지속. 결과만 적음"},{"kind":"중복","level":"참고","nodes":["n_cpi"],"title":"물가 계수 2025/2024: 연간 합계 안 2개 항목으로 들어감(사망 PGS, 중독자 PGS)","detail":"여러 항목의 물가 환산에 쓰이는 공통 계수"},{"kind":"중복","level":"확인","nodes":["tx_n"],"title":"치료보호 인원 2025: 연간 합계 안 2개 항목으로 들어감(가족 돌봄, 중독자 PGS)","detail":"중독자 PGS(본인·가족의 고통)와 가족 돌봄(가족 의료비)에 같은 인원을 씀. 비용 성격이 달라 중복은 아니나, 가족 고통과 가족 의료비의 경계를 보고서에 명시"},{"kind":"중복","level":"참고","nodes":["claim"],"title":"청구 진료비: 연간 합계 안 2개 항목으로 들어감(간접의료비, 직접 의료비)","detail":"직접 의료비와 그 38.1%인 간접의료비로 이어짐. 비율 방식이라 중복 아님"},{"kind":"중복","level":"참고","nodes":["tx_budget"],"title":"치료보호 지원 예산: 연간 합계 안 2개 항목으로 들어감(간접의료비, 직접 의료비)","detail":"직접 의료비와 그 38.1%인 간접의료비로 이어짐. 비율 방식이라 중복 아님"},{"kind":"중복","level":"참고","nodes":["mh_in"],"title":"정신건강·복지 지원(연구진 추계): 연간 합계 안 2개 항목으로 들어감(예방·홍보·재활 예산, 정신건강·복지)","detail":"의료·복지에 +17억 원, 예방 예산에서 −17억 원. 중복을 없애기 위한 처리(합계에는 한 번만 들어감)"},{"kind":"중복","level":"참고","nodes":[],"title":"분석 간 공유 원단위","detail":"연간 사회적 비용의 값이 생애비용·재활 비용편익의 원단위로도 쓰임(형사사법 소계, 치료보호 인원 2025, 치료보호 지원 예산, 2차 범죄 피해, 검거 사범 1명당 비용). 세 결과는 기준이 달라 서로 더하지 않으므로 중복 계상이 아님"},{"kind":"대사","level":"참고","nodes":["dC7"],"title":"ΔC: 시트 7 값 vs 시트 6 수식","detail":"차이 -44.18 (0.001%)"},{"kind":"대사","level":"확인","nodes":["e_obs"],"title":"관측 효과 e: 값 vs 재복역률 차 ÷ r0","detail":"차이 -0.0001124 (0.135%)"},{"kind":"대사","level":"참고","nodes":["scr_hi"],"title":"SCᵣ 확장: 수식 안 3,223.6 − 1,593.0 vs 총괄 시트 값","detail":"차이 503.2 (0.001%)"},{"kind":"대사","level":"확인","nodes":["scr_lo"],"title":"SCᵣ 하한: 적힌 값 vs 2.45 × 0.85 × 2,378.4만 + 86.6만","detail":"차이 -3.918e+04 (0.078%)"},{"kind":"대사","level":"참고","nodes":["l_first"],"title":"생애 1년차: 적힌 값 vs 1명당(2차 범죄 45.0억 원)","detail":"차이 35.93 (0.000%)"},{"kind":"대사","level":"확인","nodes":["l_first","l_rep"],"title":"생애 1년차와 반복 비용의 2차 범죄 기준이 다름","detail":"1년차는 하한 45.0억 원, 반복 비용은 전체 112.5억 원 기준. 하한으로 맞추면 반복 비용 8,638,191원(−3.2%)"},{"kind":"연결","level":"확인","nodes":["family"],"title":"가족 돌봄: 치료보호 1,649명을 수식에 직접 적음","detail":"입력값 C24을 바꿔도 이 값은 바뀌지 않음. 셀 참조로 바꾸면 누락·불일치를 막을 수 있음"},{"kind":"연결","level":"확인","nodes":["uc12"],"title":"UC-12 사후관리: 치료보호 1,649명·예산 14.4억 원을 수식에 직접 적음","detail":"입력값 C24·C32을 바꿔도 이 값은 바뀌지 않음. 셀 참조로 바꾸면 누락·불일치를 막을 수 있음"},{"kind":"연결","level":"확인","nodes":["prev"],"title":"예방·홍보·재활 예산: 정신건강·복지 17억 원을 수식에 직접 적음","detail":"입력값 C34을 바꿔도 이 값은 바뀌지 않음. 셀 참조로 바꾸면 누락·불일치를 막을 수 있음"},{"kind":"연결","level":"확인","nodes":["cpi08"],"title":"물가 환산 2008→2025: 물가 계수 1.021을 수식에 직접 적음","detail":"입력값 C5을 바꿔도 이 값은 바뀌지 않음. 셀 참조로 바꾸면 누락·불일치를 막을 수 있음"}],"summary":{"nodes":125,"edges":151,"raw":59,"kinds":{"누락":4,"공백":10,"중복":6,"대사":6,"연결":4},"hard_nodes":16,"recon":[{"title":"18개 항목 합 = 총액","a":754417047740.7664,"b":754417047740.767,"diff":-0.0006103515625,"ok":true},{"title":"5개 분야 소계 합 = 총액","a":754417047740.7662,"b":754417047740.767,"diff":-0.000732421875,"ok":true},{"title":"시트 2 합계 = 사회적 혼란·기타 소계","a":49603893501.7753,"b":49603893501.7753,"diff":0.0,"ok":true},{"title":"1명당 × 234,030명 = 암수율 10배 총액","a":7544170477407.66,"b":7544170477407.66,"diff":0.0,"ok":true},{"title":"시트 3 합계 = 총괄 합계(억 원)","a":754417047740.767,"b":754417047740.767,"diff":0.0,"ok":true},{"title":"ΔC: 시트 7 값 vs 시트 6 수식","a":6351000,"b":6351044.18041968,"diff":-44.18041967973113,"ok":false,"rel":6.956402510305269e-06},{"title":"관측 효과 e: 값 vs 재복역률 차 ÷ r0","a":0.08323665893271462,"b":0.08334901222953907,"diff":-0.0001123532968244495,"ok":false,"rel":0.001347985942713203},{"title":"SCᵣ 확장: 수식 안 3,223.6 − 1,593.0 vs 총괄 시트 값","a":66663000,"b":66662496.84308102,"diff":503.1569189801812,"ok":false,"rel":7.547825881238417e-06},{"title":"SCᵣ 하한: 적힌 값 vs 2.45 × 0.85 × 2,378.4만 + 86.6만","a":50357000,"b":50396180.0,"diff":-39180.0,"ok":false,"rel":0.0007774398773875322},{"title":"생애 1년차: 적힌 값 vs 1명당(2차 범죄 45.0억 원)","a":31947433.51144739,"b":31947397.582296297,"diff":35.929151091724634,"ok":false,"rel":1.1246346748329457e-06},{"title":"생애 반복 비용: 적힌 값 vs 항목 1명당 합","a":8926705.453265622,"b":8926705.453259211,"diff":6.411224603652954e-06,"ok":true,"rel":7.182072531935245e-13},{"title":"재검거 1회: 적힌 값 vs 형사사법 1명당","a":15930415.12297569,"b":15930415.122938981,"diff":3.67090106010437e-05,"ok":true,"rel":2.3043348411043354e-12}]}};
+const DATA = {
+ "nodes": [
+  {
+   "id": "n_arrest",
+   "label": "검거 사범 2025",
+   "stage": 0,
+   "cl": "공통",
+   "value": 23403,
+   "unit": "명",
+   "src": "실측",
+   "cell": "1.입력값!C2",
+   "note": "대검찰청(2026)",
+   "flags": []
+  },
+  {
+   "id": "n_l10",
+   "label": "암수율 기본",
+   "stage": 0,
+   "cl": "공통",
+   "value": 10,
+   "unit": "배",
+   "src": "가정",
+   "cell": "1.입력값!C3",
+   "note": "박성수(2018)과 같은 10배",
+   "flags": []
+  },
+  {
+   "id": "n_l28",
+   "label": "암수율 민감도",
+   "stage": 0,
+   "cl": "공통",
+   "value": 28.57,
+   "unit": "배",
+   "src": "가정",
+   "cell": "1.입력값!C4",
+   "note": "박성수·백민석(2019)",
+   "flags": []
+  },
+  {
+   "id": "n_cpi",
+   "label": "물가 계수 2025/2024",
+   "stage": 0,
+   "cl": "공통",
+   "value": 1.021,
+   "unit": "배",
+   "src": "실측",
+   "cell": "1.입력값!C5",
+   "note": "통계청 소비자물가",
+   "flags": [
+    "shared"
+   ]
+  },
+  {
+   "id": "police_b",
+   "label": "경찰 세출결산",
+   "stage": 0,
+   "cl": "형사사법",
+   "value": 13355826000000,
+   "unit": "원",
+   "src": "실측",
+   "cell": "1.입력값!C6",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "police_t",
+   "label": "경찰 전체 검거",
+   "stage": 0,
+   "cl": "형사사법",
+   "value": 1290412,
+   "unit": "명",
+   "src": "실측",
+   "cell": "1.입력값!C7",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "police_d",
+   "label": "경찰 마약류 검거",
+   "stage": 0,
+   "cl": "형사사법",
+   "value": 13343,
+   "unit": "명",
+   "src": "실측",
+   "cell": "1.입력값!C8",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "police_ratio",
+   "label": "경찰 마약류 배분비율",
+   "stage": 1,
+   "cl": "형사사법",
+   "value": 0.010340108430485767,
+   "unit": "비율",
+   "src": "계산",
+   "cell": null,
+   "note": "마약류 검거 ÷ 전체 검거",
+   "flags": []
+  },
+  {
+   "id": "police",
+   "label": "경찰",
+   "stage": 2,
+   "cl": "형사사법",
+   "value": 138100689018.701,
+   "unit": "원",
+   "src": "계산",
+   "cell": "0.총괄_2025!E2",
+   "note": "='1.입력값'!C6*'1.입력값'!C8/'1.입력값'!C7",
+   "flags": []
+  },
+  {
+   "id": "pros_b",
+   "label": "검찰 총예산(2024)",
+   "stage": 0,
+   "cl": "형사사법",
+   "value": 1216260949210,
+   "unit": "원",
+   "src": "2024 대용",
+   "cell": "1.입력값!C9",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "pros_t",
+   "label": "검찰 전체 처리(2024)",
+   "stage": 0,
+   "cl": "형사사법",
+   "value": 1405185,
+   "unit": "명",
+   "src": "2024 대용",
+   "cell": "1.입력값!C10",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "pros_d",
+   "label": "검찰 마약류(2024)",
+   "stage": 0,
+   "cl": "형사사법",
+   "value": 23022,
+   "unit": "명",
+   "src": "2024 대용",
+   "cell": "1.입력값!C11",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "pros_ratio",
+   "label": "검찰 마약류 배분비율",
+   "stage": 1,
+   "cl": "형사사법",
+   "value": 0.016383607852346844,
+   "unit": "비율",
+   "src": "계산",
+   "cell": null,
+   "note": "마약류(2024) ÷ 전체 처리(2024)",
+   "flags": []
+  },
+  {
+   "id": "pros",
+   "label": "검찰",
+   "stage": 2,
+   "cl": "형사사법",
+   "value": 19926742437.9798,
+   "unit": "원",
+   "src": "계산",
+   "cell": "0.총괄_2025!E3",
+   "note": "='1.입력값'!C9*'1.입력값'!C11/'1.입력값'!C10",
+   "flags": []
+  },
+  {
+   "id": "court_b",
+   "label": "법원 형사소송 예산",
+   "stage": 0,
+   "cl": "형사사법",
+   "value": 248385213206,
+   "unit": "원",
+   "src": "실측",
+   "cell": "1.입력값!C12",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "court_t",
+   "label": "법원 형사공판 처리",
+   "stage": 0,
+   "cl": "형사사법",
+   "value": 347473,
+   "unit": "명",
+   "src": "실측",
+   "cell": "1.입력값!C13",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "court_d",
+   "label": "법원 마약류 인원",
+   "stage": 0,
+   "cl": "형사사법",
+   "value": 13849,
+   "unit": "명",
+   "src": "실측",
+   "cell": "1.입력값!C14",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "court_ratio",
+   "label": "법원 마약류 배분비율",
+   "stage": 1,
+   "cl": "형사사법",
+   "value": 0.0398563341612154,
+   "unit": "비율",
+   "src": "계산",
+   "cell": null,
+   "note": "마약류 인원 ÷ 형사공판 처리",
+   "flags": []
+  },
+  {
+   "id": "court",
+   "label": "법원",
+   "stage": 2,
+   "cl": "형사사법",
+   "value": 9899724058.24307,
+   "unit": "원",
+   "src": "계산",
+   "cell": "0.총괄_2025!E4",
+   "note": "='1.입력값'!C12*'1.입력값'!C14/'1.입력값'!C13",
+   "flags": []
+  },
+  {
+   "id": "prison_b",
+   "label": "교도소 세출결산",
+   "stage": 0,
+   "cl": "형사사법",
+   "value": 1699217000000,
+   "unit": "원",
+   "src": "실측",
+   "cell": "1.입력값!C15",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "prison_t",
+   "label": "교도소 전체 수용(12. 31.)",
+   "stage": 0,
+   "cl": "형사사법",
+   "value": 64626,
+   "unit": "명",
+   "src": "실측",
+   "cell": "1.입력값!C16",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "prison_d",
+   "label": "교도소 마약류 수용(12. 31.)",
+   "stage": 0,
+   "cl": "형사사법",
+   "value": 7429,
+   "unit": "명",
+   "src": "실측",
+   "cell": "1.입력값!C17",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "prison_ratio",
+   "label": "교도소 마약류 배분비율",
+   "stage": 1,
+   "cl": "형사사법",
+   "value": 0.11495373379135332,
+   "unit": "비율",
+   "src": "계산",
+   "cell": null,
+   "note": "마약류 수용(12. 31.) ÷ 전체 수용(12. 31.)",
+   "flags": []
+  },
+  {
+   "id": "prison",
+   "label": "교도소",
+   "stage": 2,
+   "cl": "형사사법",
+   "value": 195331338671.742,
+   "unit": "원",
+   "src": "계산",
+   "cell": "0.총괄_2025!E5",
+   "note": "='1.입력값'!C15*'1.입력값'!C17/'1.입력값'!C16",
+   "flags": []
+  },
+  {
+   "id": "hosp_b",
+   "label": "국립법무병원 세출결산",
+   "stage": 0,
+   "cl": "형사사법",
+   "value": 46654324120,
+   "unit": "원",
+   "src": "실측",
+   "cell": "1.입력값!C18",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "hosp_t",
+   "label": "국립법무병원 전체 인원",
+   "stage": 0,
+   "cl": "형사사법",
+   "value": 823,
+   "unit": "명",
+   "src": "실측",
+   "cell": "1.입력값!C19",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "hosp_d",
+   "label": "국립법무병원 마약류 인원",
+   "stage": 0,
+   "cl": "형사사법",
+   "value": 9,
+   "unit": "명",
+   "src": "실측",
+   "cell": "1.입력값!C20",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "hosp_ratio",
+   "label": "국립법무병원 마약류 배분비율",
+   "stage": 1,
+   "cl": "형사사법",
+   "value": 0.010935601458080195,
+   "unit": "비율",
+   "src": "계산",
+   "cell": null,
+   "note": "마약류 인원 ÷ 전체 인원",
+   "flags": []
+  },
+  {
+   "id": "hosp",
+   "label": "국립법무병원",
+   "stage": 2,
+   "cl": "형사사법",
+   "value": 510193094.872418,
+   "unit": "원",
+   "src": "계산",
+   "cell": "0.총괄_2025!E6",
+   "note": "='1.입력값'!C18*'1.입력값'!C20/'1.입력값'!C19",
+   "flags": []
+  },
+  {
+   "id": "prob_b",
+   "label": "보호관찰소 세출결산",
+   "stage": 0,
+   "cl": "형사사법",
+   "value": 200934994240,
+   "unit": "원",
+   "src": "실측",
+   "cell": "1.입력값!C21",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "prob_t",
+   "label": "보호관찰소 총 접수",
+   "stage": 0,
+   "cl": "형사사법",
+   "value": 41138,
+   "unit": "명",
+   "src": "실측",
+   "cell": "1.입력값!C22",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "prob_d",
+   "label": "보호관찰소 마약류 접수",
+   "stage": 0,
+   "cl": "형사사법",
+   "value": 1853,
+   "unit": "명",
+   "src": "실측",
+   "cell": "1.입력값!C23",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "prob_ratio",
+   "label": "보호관찰소 마약류 배분비율",
+   "stage": 1,
+   "cl": "형사사법",
+   "value": 0.045043512081287373,
+   "unit": "비율",
+   "src": "계산",
+   "cell": null,
+   "note": "마약류 접수 ÷ 총 접수",
+   "flags": []
+  },
+  {
+   "id": "prob",
+   "label": "보호관찰소",
+   "stage": 2,
+   "cl": "형사사법",
+   "value": 9050817840.60285,
+   "unit": "원",
+   "src": "계산",
+   "cell": "0.총괄_2025!E7",
+   "note": "='1.입력값'!C21*'1.입력값'!C23/'1.입력값'!C22",
+   "flags": []
+  },
+  {
+   "id": "pros_b25",
+   "label": "검찰 2025 결산(미사용)",
+   "stage": 0,
+   "cl": "형사사법",
+   "value": 1287948927480,
+   "unit": "원",
+   "src": "실측",
+   "cell": "1.입력값!F9 주석",
+   "note": "2025 처리 인원이 없어 2024 예산·인원을 대신 사용",
+   "flags": [
+    "ref",
+    "orphan"
+   ]
+  },
+  {
+   "id": "f_cj",
+   "label": "형사사법 소계",
+   "stage": 3,
+   "cl": "형사사법",
+   "value": 372819505122.141,
+   "unit": "원",
+   "src": "계산",
+   "cell": "0.총괄_2025!E20",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "tx_n",
+   "label": "치료보호 인원 2025",
+   "stage": 0,
+   "cl": "고통비용",
+   "value": 1649,
+   "unit": "명",
+   "src": "실측",
+   "cell": "1.입력값!C24",
+   "note": "",
+   "flags": [
+    "shared"
+   ]
+  },
+  {
+   "id": "pgs_add_u",
+   "label": "중독자 PGS 원단위(2024)",
+   "stage": 0,
+   "cl": "고통비용",
+   "value": 110000000,
+   "unit": "원",
+   "src": "추정·문헌",
+   "cell": "1.입력값!C25",
+   "note": "중상 PGS 2.2억 원 × 50%(연구진 가정)",
+   "flags": []
+  },
+  {
+   "id": "death_n",
+   "label": "약물중독 사망자(20~64세)",
+   "stage": 0,
+   "cl": "고통비용",
+   "value": 58,
+   "unit": "명",
+   "src": "실측",
+   "cell": "1.입력값!C26",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "pgs_d_u",
+   "label": "사망 PGS 원단위(2024)",
+   "stage": 0,
+   "cl": "고통비용",
+   "value": 970000000,
+   "unit": "원",
+   "src": "추정·문헌",
+   "cell": "1.입력값!C27",
+   "note": "한국교통연구원(2025) 교통사고 원단위 준용",
+   "flags": []
+  },
+  {
+   "id": "pgs_add_u25",
+   "label": "중독자 PGS 원단위 × 물가",
+   "stage": 1,
+   "cl": "고통비용",
+   "value": 112309999.99999999,
+   "unit": "원",
+   "src": "계산",
+   "cell": null,
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "pgs_d_u25",
+   "label": "사망 PGS 원단위 × 물가",
+   "stage": 1,
+   "cl": "고통비용",
+   "value": 990369999.9999999,
+   "unit": "원",
+   "src": "계산",
+   "cell": null,
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "pgs_add",
+   "label": "중독자 PGS",
+   "stage": 2,
+   "cl": "고통비용",
+   "value": 185199190000,
+   "unit": "원",
+   "src": "계산",
+   "cell": "0.총괄_2025!E8",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "pgs_d",
+   "label": "사망 PGS",
+   "stage": 2,
+   "cl": "고통비용",
+   "value": 57441460000,
+   "unit": "원",
+   "src": "계산",
+   "cell": "0.총괄_2025!E9",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "f_pgs",
+   "label": "고통비용 소계",
+   "stage": 3,
+   "cl": "고통비용",
+   "value": 242640650000,
+   "unit": "원",
+   "src": "계산",
+   "cell": "0.총괄_2025!E21",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "early_in",
+   "label": "조기사망 손실(연구진 추계)",
+   "stage": 0,
+   "cl": "생산성",
+   "value": 39626708450,
+   "unit": "원",
+   "src": "엑셀 밖 근거",
+   "cell": "1.입력값!C28",
+   "note": "세부 산식(임금·취업률·손실일수)은 별도 추계 파일에 있음",
+   "flags": [
+    "nobase"
+   ]
+  },
+  {
+   "id": "early",
+   "label": "조기사망",
+   "stage": 2,
+   "cl": "생산성",
+   "value": 39626708450,
+   "unit": "원",
+   "src": "계산",
+   "cell": "0.총괄_2025!E10",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "morb_in",
+   "label": "이환·입원 손실(연구진 추계)",
+   "stage": 0,
+   "cl": "생산성",
+   "value": 2252245909,
+   "unit": "원",
+   "src": "엑셀 밖 근거",
+   "cell": "1.입력값!C29",
+   "note": "세부 산식(임금·취업률·손실일수)은 별도 추계 파일에 있음",
+   "flags": [
+    "nobase"
+   ]
+  },
+  {
+   "id": "morb",
+   "label": "이환·입원",
+   "stage": 2,
+   "cl": "생산성",
+   "value": 2252245909,
+   "unit": "원",
+   "src": "계산",
+   "cell": "0.총괄_2025!E11",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "unemp_in",
+   "label": "노동력 상실·미취업 손실(연구진 추계)",
+   "stage": 0,
+   "cl": "생산성",
+   "value": 37055281736,
+   "unit": "원",
+   "src": "엑셀 밖 근거",
+   "cell": "1.입력값!C30",
+   "note": "세부 산식(임금·취업률·손실일수)은 별도 추계 파일에 있음",
+   "flags": [
+    "nobase"
+   ]
+  },
+  {
+   "id": "unemp",
+   "label": "노동력 상실·미취업",
+   "stage": 2,
+   "cl": "생산성",
+   "value": 37055281736,
+   "unit": "원",
+   "src": "계산",
+   "cell": "0.총괄_2025!E12",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "f_prod",
+   "label": "생산성 소계",
+   "stage": 3,
+   "cl": "생산성",
+   "value": 78934236095,
+   "unit": "원",
+   "src": "계산",
+   "cell": "0.총괄_2025!E22",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "claim",
+   "label": "청구 진료비",
+   "stage": 0,
+   "cl": "의료·복지",
+   "value": 3017898850,
+   "unit": "원",
+   "src": "실측",
+   "cell": "1.입력값!C31",
+   "note": "",
+   "flags": [
+    "shared"
+   ]
+  },
+  {
+   "id": "tx_budget",
+   "label": "치료보호 지원 예산",
+   "stage": 0,
+   "cl": "의료·복지",
+   "value": 1440000000,
+   "unit": "원",
+   "src": "실측",
+   "cell": "1.입력값!C32",
+   "note": "",
+   "flags": [
+    "shared"
+   ]
+  },
+  {
+   "id": "ind_rate",
+   "label": "간접의료비 비율",
+   "stage": 0,
+   "cl": "의료·복지",
+   "value": 0.381,
+   "unit": "비율",
+   "src": "추정·문헌",
+   "cell": "1.입력값!C33",
+   "note": "박성수(2018) 38.1%",
+   "flags": []
+  },
+  {
+   "id": "mh_in",
+   "label": "정신건강·복지 지원(연구진 추계)",
+   "stage": 0,
+   "cl": "의료·복지",
+   "value": 1700000000,
+   "unit": "원",
+   "src": "엑셀 밖 근거",
+   "cell": "1.입력값!C34",
+   "note": "세부 내역은 별도 추계 파일",
+   "flags": [
+    "nobase",
+    "shared"
+   ]
+  },
+  {
+   "id": "dmed",
+   "label": "직접 의료비",
+   "stage": 2,
+   "cl": "의료·복지",
+   "value": 4457898850,
+   "unit": "원",
+   "src": "계산",
+   "cell": "0.총괄_2025!E13",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "imed",
+   "label": "간접의료비",
+   "stage": 2,
+   "cl": "의료·복지",
+   "value": 1698459461.85,
+   "unit": "원",
+   "src": "계산",
+   "cell": "0.총괄_2025!E14",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "mh",
+   "label": "정신건강·복지",
+   "stage": 2,
+   "cl": "의료·복지",
+   "value": 1700000000,
+   "unit": "원",
+   "src": "계산",
+   "cell": "0.총괄_2025!E15",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "f_med",
+   "label": "의료·복지 소계",
+   "stage": 3,
+   "cl": "의료·복지",
+   "value": 7856358311.85,
+   "unit": "원",
+   "src": "계산",
+   "cell": "0.총괄_2025!E23",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "as_n",
+   "label": "상해 연평균 인원(2021~2024)",
+   "stage": 0,
+   "cl": "사회적 혼란·기타",
+   "value": 323,
+   "unit": "명",
+   "src": "2024 대용",
+   "cell": "2.사회적 혼란·기타!F2 수식 안",
+   "note": "(40,679 − 39,387) ÷ 4. 입력값 시트에 없음",
+   "flags": [
+    "hard"
+   ]
+  },
+  {
+   "id": "sx_n",
+   "label": "성폭력 연평균 인원(2021~2024)",
+   "stage": 0,
+   "cl": "사회적 혼란·기타",
+   "value": 477.25,
+   "unit": "명",
+   "src": "2024 대용",
+   "cell": "2.사회적 혼란·기타!F3 수식 안",
+   "note": "(23,613 − 21,704) ÷ 4. 입력값 시트에 없음",
+   "flags": [
+    "hard"
+   ]
+  },
+  {
+   "id": "attr",
+   "label": "마약 상태 귀속 비율",
+   "stage": 0,
+   "cl": "사회적 혼란·기타",
+   "value": 0.25,
+   "unit": "비율",
+   "src": "가정",
+   "cell": "2.사회적 혼란·기타!F2·F3 수식 안",
+   "note": "연구진 가정",
+   "flags": [
+    "hard"
+   ]
+  },
+  {
+   "id": "as_u",
+   "label": "상해 1건당 단가(2008)",
+   "stage": 0,
+   "cl": "사회적 혼란·기타",
+   "value": 22066382,
+   "unit": "원",
+   "src": "추정·문헌",
+   "cell": "2.사회적 혼란·기타!F2 수식 안",
+   "note": "박경래 외(2010)",
+   "flags": [
+    "hard"
+   ]
+  },
+  {
+   "id": "sx_u",
+   "label": "성폭력 1건당 단가(2008)",
+   "stage": 0,
+   "cl": "사회적 혼란·기타",
+   "value": 50985038.00000001,
+   "unit": "원",
+   "src": "추정·문헌",
+   "cell": "2.사회적 혼란·기타!F3 수식 안",
+   "note": "강간 20% × 2.17억 + 추행 80% × 943만 원",
+   "flags": [
+    "hard"
+   ]
+  },
+  {
+   "id": "cpi08",
+   "label": "물가 환산 2008→2025",
+   "stage": 0,
+   "cl": "사회적 혼란·기타",
+   "value": 1.4306527607361963,
+   "unit": "배",
+   "src": "실측",
+   "cell": "2.사회적 혼란·기타 수식 안",
+   "note": "114.2 × 1.021 ÷ 81.5. 물가 계수 1.021이 입력값 시트와 연결되지 않음",
+   "flags": [
+    "hard"
+   ]
+  },
+  {
+   "id": "as",
+   "label": "2차 범죄: 상해",
+   "stage": 1,
+   "cl": "사회적 혼란·기타",
+   "value": 2549223423.96658,
+   "unit": "원",
+   "src": "계산",
+   "cell": "2.사회적 혼란·기타!F2",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "sx",
+   "label": "2차 범죄: 성폭력",
+   "stage": 1,
+   "cl": "사회적 혼란·기타",
+   "value": 8702878698.32027,
+   "unit": "원",
+   "src": "계산",
+   "cell": "2.사회적 혼란·기타!F3",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "crime2",
+   "label": "2차 범죄 피해",
+   "stage": 2,
+   "cl": "사회적 혼란·기타",
+   "value": 11252102122.2868,
+   "unit": "원",
+   "src": "계산",
+   "cell": "0.총괄_2025!E16",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "murder",
+   "label": "마약 상태 살인(합계 제외)",
+   "stage": 1,
+   "cl": "사회적 혼란·기타",
+   "value": 404188320196.365,
+   "unit": "원",
+   "src": "추정·문헌",
+   "cell": "2.사회적 혼란·기타!F9",
+   "note": "연 65명 × 25% × 173.2억 원. 합계에서 제외",
+   "flags": [
+    "ref",
+    "orphan"
+   ]
+  },
+  {
+   "id": "mfds",
+   "label": "식약처 마약류 예산(2024)",
+   "stage": 0,
+   "cl": "사회적 혼란·기타",
+   "value": 37700000000,
+   "unit": "원",
+   "src": "2024 대용",
+   "cell": "2.사회적 혼란·기타!F4 수식 안",
+   "note": "2025 예산 미확인",
+   "flags": [
+    "hard"
+   ]
+  },
+  {
+   "id": "prev",
+   "label": "예방·홍보·재활 예산",
+   "stage": 2,
+   "cl": "사회적 혼란·기타",
+   "value": 36000000000,
+   "unit": "원",
+   "src": "계산",
+   "cell": "0.총괄_2025!E17",
+   "note": "377억 − 17억. 17억이 입력값 C34와 연결되지 않음",
+   "flags": [
+    "hard"
+   ]
+  },
+  {
+   "id": "fam_k",
+   "label": "동거 가족 수(0.64명)",
+   "stage": 0,
+   "cl": "사회적 혼란·기타",
+   "value": 0.6389342083138295,
+   "unit": "명",
+   "src": "추정·문헌",
+   "cell": "2.사회적 혼란·기타!F5 수식 안",
+   "note": "140,593 ÷ 220,043",
+   "flags": [
+    "hard"
+   ]
+  },
+  {
+   "id": "fam_u",
+   "label": "가족 1인당 의료비 £450(2008)",
+   "stage": 0,
+   "cl": "사회적 혼란·기타",
+   "value": 450,
+   "unit": "파운드",
+   "src": "추정·문헌",
+   "cell": "2.사회적 혼란·기타!F5 수식 안",
+   "note": "Copello, Templeton & Powell(2010). 환율·물가 환산 × 1.27 × 847.5 ÷ 0.689 × 1.166",
+   "flags": [
+    "hard"
+   ]
+  },
+  {
+   "id": "family",
+   "label": "가족 돌봄",
+   "stage": 2,
+   "cl": "사회적 혼란·기타",
+   "value": 863598872.182569,
+   "unit": "원",
+   "src": "계산",
+   "cell": "0.총괄_2025!E18",
+   "note": "치료보호 1,649명을 수식에 직접 적음(입력값 C24와 연결 없음)",
+   "flags": [
+    "hard"
+   ]
+  },
+  {
+   "id": "dui_n",
+   "label": "마약류 운전 사고 2025",
+   "stage": 0,
+   "cl": "사회적 혼란·기타",
+   "value": 33,
+   "unit": "건",
+   "src": "실측",
+   "cell": "2.사회적 혼란·기타!F6 수식 안",
+   "note": "경찰청(2026)",
+   "flags": [
+    "hard"
+   ]
+  },
+  {
+   "id": "dui_u",
+   "label": "교통사고 1건당 평균 비용(2023)",
+   "stage": 0,
+   "cl": "사회적 혼란·기타",
+   "value": 43163586.395439915,
+   "unit": "원",
+   "src": "추정·문헌",
+   "cell": "2.사회적 혼란·기타!F6 수식 안",
+   "note": "한국교통연구원(2025): 54조 595억 원 ÷ 1,252,433건",
+   "flags": [
+    "hard"
+   ]
+  },
+  {
+   "id": "dui",
+   "label": "약물 운전 교통사고",
+   "stage": 2,
+   "cl": "사회적 혼란·기타",
+   "value": 1488192507.30593,
+   "unit": "원",
+   "src": "계산",
+   "cell": "0.총괄_2025!E19",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "fear",
+   "label": "범죄 공포·방어 행동",
+   "stage": 2,
+   "cl": "사회적 혼란·기타",
+   "value": 0,
+   "unit": "원",
+   "src": "가정",
+   "cell": "2.사회적 혼란·기타!F7",
+   "note": "범죄 1건당 단가에 포함되어 0원(박경래 외, 2010; Cohen et al., 2004)",
+   "flags": []
+  },
+  {
+   "id": "f_soc",
+   "label": "사회적 혼란·기타 소계",
+   "stage": 3,
+   "cl": "사회적 혼란·기타",
+   "value": 49603893501.7753,
+   "unit": "원",
+   "src": "계산",
+   "cell": "0.총괄_2025!E24",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "total",
+   "label": "사회적 비용(암수율 미반영)",
+   "stage": 4,
+   "cl": "총괄",
+   "value": 751854643030.767,
+   "unit": "원",
+   "src": "계산",
+   "cell": "0.총괄_2025!E25",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "per",
+   "label": "검거 사범 1명당 비용",
+   "stage": 4,
+   "cl": "총괄",
+   "value": 32126421.5284693,
+   "unit": "원",
+   "src": "계산",
+   "cell": "0.총괄_2025!G25",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "lam10",
+   "label": "사회적 비용(암수율 10배)",
+   "stage": 5,
+   "cl": "총괄",
+   "value": 7518546430307.67,
+   "unit": "원",
+   "src": "계산",
+   "cell": "0.총괄_2025!H25",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "lam28",
+   "label": "사회적 비용(암수율 28.57배)",
+   "stage": 5,
+   "cl": "총괄",
+   "value": 21480487151389.0,
+   "unit": "원",
+   "src": "계산",
+   "cell": "0.총괄_2025!I25",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "lp_dur",
+   "label": "잔여 중독기간 중앙값(B)",
+   "stage": 0,
+   "cl": "생애비용",
+   "value": 16,
+   "unit": "년",
+   "src": "추정·문헌",
+   "cell": "4.1인당 생애비용(별지 2)!D2",
+   "note": "Dennis et al.(2005) 첫 치료~단약 중앙값 9년, 첫 사용~단약 27년. B는 A(5년)와 C(27년)의 중간값 16년",
+   "flags": []
+  },
+  {
+   "id": "lp_lab",
+   "label": "노동능력 상실 비율(B)",
+   "stage": 0,
+   "cl": "생애비용",
+   "value": 0.1555,
+   "unit": "비율",
+   "src": "추정·문헌",
+   "cell": "4.1인당 생애비용(별지 2)!D3",
+   "note": "2025 범죄백서 무직 31.1%; B는 × 50%(박성수, 2018); A는 25% × 50%",
+   "flags": []
+  },
+  {
+   "id": "lp_mort",
+   "label": "초과 사망률(활동, B)",
+   "stage": 0,
+   "cl": "생애비용",
+   "value": 0.00973089311859444,
+   "unit": "비율",
+   "src": "추정·문헌",
+   "cell": "4.1인당 생애비용(별지 2)!D5",
+   "note": "Stockings et al.(2019) 조사망률 0.92~1.42% × (1 − 1/6.83)",
+   "flags": []
+  },
+  {
+   "id": "lp_rearr",
+   "label": "연 재검거 확률(B)",
+   "stage": 0,
+   "cl": "생애비용",
+   "value": 0.1,
+   "unit": "비율",
+   "src": "가정",
+   "cell": "4.1인당 생애비용(별지 2)!D7",
+   "note": "재범률 34.5%(서울신문, 2025. 6. 27.); 11. 9. 별지 10%",
+   "flags": []
+  },
+  {
+   "id": "lp_life",
+   "label": "생명표 기대여명(Gompertz)",
+   "stage": 0,
+   "cl": "생애비용",
+   "value": 46.9403414286352,
+   "unit": "년",
+   "src": "실측",
+   "cell": "4.1인당 생애비용(별지 2)!C24",
+   "note": "통계청(2025. 12. 3.) 2024년 생명표. 보도 자료에서 옮김",
+   "flags": []
+  },
+  {
+   "id": "l_first",
+   "label": "1년차 비용",
+   "stage": 1,
+   "cl": "생애비용",
+   "value": 31837943.0738967,
+   "unit": "원",
+   "src": "계산",
+   "cell": "4.1인당 생애비용(별지 2)!D8",
+   "note": "값만 적힘(수식 없음). 2차 범죄 하한 45.0억 원 기준",
+   "flags": [
+    "mismatch"
+   ]
+  },
+  {
+   "id": "l_rep",
+   "label": "반복 비용(활동 중독 1년)",
+   "stage": 1,
+   "cl": "생애비용",
+   "value": 8926705.45326562,
+   "unit": "원",
+   "src": "계산",
+   "cell": "4.1인당 생애비용(별지 2)!D9",
+   "note": "값만 적힘. 2차 범죄 전체 112.5억 원 기준",
+   "flags": [
+    "mismatch"
+   ]
+  },
+  {
+   "id": "l_rearr",
+   "label": "재검거 1회 형사사법",
+   "stage": 1,
+   "cl": "생애비용",
+   "value": 15930415.1229757,
+   "unit": "원",
+   "src": "계산",
+   "cell": "4.1인당 생애비용(별지 2)!D10",
+   "note": "값만 적힘. 형사사법 1명당과 같음",
+   "flags": []
+  },
+  {
+   "id": "l_dpgs",
+   "label": "사망 PGS(2025)",
+   "stage": 1,
+   "cl": "생애비용",
+   "value": 990370000,
+   "unit": "원",
+   "src": "계산",
+   "cell": "4.1인당 생애비용(별지 2)!D11",
+   "note": "값만 적힘",
+   "flags": []
+  },
+  {
+   "id": "life_pv",
+   "label": "생애비용 B(현재가치 4.5%)",
+   "stage": 4,
+   "cl": "생애비용",
+   "value": 396834824.458159,
+   "unit": "원",
+   "src": "엑셀 밖 근거",
+   "cell": "4.1인당 생애비용(별지 2)!D15",
+   "note": "연령별·연도별 모형 계산은 엑셀 밖에서 하고 결과만 적음",
+   "flags": [
+    "nobase"
+   ]
+  },
+  {
+   "id": "life_cum",
+   "label": "생애비용 B(누적 기준)",
+   "stage": 5,
+   "cl": "생애비용",
+   "value": 1228122849.96659,
+   "unit": "원",
+   "src": "엑셀 밖 근거",
+   "cell": "4.1인당 생애비용(별지 2)!D17",
+   "note": "대표값. 연간 사회적 비용과 더하지 않음",
+   "flags": [
+    "nobase"
+   ]
+  },
+  {
+   "id": "r_budget",
+   "label": "재활 예산 + 전담인력 인건비",
+   "stage": 0,
+   "cl": "재활 비용편익",
+   "value": 7697000000,
+   "unit": "원",
+   "src": "엑셀 밖 근거",
+   "cell": "6.교정 재활 비용편익!C23",
+   "note": "59.99억(집행액 간주) + 16.98억(정원 × 봉급표 × 1.6 × 투입비율 추정). 합계만 값으로 적음",
+   "flags": [
+    "nobase"
+   ]
+  },
+  {
+   "id": "r_comp",
+   "label": "2025 이수 인원",
+   "stage": 0,
+   "cl": "재활 비용편익",
+   "value": 1545,
+   "unit": "명",
+   "src": "실측",
+   "cell": "6.교정 재활 비용편익!C24 수식 안",
+   "note": "교정본부 자료(2026. 11.)",
+   "flags": [
+    "hard"
+   ]
+  },
+  {
+   "id": "r_out_cost",
+   "label": "중독 외래 진료비·인원",
+   "stage": 0,
+   "cl": "재활 비용편익",
+   "value": 979000000,
+   "unit": "원",
+   "src": "추계치",
+   "cell": "6.교정 재활 비용편익!C33 수식 안",
+   "note": "9.79억 원 ÷ 1,835명. 의료·복지 추계값을 옮겨 적음",
+   "flags": [
+    "hard"
+   ]
+  },
+  {
+   "id": "uc06",
+   "label": "UC-06 프로그램 원가",
+   "stage": 1,
+   "cl": "재활 비용편익",
+   "value": 4981877.022653721,
+   "unit": "원",
+   "src": "계산",
+   "cell": "6.교정 재활 비용편익!C24 일부",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "uc10",
+   "label": "UC-10 치료개입",
+   "stage": 1,
+   "cl": "재활 비용편익",
+   "value": 533514.986376022,
+   "unit": "원",
+   "src": "계산",
+   "cell": "6.교정 재활 비용편익!C33",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "uc12",
+   "label": "UC-12 사후관리",
+   "stage": 1,
+   "cl": "재활 비용편익",
+   "value": 835652.171389939,
+   "unit": "원",
+   "src": "계산",
+   "cell": "6.교정 재활 비용편익!C34",
+   "note": "14.4억 원 ÷ 1,649명 ÷ 1.045. 입력값 C24·C32와 연결 없음",
+   "flags": [
+    "hard"
+   ]
+  },
+  {
+   "id": "dC",
+   "label": "ΔC 증분비용(이수자 1인)",
+   "stage": 2,
+   "cl": "재활 비용편익",
+   "value": 6351044.18041968,
+   "unit": "원",
+   "src": "계산",
+   "cell": "6.교정 재활 비용편익!C24",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "c_n1",
+   "label": "이수 출소·재복역(2019~2022)",
+   "stage": 0,
+   "cl": "재활 비용편익",
+   "value": 2126,
+   "unit": "명",
+   "src": "실측",
+   "cell": "6.교정 재활 비용편익!C14·C15",
+   "note": "2,126명 중 672명",
+   "flags": []
+  },
+  {
+   "id": "c_n0",
+   "label": "미이수·탈락 출소·재복역",
+   "stage": 0,
+   "cl": "재활 비용편익",
+   "value": 116,
+   "unit": "명",
+   "src": "실측",
+   "cell": "6.교정 재활 비용편익!C16·C17",
+   "note": "116명 중 40명",
+   "flags": []
+  },
+  {
+   "id": "c_all",
+   "label": "전체 출소·재복역(2019~2022)",
+   "stage": 0,
+   "cl": "재활 비용편익",
+   "value": 5977,
+   "unit": "명",
+   "src": "실측",
+   "cell": "6.교정 재활 비용편익!C10·C11",
+   "note": "5,977명 중 1,855명(31.0%). 현황 서술용, 계산에 쓰이지 않음",
+   "flags": [
+    "ref",
+    "orphan"
+   ]
+  },
+  {
+   "id": "c_stock",
+   "label": "연말 기결·미결(2024·2025)",
+   "stage": 0,
+   "cl": "재활 비용편익",
+   "value": 4188,
+   "unit": "명",
+   "src": "실측",
+   "cell": "6.교정 재활 비용편익!C2·C3·C4",
+   "note": "기결 3,477·4,188명, 미결 3,241명. 교도소 기결·미결 배분과 현황 서술용",
+   "flags": [
+    "ref",
+    "orphan"
+   ]
+  },
+  {
+   "id": "r1",
+   "label": "r1 이수 재복역률",
+   "stage": 1,
+   "cl": "재활 비용편익",
+   "value": 0.316086547507056,
+   "unit": "비율",
+   "src": "계산",
+   "cell": "6.교정 재활 비용편익!C18",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "r0",
+   "label": "r0 미이수·탈락 재복역률",
+   "stage": 1,
+   "cl": "재활 비용편익",
+   "value": 0.344827586206897,
+   "unit": "비율",
+   "src": "계산",
+   "cell": "6.교정 재활 비용편익!C19",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "dr",
+   "label": "재복역률 차 r0 − r1",
+   "stage": 2,
+   "cl": "재활 비용편익",
+   "value": 0.0287410386998411,
+   "unit": "비율",
+   "src": "계산",
+   "cell": "6.교정 재활 비용편익!C20",
+   "note": "95% CI −6.0~+11.7%p, 유의하지 않음",
+   "flags": []
+  },
+  {
+   "id": "D",
+   "label": "할인계수 D(3년 시점 분포)",
+   "stage": 1,
+   "cl": "재활 비용편익",
+   "value": 0.944333280731115,
+   "unit": "계수",
+   "src": "엑셀 밖 근거",
+   "cell": "6.교정 재활 비용편익!C13",
+   "note": "1년 내 37.8%, 1~2년 43.1%, 2~3년 19.1%로 계산한 값만 적음",
+   "flags": [
+    "nobase"
+   ]
+  },
+  {
+   "id": "scr_in",
+   "label": "평균 실형·복역 비율·UC-01·검찰 단계",
+   "stage": 0,
+   "cl": "재활 비용편익",
+   "value": 50357000,
+   "unit": "원",
+   "src": "엑셀 밖 근거",
+   "cell": "6.교정 재활 비용편익!C25",
+   "note": "2.45년 × 85% × 2,378.4만 원 + 86.6만 원. 근거 셀 없이 결과만 적음(곱하면 5,039.6만 원)",
+   "flags": [
+    "nobase"
+   ]
+  },
+  {
+   "id": "scr_lo",
+   "label": "SCᵣ 하한(형사사법분)",
+   "stage": 2,
+   "cl": "재활 비용편익",
+   "value": 50357000,
+   "unit": "원",
+   "src": "계산",
+   "cell": "6.교정 재활 비용편익!C25",
+   "note": "",
+   "flags": [
+    "mismatch"
+   ]
+  },
+  {
+   "id": "scr_hi",
+   "label": "SCᵣ 확장",
+   "stage": 2,
+   "cl": "재활 비용편익",
+   "value": 66553006.4055303,
+   "unit": "원",
+   "src": "계산",
+   "cell": "6.교정 재활 비용편익!C26",
+   "note": "(3,223.6 − 1,593.0)만 원을 수식에 직접 적음. 총괄 시트와 연결 없음",
+   "flags": []
+  },
+  {
+   "id": "B_lo",
+   "label": "편익 B 하한(재복역)",
+   "stage": 3,
+   "cl": "재활 비용편익",
+   "value": 1366745.34796608,
+   "unit": "원",
+   "src": "계산",
+   "cell": "6.교정 재활 비용편익!C27",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "B_hi",
+   "label": "편익 B 확장(재복역)",
+   "stage": 3,
+   "cl": "재활 비용편익",
+   "value": 1806323.09108793,
+   "unit": "원",
+   "src": "계산",
+   "cell": "6.교정 재활 비용편익!C28",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "bc_lo",
+   "label": "B/C 재복역 하한",
+   "stage": 4,
+   "cl": "재활 비용편익",
+   "value": 0.215200100824328,
+   "unit": "배",
+   "src": "계산",
+   "cell": "6.교정 재활 비용편익!C29",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "bc_hi",
+   "label": "B/C 재복역 확장",
+   "stage": 4,
+   "cl": "재활 비용편익",
+   "value": 0.28441356094748,
+   "unit": "배",
+   "src": "계산",
+   "cell": "6.교정 재활 비용편익!C30",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "e_obs",
+   "label": "재활 효과 e(관측)",
+   "stage": 1,
+   "cl": "재활 비용편익",
+   "value": 0.0832366589327146,
+   "unit": "비율",
+   "src": "계산",
+   "cell": "7.생애가치 비용편익!C3",
+   "note": "값만 적음(2.87%p ÷ 34.5%). 시트 6 재복역률 차와 연결 없음",
+   "flags": [
+    "mismatch"
+   ]
+  },
+  {
+   "id": "e_lit",
+   "label": "재활 효과 e(국내·국외 문헌)",
+   "stage": 0,
+   "cl": "재활 비용편익",
+   "value": 0.192,
+   "unit": "비율",
+   "src": "추정·문헌",
+   "cell": "7.생애가치 비용편익!D3·E3",
+   "note": "김도균·나종민(2025) 19.2%, Mitchell 외(2006) 20%",
+   "flags": []
+  },
+  {
+   "id": "dC7",
+   "label": "ΔC(시트 7)",
+   "stage": 2,
+   "cl": "재활 비용편익",
+   "value": 6351000,
+   "unit": "원",
+   "src": "계산",
+   "cell": "7.생애가치 비용편익!C2",
+   "note": "6,351,000원을 값으로 적음(시트 6은 6,351,044원)",
+   "flags": [
+    "mismatch"
+   ]
+  },
+  {
+   "id": "sigma",
+   "label": "Σ w(t)·C(t)(현재가치, 5년 반감)",
+   "stage": 3,
+   "cl": "생애비용",
+   "value": 146943020.637682,
+   "unit": "원",
+   "src": "엑셀 밖 근거",
+   "cell": "7.생애가치 비용편익!C24",
+   "note": "B 시나리오 1년차 이후 생애비용 × 효과 지속. 결과만 적음",
+   "flags": [
+    "nobase"
+   ]
+  },
+  {
+   "id": "bl",
+   "label": "생애가치 편익 B(관측)",
+   "stage": 4,
+   "cl": "재활 비용편익",
+   "value": 12231046.0913616,
+   "unit": "원",
+   "src": "계산",
+   "cell": "7.생애가치 비용편익!C25",
+   "note": "",
+   "flags": []
+  },
+  {
+   "id": "bc_life",
+   "label": "B/C 생애가치(대표값)",
+   "stage": 5,
+   "cl": "재활 비용편익",
+   "value": 1.92584570797695,
+   "unit": "배",
+   "src": "계산",
+   "cell": "7.생애가치 비용편익!C26",
+   "note": "관측 효과, 현재가치 4.5%, 5년 반감",
+   "flags": []
+  },
+  {
+   "id": "bc_life_lit",
+   "label": "B/C 생애가치(문헌 효과)",
+   "stage": 5,
+   "cl": "재활 비용편익",
+   "value": 4.44230199377028,
+   "unit": "배",
+   "src": "계산",
+   "cell": "7.생애가치 비용편익!D26·E26",
+   "note": "국내 4.44, 국외 4.63",
+   "flags": []
+  },
+  {
+   "id": "cohort",
+   "label": "2025 이수 1,545명 순편익(현재가치)",
+   "stage": 5,
+   "cl": "재활 비용편익",
+   "value": 9084671211.1537,
+   "unit": "원",
+   "src": "계산",
+   "cell": "7.생애가치 비용편익!C69",
+   "note": "",
+   "flags": []
+  }
+ ],
+ "edges": [
+  {
+   "s": "police_t",
+   "t": "police_ratio",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "police_d",
+   "t": "police_ratio",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "police_b",
+   "t": "police",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "police_ratio",
+   "t": "police",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "pros_t",
+   "t": "pros_ratio",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "pros_d",
+   "t": "pros_ratio",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "pros_b",
+   "t": "pros",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "pros_ratio",
+   "t": "pros",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "court_t",
+   "t": "court_ratio",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "court_d",
+   "t": "court_ratio",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "court_b",
+   "t": "court",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "court_ratio",
+   "t": "court",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "prison_t",
+   "t": "prison_ratio",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "prison_d",
+   "t": "prison_ratio",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "prison_b",
+   "t": "prison",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "prison_ratio",
+   "t": "prison",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "hosp_t",
+   "t": "hosp_ratio",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "hosp_d",
+   "t": "hosp_ratio",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "hosp_b",
+   "t": "hosp",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "hosp_ratio",
+   "t": "hosp",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "prob_t",
+   "t": "prob_ratio",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "prob_d",
+   "t": "prob_ratio",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "prob_b",
+   "t": "prob",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "prob_ratio",
+   "t": "prob",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "police",
+   "t": "f_cj",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "pros",
+   "t": "f_cj",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "court",
+   "t": "f_cj",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "prison",
+   "t": "f_cj",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "hosp",
+   "t": "f_cj",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "prob",
+   "t": "f_cj",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "pgs_add_u",
+   "t": "pgs_add_u25",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "n_cpi",
+   "t": "pgs_add_u25",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "pgs_d_u",
+   "t": "pgs_d_u25",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "n_cpi",
+   "t": "pgs_d_u25",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "tx_n",
+   "t": "pgs_add",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "pgs_add_u25",
+   "t": "pgs_add",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "death_n",
+   "t": "pgs_d",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "pgs_d_u25",
+   "t": "pgs_d",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "pgs_add",
+   "t": "f_pgs",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "pgs_d",
+   "t": "f_pgs",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "early_in",
+   "t": "early",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "morb_in",
+   "t": "morb",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "unemp_in",
+   "t": "unemp",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "early",
+   "t": "f_prod",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "morb",
+   "t": "f_prod",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "unemp",
+   "t": "f_prod",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "claim",
+   "t": "dmed",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "tx_budget",
+   "t": "dmed",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "dmed",
+   "t": "imed",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "ind_rate",
+   "t": "imed",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "mh_in",
+   "t": "mh",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "dmed",
+   "t": "f_med",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "imed",
+   "t": "f_med",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "mh",
+   "t": "f_med",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "as_n",
+   "t": "as",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "attr",
+   "t": "as",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "as_u",
+   "t": "as",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "cpi08",
+   "t": "as",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "sx_n",
+   "t": "sx",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "attr",
+   "t": "sx",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "sx_u",
+   "t": "sx",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "cpi08",
+   "t": "sx",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "as",
+   "t": "crime2",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "sx",
+   "t": "crime2",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "mfds",
+   "t": "prev",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "mh_in",
+   "t": "prev",
+   "kind": "copy",
+   "note": "중복 제거를 위해 차감(−17억 원)"
+  },
+  {
+   "s": "tx_n",
+   "t": "family",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "fam_k",
+   "t": "family",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "fam_u",
+   "t": "family",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "dui_n",
+   "t": "dui",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "dui_u",
+   "t": "dui",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "crime2",
+   "t": "f_soc",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "prev",
+   "t": "f_soc",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "family",
+   "t": "f_soc",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "dui",
+   "t": "f_soc",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "fear",
+   "t": "f_soc",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "f_cj",
+   "t": "total",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "f_pgs",
+   "t": "total",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "f_prod",
+   "t": "total",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "f_med",
+   "t": "total",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "f_soc",
+   "t": "total",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "total",
+   "t": "per",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "n_arrest",
+   "t": "per",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "per",
+   "t": "lam10",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "n_arrest",
+   "t": "lam10",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "n_l10",
+   "t": "lam10",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "per",
+   "t": "lam28",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "n_arrest",
+   "t": "lam28",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "n_l28",
+   "t": "lam28",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "per",
+   "t": "l_first",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "crime2",
+   "t": "l_first",
+   "kind": "copy",
+   "note": "하한 45.0억 원으로 바꿔 적용"
+  },
+  {
+   "s": "pgs_add",
+   "t": "l_rep",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "dmed",
+   "t": "l_rep",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "imed",
+   "t": "l_rep",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "mh",
+   "t": "l_rep",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "morb",
+   "t": "l_rep",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "crime2",
+   "t": "l_rep",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "family",
+   "t": "l_rep",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "dui",
+   "t": "l_rep",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "f_cj",
+   "t": "l_rearr",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "pgs_d_u25",
+   "t": "l_dpgs",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "l_first",
+   "t": "life_pv",
+   "kind": "model",
+   "note": ""
+  },
+  {
+   "s": "l_rep",
+   "t": "life_pv",
+   "kind": "model",
+   "note": ""
+  },
+  {
+   "s": "l_rearr",
+   "t": "life_pv",
+   "kind": "model",
+   "note": ""
+  },
+  {
+   "s": "l_dpgs",
+   "t": "life_pv",
+   "kind": "model",
+   "note": ""
+  },
+  {
+   "s": "lp_dur",
+   "t": "life_pv",
+   "kind": "model",
+   "note": ""
+  },
+  {
+   "s": "lp_lab",
+   "t": "life_pv",
+   "kind": "model",
+   "note": ""
+  },
+  {
+   "s": "lp_mort",
+   "t": "life_pv",
+   "kind": "model",
+   "note": ""
+  },
+  {
+   "s": "lp_rearr",
+   "t": "life_pv",
+   "kind": "model",
+   "note": ""
+  },
+  {
+   "s": "lp_life",
+   "t": "life_pv",
+   "kind": "model",
+   "note": ""
+  },
+  {
+   "s": "life_pv",
+   "t": "life_cum",
+   "kind": "model",
+   "note": ""
+  },
+  {
+   "s": "r_budget",
+   "t": "uc06",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "r_comp",
+   "t": "uc06",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "r_out_cost",
+   "t": "uc10",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "tx_budget",
+   "t": "uc12",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "tx_n",
+   "t": "uc12",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "uc06",
+   "t": "dC",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "uc10",
+   "t": "dC",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "uc12",
+   "t": "dC",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "c_n1",
+   "t": "r1",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "c_n0",
+   "t": "r0",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "r1",
+   "t": "dr",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "r0",
+   "t": "dr",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "scr_in",
+   "t": "scr_lo",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "scr_lo",
+   "t": "scr_hi",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "per",
+   "t": "scr_hi",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "f_cj",
+   "t": "scr_hi",
+   "kind": "copy",
+   "note": "형사사법 1명당을 빼서 중복 방지"
+  },
+  {
+   "s": "dr",
+   "t": "B_lo",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "scr_lo",
+   "t": "B_lo",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "D",
+   "t": "B_lo",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "dr",
+   "t": "B_hi",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "scr_hi",
+   "t": "B_hi",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "D",
+   "t": "B_hi",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "B_lo",
+   "t": "bc_lo",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "dC",
+   "t": "bc_lo",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "B_hi",
+   "t": "bc_hi",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "dC",
+   "t": "bc_hi",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "dr",
+   "t": "e_obs",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "r0",
+   "t": "e_obs",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "dC",
+   "t": "dC7",
+   "kind": "copy",
+   "note": ""
+  },
+  {
+   "s": "life_pv",
+   "t": "sigma",
+   "kind": "model",
+   "note": ""
+  },
+  {
+   "s": "e_obs",
+   "t": "bl",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "sigma",
+   "t": "bl",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "bl",
+   "t": "bc_life",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "dC7",
+   "t": "bc_life",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "e_lit",
+   "t": "bc_life_lit",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "sigma",
+   "t": "bc_life_lit",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "dC7",
+   "t": "bc_life_lit",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "bl",
+   "t": "cohort",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "dC7",
+   "t": "cohort",
+   "kind": "link",
+   "note": ""
+  },
+  {
+   "s": "r_comp",
+   "t": "cohort",
+   "kind": "copy",
+   "note": ""
+  }
+ ],
+ "checks": [
+  {
+   "kind": "누락",
+   "level": "참고",
+   "nodes": [
+    "pros_b25"
+   ],
+   "title": "검찰 2025 결산(미사용): 위 단계로 이어지지 않음",
+   "detail": "2025 처리 인원이 없어 2024 예산·인원을 대신 사용"
+  },
+  {
+   "kind": "누락",
+   "level": "참고",
+   "nodes": [
+    "murder"
+   ],
+   "title": "마약 상태 살인(합계 제외): 위 단계로 이어지지 않음",
+   "detail": "연 65명 × 25% × 173.2억 원. 합계에서 제외"
+  },
+  {
+   "kind": "누락",
+   "level": "참고",
+   "nodes": [
+    "c_all"
+   ],
+   "title": "전체 출소·재복역(2019~2022): 위 단계로 이어지지 않음",
+   "detail": "5,977명 중 1,855명(31.0%). 현황 서술용, 계산에 쓰이지 않음"
+  },
+  {
+   "kind": "누락",
+   "level": "참고",
+   "nodes": [
+    "c_stock"
+   ],
+   "title": "연말 기결·미결(2024·2025): 위 단계로 이어지지 않음",
+   "detail": "기결 3,477·4,188명, 미결 3,241명. 교도소 기결·미결 배분과 현황 서술용"
+  },
+  {
+   "kind": "공백",
+   "level": "확인",
+   "nodes": [
+    "early_in"
+   ],
+   "title": "조기사망 손실(연구진 추계): 엑셀에 근거 셀 없음",
+   "detail": "세부 산식(임금·취업률·손실일수)은 별도 추계 파일에 있음"
+  },
+  {
+   "kind": "공백",
+   "level": "확인",
+   "nodes": [
+    "morb_in"
+   ],
+   "title": "이환·입원 손실(연구진 추계): 엑셀에 근거 셀 없음",
+   "detail": "세부 산식(임금·취업률·손실일수)은 별도 추계 파일에 있음"
+  },
+  {
+   "kind": "공백",
+   "level": "확인",
+   "nodes": [
+    "unemp_in"
+   ],
+   "title": "노동력 상실·미취업 손실(연구진 추계): 엑셀에 근거 셀 없음",
+   "detail": "세부 산식(임금·취업률·손실일수)은 별도 추계 파일에 있음"
+  },
+  {
+   "kind": "공백",
+   "level": "확인",
+   "nodes": [
+    "mh_in"
+   ],
+   "title": "정신건강·복지 지원(연구진 추계): 엑셀에 근거 셀 없음",
+   "detail": "세부 내역은 별도 추계 파일"
+  },
+  {
+   "kind": "공백",
+   "level": "확인",
+   "nodes": [
+    "life_pv"
+   ],
+   "title": "생애비용 B(현재가치 4.5%): 엑셀에 근거 셀 없음",
+   "detail": "연령별·연도별 모형 계산은 엑셀 밖에서 하고 결과만 적음"
+  },
+  {
+   "kind": "공백",
+   "level": "확인",
+   "nodes": [
+    "life_cum"
+   ],
+   "title": "생애비용 B(누적 기준): 엑셀에 근거 셀 없음",
+   "detail": "대표값. 연간 사회적 비용과 더하지 않음"
+  },
+  {
+   "kind": "공백",
+   "level": "확인",
+   "nodes": [
+    "r_budget"
+   ],
+   "title": "재활 예산 + 전담인력 인건비: 엑셀에 근거 셀 없음",
+   "detail": "59.99억(집행액 간주) + 16.98억(정원 × 봉급표 × 1.6 × 투입비율 추정). 합계만 값으로 적음"
+  },
+  {
+   "kind": "공백",
+   "level": "확인",
+   "nodes": [
+    "D"
+   ],
+   "title": "할인계수 D(3년 시점 분포): 엑셀에 근거 셀 없음",
+   "detail": "1년 내 37.8%, 1~2년 43.1%, 2~3년 19.1%로 계산한 값만 적음"
+  },
+  {
+   "kind": "공백",
+   "level": "확인",
+   "nodes": [
+    "scr_in"
+   ],
+   "title": "평균 실형·복역 비율·UC-01·검찰 단계: 엑셀에 근거 셀 없음",
+   "detail": "2.45년 × 85% × 2,378.4만 원 + 86.6만 원. 근거 셀 없이 결과만 적음(곱하면 5,039.6만 원)"
+  },
+  {
+   "kind": "공백",
+   "level": "확인",
+   "nodes": [
+    "sigma"
+   ],
+   "title": "Σ w(t)·C(t)(현재가치, 5년 반감): 엑셀에 근거 셀 없음",
+   "detail": "B 시나리오 1년차 이후 생애비용 × 효과 지속. 결과만 적음"
+  },
+  {
+   "kind": "중복",
+   "level": "참고",
+   "nodes": [
+    "n_cpi"
+   ],
+   "title": "물가 계수 2025/2024: 연간 합계 안 2개 항목으로 들어감(사망 PGS, 중독자 PGS)",
+   "detail": "여러 항목의 물가 환산에 쓰이는 공통 계수"
+  },
+  {
+   "kind": "중복",
+   "level": "확인",
+   "nodes": [
+    "tx_n"
+   ],
+   "title": "치료보호 인원 2025: 연간 합계 안 2개 항목으로 들어감(가족 돌봄, 중독자 PGS)",
+   "detail": "중독자 PGS(본인·가족의 고통)와 가족 돌봄(가족 의료비)에 같은 인원을 씀. 비용 성격이 달라 중복은 아니나, 가족 고통과 가족 의료비의 경계를 보고서에 명시"
+  },
+  {
+   "kind": "중복",
+   "level": "참고",
+   "nodes": [
+    "claim"
+   ],
+   "title": "청구 진료비: 연간 합계 안 2개 항목으로 들어감(간접의료비, 직접 의료비)",
+   "detail": "직접 의료비와 그 38.1%인 간접의료비로 이어짐. 비율 방식이라 중복 아님"
+  },
+  {
+   "kind": "중복",
+   "level": "참고",
+   "nodes": [
+    "tx_budget"
+   ],
+   "title": "치료보호 지원 예산: 연간 합계 안 2개 항목으로 들어감(간접의료비, 직접 의료비)",
+   "detail": "직접 의료비와 그 38.1%인 간접의료비로 이어짐. 비율 방식이라 중복 아님"
+  },
+  {
+   "kind": "중복",
+   "level": "참고",
+   "nodes": [
+    "mh_in"
+   ],
+   "title": "정신건강·복지 지원(연구진 추계): 연간 합계 안 2개 항목으로 들어감(예방·홍보·재활 예산, 정신건강·복지)",
+   "detail": "의료·복지에 +17억 원, 예방 예산에서 −17억 원. 중복을 없애기 위한 처리(합계에는 한 번만 들어감)"
+  },
+  {
+   "kind": "중복",
+   "level": "참고",
+   "nodes": [],
+   "title": "분석 간 공유 원단위",
+   "detail": "연간 사회적 비용의 값이 생애비용·재활 비용편익의 원단위로도 쓰임(형사사법 소계, 치료보호 인원 2025, 치료보호 지원 예산, 2차 범죄 피해, 검거 사범 1명당 비용). 세 결과는 기준이 달라 서로 더하지 않으므로 중복 계상이 아님"
+  },
+  {
+   "kind": "대사",
+   "level": "참고",
+   "nodes": [
+    "dC7"
+   ],
+   "title": "ΔC: 시트 7 값 vs 시트 6 수식",
+   "detail": "차이 -44.18 (0.001%)"
+  },
+  {
+   "kind": "대사",
+   "level": "확인",
+   "nodes": [
+    "e_obs"
+   ],
+   "title": "관측 효과 e: 값 vs 재복역률 차 ÷ r0",
+   "detail": "차이 -0.0001124 (0.135%)"
+  },
+  {
+   "kind": "대사",
+   "level": "확인",
+   "nodes": [
+    "scr_lo"
+   ],
+   "title": "SCᵣ 하한: 적힌 값 vs 2.45 × 0.85 × 2,378.4만 + 86.6만",
+   "detail": "차이 -3.918e+04 (0.078%)"
+  },
+  {
+   "kind": "대사",
+   "level": "참고",
+   "nodes": [
+    "l_first"
+   ],
+   "title": "생애 1년차: 적힌 값 vs 1명당(2차 범죄 45.0억 원)",
+   "detail": "차이 35.93 (0.000%)"
+  },
+  {
+   "kind": "대사",
+   "level": "확인",
+   "nodes": [
+    "l_first",
+    "l_rep"
+   ],
+   "title": "생애 1년차와 반복 비용의 2차 범죄 기준이 다름",
+   "detail": "1년차는 하한 45.0억 원, 반복 비용은 전체 112.5억 원 기준. 하한으로 맞추면 반복 비용 8,638,191원(−3.2%)"
+  },
+  {
+   "kind": "연결",
+   "level": "확인",
+   "nodes": [
+    "family"
+   ],
+   "title": "가족 돌봄: 치료보호 1,649명을 수식에 직접 적음",
+   "detail": "입력값 C24을 바꿔도 이 값은 바뀌지 않음. 셀 참조로 바꾸면 누락·불일치를 막을 수 있음"
+  },
+  {
+   "kind": "연결",
+   "level": "확인",
+   "nodes": [
+    "uc12"
+   ],
+   "title": "UC-12 사후관리: 치료보호 1,649명·예산 14.4억 원을 수식에 직접 적음",
+   "detail": "입력값 C24·C32을 바꿔도 이 값은 바뀌지 않음. 셀 참조로 바꾸면 누락·불일치를 막을 수 있음"
+  },
+  {
+   "kind": "연결",
+   "level": "확인",
+   "nodes": [
+    "prev"
+   ],
+   "title": "예방·홍보·재활 예산: 정신건강·복지 17억 원을 수식에 직접 적음",
+   "detail": "입력값 C34을 바꿔도 이 값은 바뀌지 않음. 셀 참조로 바꾸면 누락·불일치를 막을 수 있음"
+  },
+  {
+   "kind": "연결",
+   "level": "확인",
+   "nodes": [
+    "cpi08"
+   ],
+   "title": "물가 환산 2008→2025: 물가 계수 1.021을 수식에 직접 적음",
+   "detail": "입력값 C5을 바꿔도 이 값은 바뀌지 않음. 셀 참조로 바꾸면 누락·불일치를 막을 수 있음"
+  }
+ ],
+ "summary": {
+  "nodes": 125,
+  "edges": 151,
+  "raw": 59,
+  "kinds": {
+   "누락": 4,
+   "공백": 10,
+   "중복": 6,
+   "대사": 5,
+   "연결": 4
+  },
+  "hard_nodes": 16,
+  "recon": [
+   {
+    "title": "18개 항목 합 = 총액",
+    "a": 751854643030.7664,
+    "b": 751854643030.767,
+    "diff": -0.0006103515625,
+    "ok": true
+   },
+   {
+    "title": "5개 분야 소계 합 = 총액",
+    "a": 751854643030.7662,
+    "b": 751854643030.767,
+    "diff": -0.000732421875,
+    "ok": true
+   },
+   {
+    "title": "시트 2 합계 = 사회적 혼란·기타 소계",
+    "a": 49603893501.7753,
+    "b": 49603893501.7753,
+    "diff": 0.0,
+    "ok": true
+   },
+   {
+    "title": "1명당 × 234,030명 = 암수율 10배 총액",
+    "a": 7518546430307.671,
+    "b": 7518546430307.67,
+    "diff": 0.0009765625,
+    "ok": true
+   },
+   {
+    "title": "시트 3 합계 = 총괄 합계(억 원)",
+    "a": 751854643030.767,
+    "b": 751854643030.767,
+    "diff": 0.0,
+    "ok": true
+   },
+   {
+    "title": "ΔC: 시트 7 값 vs 시트 6 수식",
+    "a": 6351000,
+    "b": 6351044.18041968,
+    "diff": -44.18041967973113,
+    "ok": false,
+    "rel": 6.956402510305269e-06
+   },
+   {
+    "title": "관측 효과 e: 값 vs 재복역률 차 ÷ r0",
+    "a": 0.0832366589327146,
+    "b": 0.08334901222953907,
+    "diff": -0.00011235329682446338,
+    "ok": false,
+    "rel": 0.0013479859427133695
+   },
+   {
+    "title": "SCᵣ 확장: 수식 안 3,223.6 − 1,593.0 vs 총괄 시트 값",
+    "a": 66553006.4055303,
+    "b": 66553006.40553031,
+    "diff": -7.450580596923828e-09,
+    "ok": true,
+    "rel": 1.1194957221804351e-16
+   },
+   {
+    "title": "SCᵣ 하한: 적힌 값 vs 2.45 × 0.85 × 2,378.4만 + 86.6만",
+    "a": 50357000,
+    "b": 50396180.0,
+    "diff": -39180.0,
+    "ok": false,
+    "rel": 0.0007774398773875322
+   },
+   {
+    "title": "생애 1년차: 적힌 값 vs 1명당(2차 범죄 45.0억 원)",
+    "a": 31837943.0738967,
+    "b": 31837907.144745555,
+    "diff": 35.9291511438787,
+    "ok": false,
+    "rel": 1.128502290698098e-06
+   },
+   {
+    "title": "생애 반복 비용: 적힌 값 vs 항목 1명당 합",
+    "a": 8926705.45326562,
+    "b": 8926705.453259211,
+    "diff": 6.409361958503723e-06,
+    "ok": true,
+    "rel": 7.179985933291452e-13
+   },
+   {
+    "title": "재검거 1회: 적힌 값 vs 형사사법 1명당",
+    "a": 15930415.1229757,
+    "b": 15930415.122938981,
+    "diff": 3.6718323826789856e-05,
+    "ok": true,
+    "rel": 2.3049194602541997e-12
+   }
+  ]
+ }
+};
 const N = DATA.nodes, E = DATA.edges, C = DATA.checks, S = DATA.summary;
 const byId = Object.fromEntries(N.map(n => [n.id, n]));
 const CL = ['형사사법','고통비용','생산성','의료·복지','사회적 혼란·기타','생애비용','재활 비용편익','공통','총괄'];
